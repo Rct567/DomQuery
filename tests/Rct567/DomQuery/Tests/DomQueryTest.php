@@ -158,23 +158,6 @@
 		}
 		
 		/*
-		 * Test instance without nodes
-		 */
-		public function testDomQueryNoDocument() {
-			
-			$dom = new DomQuery;
-			$this->assertEquals(0, count($dom));
-			$this->assertFalse(isset($dom[0]));
-			$this->assertEquals(0, count($dom->find('*')));
-			$this->assertEquals(0, count($dom->children()));
-			
-			$num = 0;
-			foreach($dom as $node) $num++;
-			$this->assertEquals(0, $num);
-			
-		}
-		
-		/*
 		 * Test filters, first and last
 		 */
 		public function testFirstAndLastFilters() {
@@ -206,6 +189,23 @@
 			// first and last via get method, check id
 			$this->assertEquals('first-child-a', $dom->find('.root div')->get(0)->getAttribute('id'));
 			$this->assertEquals('last-child-a', $dom->find('.root div')->get(-1)->getAttribute('id'));
+			
+		}
+
+		/*
+		 * Test instance without nodes
+		 */
+		public function testDomQueryNoDocument() {
+			
+			$dom = new DomQuery;
+			$this->assertEquals(0, count($dom));
+			$this->assertFalse(isset($dom[0]));
+			$this->assertEquals(0, count($dom->find('*')));
+			$this->assertEquals(0, count($dom->children()));
+			
+			$num = 0;
+			foreach($dom as $node) $num++;
+			$this->assertEquals(0, $num);
 			
 		}
 		
