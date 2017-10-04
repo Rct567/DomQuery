@@ -32,3 +32,4 @@ echo count($dom->find('div, h1')); // output: 2
 
 - Works with PHP 7.0 or above 
 - Requires libxml PHP extension (enabled by default)
+- Can also be used a a standalone class (no external dependencies)
