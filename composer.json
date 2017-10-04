@@ -1,0 +1,17 @@
+{
+    "name": "rct567/dom-query",
+    "description": "DOMQuery is a PHP library that allows easy DOM traversing and manipulation",
+	"keywords": ["jquery", "dom", "html", "xml"],
+    "type": "library",
+    "license": "MIT",
+	"autoload": {
+        "psr-4": {"Rct567\\": "src/Rct567"}
+	},
+    "authors": [
+        {
+            "name": "Rct567",
+            "email": "rct999@gmail.com"
+        }
+    ],
+    "require": {}
+}

@@ -6,7 +6,7 @@
 	 * Class DomQuery
 	 * @package Rct567\DomQuery
 	 */
-	class DomQuery implements IteratorAggregate, Countable, ArrayAccess {
+	class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess {
 		
 		/**
 		 * 
@@ -63,10 +63,10 @@
 			
 			foreach(func_get_args() as $arg) {
 			
-				if ($arg instanceof DOMDocument) $this->setDomDocument($arg);
-				elseif ($arg instanceof DOMNodeList) $this->loadDomNodeList($arg);
-				elseif ($arg instanceof DOMNode) $this->addDomNode($arg);
-				elseif ($arg instanceof DOMXPath) $this->dom_xpath = $arg;
+				if ($arg instanceof \DOMDocument) $this->setDomDocument($arg);
+				elseif ($arg instanceof \DOMNodeList) $this->loadDomNodeList($arg);
+				elseif ($arg instanceof \DOMNode) $this->addDomNode($arg);
+				elseif ($arg instanceof \DOMXPath) $this->dom_xpath = $arg;
 				elseif (is_string($arg) && substr(ltrim($arg), 0, 1) == '<') $this->LoadHtmlContent($arg);
 				elseif (is_object($arg)) trigger_error('Unknown object '.get_class($arg));
 				else trigger_error('Unknown '.gettype($arg));
@@ -81,7 +81,7 @@
 		 * @param DOMDocument $document
 		 * @return void
 		 */
-		public function setDomDocument(DOMDocument $document) {
+		public function setDomDocument(\DOMDocument $document) {
 			
 			if (isset($this->document) && $this->document != $document) trigger_error('Other DOMDocument already set!');
 			
@@ -95,7 +95,7 @@
 		 * @param DOMNodeList $dom_node_list
 		 * @return void
 		 */
-		public function loadDomNodeList(DOMNodeList $dom_node_list) {
+		public function loadDomNodeList(\DOMNodeList $dom_node_list) {
 			
 			if (!isset($this->document)) trigger_error('DOMDocument is missing!');
 			
@@ -109,7 +109,7 @@
 		 * @param DOMNode $dom_elm
 		 * @return void
 		 */
-		public function addDomNode(DOMNode $dom_elm) {
+		public function addDomNode(\DOMNode $dom_elm) {
 			
 			$this->nodes[] = $dom_elm;
 			$this->length = count($this->nodes);
@@ -135,7 +135,7 @@
 			libxml_disable_entity_loader(true);
 			libxml_use_internal_errors(true);
 
-			$dom_document = new DOMDocument('1.0', $encoding);
+			$dom_document = new \DOMDocument('1.0', $encoding);
 			$dom_document->strictErrorChecking = false;
 			$dom_document->validateOnParse = false;
 			$dom_document->recover = true;
@@ -253,7 +253,7 @@
 			if (!is_null($val)) { // set attribute for all nodes
 				
 				foreach($this as $node) {
-					if ($node instanceof DOMElement) $node->setAttribute($name, $val);
+					if ($node instanceof \DOMElement) $node->setAttribute($name, $val);
 				}
 				
 				return $this;
@@ -261,7 +261,7 @@
 			} else { // get attribute value for first element
 				
 				if ($node = $this->getFirstDomNode()) {
-					if ($node instanceof DOMElement) {
+					if ($node instanceof \DOMElement) {
 						return $node->getAttribute($name);
 					}
 				}
@@ -462,7 +462,7 @@
 			if (isset($this->nodes[0])) $first_dom_elm = $this->nodes[0];
 			elseif (isset($this->document)) $first_dom_elm = $this->document->documentElement; // root element node 
 			
-			if ($first_dom_elm instanceof DOMNode) return $first_dom_elm;
+			if ($first_dom_elm instanceof \DOMNode) return $first_dom_elm;
 			//else trigger_error('Failed to get first dom node ('.gettype($first_dom_elm).')');
 			
 		}
@@ -487,7 +487,7 @@
 		public function __get($name) {
 			
 			if ($name === 'dom_xpath') {
-				return new DOMXPath($this->document);
+				return new \DOMXPath($this->document);
 			}
 			
 			if ($node = $this->getFirstDomNode()) {
@@ -828,7 +828,7 @@
 				foreach($this->nodes as $node) $iteration_result[] = new DomQuery($node);
 			}
 			
-			return new ArrayIterator($iteration_result);
+			return new \ArrayIterator($iteration_result);
 			
 		}
 
@@ -837,8 +837,10 @@
 		 * @return int
 		 */
 		public function count() {
+
 			if (isset($this->nodes) && is_array($this->nodes)) return count($this->nodes);
 			else return 0;
+
 		}
 
 		/**
@@ -875,7 +877,9 @@
 		 * @throws Exception\BadMethodCallException when attempting to write to a read-only item
 		 */
 		public function offsetSet($key, $value) {
+
 			throw new BadMethodCallException('Attempting to write to a read-only list');
+
 		}
 
 		/*
@@ -884,7 +888,9 @@
 		 * @throws Exception\BadMethodCallException when attempting to unset a read-only item
 		 */
 		public function offsetUnset($key) {
+
 			throw new BadMethodCallException('Attempting to unset on a read-only list');
+			
 		}
 		
 	}
