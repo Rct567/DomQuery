@@ -20,13 +20,28 @@ Note: DomQuery can also be used a a standalone class (no external dependencies).
 $dom = new DomQuery('<div><h1 class="title">Hello</h1></div>');
 
 echo $dom->find('h1')->text(); // output: Hello
-echo $dom->find('h1')->getHtml(); // output: <h1 class="title">Hello</h1>
+echo $dom->find('div')->prop('outerHTML'); // output: <div><h1 class="title">Hello</h1></div>
 echo $dom->find('div > h1')->class; // ouput: title
 echo $dom->find('div > h1')->attr('class'); // ouput: title
 echo $dom->find('div > h1')->prop('tagName'); // ouput: h1
 echo $dom->find('div')->children('h1')->prop('tagName'); // ouput: h1
 echo (string) $dom->find('div > h1'); // output: <h1 class="title">Hello</h1>
 echo count($dom->find('div, h1')); // output: 2
+```
+
+### Traversing nodes (result set) 
+
+``` php
+$dom = new DomQuery('<a>1</a> <a>2</a> <a>3</a>');
+$links = $dom->children('a');
+
+foreach($links as $elm) echo $elm->text(); // output 123
+echo $links[0]->text(); // output 1
+echo $links->last()->text(); // output 3
+echo $links->first()->next()->text(); // output 2
+echo $links->last()->prev()->text(); // output 2
+echo $links->get(0)->textContent; // output 1
+echo $links->get(-1)->textContent; // output 3
 ```
 
 ## About

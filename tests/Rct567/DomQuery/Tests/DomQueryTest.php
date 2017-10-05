@@ -193,6 +193,48 @@
 		}
 
 		/*
+		 * Test basic use examples from readme
+		 */
+		public function testBasicUsageReadmeExamples() {
+
+			$dom = new DomQuery('<div><h1 class="title">Hello</h1></div>');
+
+			$this->assertEquals('Hello', $dom->find('div')->text()); 
+			$this->assertEquals('<div><h1 class="title">Hello</h1></div>', $dom->find('div')->prop('outerHTML')); 
+			$this->assertEquals('title', $dom->find('div > h1')->class); 
+			$this->assertEquals('title', $dom->find('div > h1')->attr('class')); 
+			$this->assertEquals('h1', $dom->find('div > h1')->prop('tagName')); 
+			$this->assertEquals('h1', $dom->find('div')->children('h1')->prop('tagName')); 
+			$this->assertEquals('<h1 class="title">Hello</h1>', (string) $dom->find('div > h1')); 
+			$this->assertEquals('h1', $dom->find('div')->children('h1')->prop('tagName')); 
+			$this->assertEquals(2, count($dom->find('div, h1'))); 
+
+		}
+
+		/*
+		 * Test traversing nodes from readme
+		 */
+		public function testTraversingNodesReadmeExamples() {
+
+			$dom = new DomQuery('<a>1</a> <a>2</a> <a>3</a>');
+			$links = $dom->children('a');
+
+			$result = '';
+			foreach($links as $elm) $result .= $elm->text(); 
+			$this->assertEquals('123', $result);
+
+			$this->assertEquals('1', $links[0]->text());
+			$this->assertEquals('3', $links->last()->text());
+
+			$this->assertEquals('2', $links->first()->next()->text());
+			$this->assertEquals('2', $links->last()->prev()->text());
+
+			$this->assertEquals('1', $links->get(0)->textContent);
+			$this->assertEquals('3', $links->get(-1)->textContent);
+
+		}
+
+		/*
 		 * Test instance without nodes
 		 */
 		public function testDomQueryNoDocument() {
