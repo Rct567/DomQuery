@@ -235,6 +235,15 @@
 		}
 
 		/*
+		 * Test create single node
+		 */
+		public function testSingleNodeAttr() {
+
+			$this->assertEquals('hello', DomQuery::create('<a title="hello"></a>')->attr('title'));
+
+		}
+
+		/*
 		 * Test instance without nodes
 		 */
 		public function testDomQueryNoDocument() {

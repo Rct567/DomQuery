@@ -74,6 +74,16 @@
 			}
 
 		}
+
+		/**
+		 * Create new instance
+		 * @return self
+		 */
+		public static function create() {
+
+			return new DomQuery(...func_get_args());
+
+		}
 		
 		/**
 		 * Set dom document
@@ -253,7 +263,9 @@
 			if (!is_null($val)) { // set attribute for all nodes
 				
 				foreach($this as $node) {
-					if ($node instanceof \DOMElement) $node->setAttribute($name, $val);
+					if ($node instanceof \DOMElement) {
+						$node->setAttribute($name, $val);
+					}
 				}
 				
 				return $this;
