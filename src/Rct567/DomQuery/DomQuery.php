@@ -152,14 +152,19 @@
 			$dom_document->loadHTML($html, $this->libxml_options);
 			
 			$this->setDomDocument($dom_document);
-			
-			if ($xml_pi_node_added) { // pi nod added, now remove it
-				foreach($this->childNodes as $node) {
+
+			foreach($dom_document->childNodes as $node) {
+
+				if ($xml_pi_node_added) { // pi nod added, now remove it
+						
 					if ($node->nodeType == XML_PI_NODE) {
-						$doc->removeChild($node); 
+
+						$dom_document->removeChild($node); 
 						break;
+
 					}
 				}
+
 			}
 			
 		}
@@ -177,7 +182,7 @@
 				$result = new DomQuery($this->document, $this->dom_xpath);
 				$result->xpath_query = $xpath_query;
 				
-				if ($this->length > 0) {  // nodes as context
+				if ($this->length > 0) {  // all nodes as context
 				
 					foreach($this->nodes as $node) {
 						
@@ -508,7 +513,7 @@
 			
 			if ($node = $this->getFirstDomNode()) {
 				if (isset($node->$name)) return $node->{$name};
-				elseif ($node->hasAttribute($name)) return $node->getAttribute($name);
+				elseif ($node instanceof \DOMElement && $node->hasAttribute($name)) return $node->getAttribute($name);
 			}
 			
 			return null;

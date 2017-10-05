@@ -177,6 +177,7 @@
 			
 			$dom = new DomQuery($html);
 			$this->assertEquals('main', $dom->find('div')->first()->getAttribute('id'));
+			$this->assertEquals('main', $dom->children()->first()->getAttribute('id'));
 			
 			// first and last method, check id
 			$this->assertEquals('first-child-a', $dom->find('.root div')->first()->attr('id'));
