@@ -166,6 +166,11 @@
 				}
 
 			}
+
+			foreach($dom_document->childNodes as $node) {
+				$this->nodes[] = $node;
+			}
+			$this->length = count($this->nodes);
 			
 		}
 		
@@ -182,7 +187,7 @@
 				$result = new DomQuery($this->document, $this->dom_xpath);
 				$result->xpath_query = $xpath_query;
 				
-				if ($this->length > 0) {  // all nodes as context
+				if ($this->length > 0 && isset($this->xpath_query)) {  // all nodes as context
 				
 					foreach($this->nodes as $node) {
 						
@@ -206,6 +211,7 @@
 			}
 			
 		}
+
 		
 		/**
 		 * Use css expression and return new DomQuery with results
@@ -241,7 +247,7 @@
 			
 			if (!is_null($val)) { // set node value for all nodes
 				
-				foreach($this[0] as $node) $node->nodeValue = $val;
+				foreach($this->nodes as $node) $node->nodeValue = $val;
 				
 				return $this;
 				
@@ -267,7 +273,7 @@
 			
 			if (!is_null($val)) { // set attribute for all nodes
 				
-				foreach($this as $node) {
+				foreach($this->nodes as $node) {
 					if ($node instanceof \DOMElement) {
 						$node->setAttribute($name, $val);
 					}
@@ -299,7 +305,7 @@
 			
 			if (!is_null($val)) { // set attribute for all nodes
 				
-				foreach($this as $node) {
+				foreach($this->nodes as $node) {
 					$node->$name = $val;
 				}
 				
@@ -479,10 +485,14 @@
 		 */
 		private function getFirstDomNode() {
 			
-			if (isset($this->nodes[0])) $first_dom_elm = $this->nodes[0];
-			elseif (isset($this->document)) $first_dom_elm = $this->document->documentElement; // root element node 
+			if (isset($this->nodes[0])) {
+				
+				$first_dom_elm = $this->nodes[0];
 			
-			if ($first_dom_elm instanceof \DOMNode) return $first_dom_elm;
+				if ($first_dom_elm instanceof \DOMNode) return $first_dom_elm;
+				else die('gggggggggggggggg');
+			
+			} else die('jjjjjjjjjjjjjjjj');
 
 		}
 		

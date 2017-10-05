@@ -59,6 +59,124 @@
 			}	
 			
 		}
+
+		/*
+		 * Test filters, first and last
+		 */
+		public function testFirstAndLastFilters() {
+			
+			$html = '<div id="main" class="root">
+						<div class="level-a" id="first-child-a"></div>
+						<div class="level-a" id="second-child-a">
+							<p>Hai</p>
+							<div class="level-b"></div>
+							<div class="level-b"></div>
+							<div class="level-b">
+								<div class="level-c"></div>
+							</div>
+						</div>
+						<div class="level-a" id="last-child-a"></div>
+					</div>';
+			
+			$dom = new DomQuery($html);
+			$this->assertEquals('main', $dom->find('div')->first()->getAttribute('id'));
+			$this->assertEquals('main', $dom->children()->first()->getAttribute('id'));
+			
+			// first and last method, check id
+			$this->assertEquals('first-child-a', $dom->find('.root div')->first()->attr('id'));
+			$this->assertEquals('last-child-a', $dom->find('.root div')->last()->attr('id'));
+			
+			// first and last via psuedo selector, check id
+			$this->assertEquals('first-child-a', $dom->find('.root div:first')->attr('id')); // id of first div inside .root
+			$this->assertEquals('last-child-a', $dom->find('.root div:last')->attr('id')); // id of last div inside .root
+			
+			// first and last via get method, check id
+			$this->assertEquals('first-child-a', $dom->find('.root div')->get(0)->getAttribute('id'));
+			$this->assertEquals('last-child-a', $dom->find('.root div')->get(-1)->getAttribute('id'));
+			
+		}
+
+		/*
+		 * Test traversing nodes from readme
+		 */
+		public function testTraversingNodesReadmeExamples() {
+			
+			$dom = new DomQuery('<a>1</a> <a>2</a> <a>3</a>');
+			$links = $dom->children('a');
+
+			$result = '';
+			foreach($links as $elm) $result .= $elm->text(); 
+			$this->assertEquals('123', $result);
+
+			$this->assertEquals('1', $links[0]->text());
+			$this->assertEquals('3', $links->last()->text());
+
+			$this->assertEquals('2', $links->first()->next()->text());
+			$this->assertEquals('2', $links->last()->prev()->text());
+
+			$this->assertEquals('1', $links->get(0)->textContent);
+			$this->assertEquals('3', $links->get(-1)->textContent);
+
+		}
+
+		/*
+		 * Test basic use examples from readme
+		 */
+		public function testBasicUsageReadmeExamples() {
+			
+			$dom = new DomQuery('<div><h1 class="title">Hello</h1></div>');
+
+			$this->assertEquals('Hello', $dom->find('div')->text()); 
+			$this->assertEquals('<div><h1 class="title">Hello</h1></div>', $dom->find('div')->prop('outerHTML')); 
+			$this->assertEquals('title', $dom->find('div > h1')->class); 
+			$this->assertEquals('title', $dom->find('div > h1')->attr('class')); 
+			$this->assertEquals('h1', $dom->find('div > h1')->prop('tagName')); 
+			$this->assertEquals('h1', $dom->find('div')->children('h1')->prop('tagName')); 
+			$this->assertEquals('<h1 class="title">Hello</h1>', (string) $dom->find('div > h1')); 
+			$this->assertEquals('h1', $dom->find('div')->children('h1')->prop('tagName')); 
+			$this->assertEquals(2, count($dom->find('div, h1'))); 
+
+		}
+
+		/*
+		 * Test simple links lookup
+		 */
+		public function testLoadHtmlAndGetLink() {
+			
+			$dom = new DomQuery;
+			$dom->LoadHtmlContent('<!DOCTYPE html> <html> <head></head> <body> <p><a href="test.html"></a></p> <a href="test2.html">X</a> </body> </html>');
+			$this->assertEquals('html', $dom->nodeName);
+			
+			$link_found = $dom->find('p > a[href^="test"]');
+			$this->assertEquals(1, count($link_found), 'finding link'); // 1 link is inside p
+			$this->assertEquals(1, $link_found->length, 'finding link');
+			$this->assertTrue(isset($link_found->href), 'finding link');
+			$this->assertEquals('test.html', $link_found->href, 'finding link');
+			$this->assertEquals('test.html', $link_found->attr('href'), 'finding link');
+			$this->assertEquals('a', $link_found->nodeName);
+			$this->assertEquals('a', $link_found->prop('tagName'));
+			$this->assertInstanceOf(DomQuery::class, $link_found);
+			$this->assertInstanceOf(DomQuery::class, $link_found[0]);
+			
+			$link_found = $dom->find('body > a');
+			$this->assertEquals(1, count($link_found), 'finding link');
+			$this->assertEquals('X', $link_found->text());
+			
+		}
+
+		/*
+		 * Test loading utf8 html
+		 */
+		public function testLoadingUf8AndGettingSameContent() {
+			
+			$html = '<div><h1>ßüöä</h1></div>';
+			$dom = new DomQuery($html);
+
+			$this->assertEquals($html, (string) $dom); // same result
+			$this->assertEquals('<h1>ßüöä</h1>', (string) $dom->find('h1')); // same header
+			$this->assertEquals('ßüöä', $dom->find('h1')->text()); // same text
+			$this->assertEquals('ßüöä', $dom->text()); 
+		}
 		
 		/*
 		 * Make selection and subselection
@@ -117,136 +235,40 @@
 			$this->assertFalse($dual_selection[1]->is(':first-child'));
 			
 		}
-		
-		/*
-		 * Test loading utf8 html
-		 */
-		public function testLoadingUf8AndGettingSameContent() {
-			
-			$html = '<div><h1>ßüöä</h1></div>';
-			$dom = new DomQuery($html);
-			$this->assertEquals($html, (string) $dom); // same result
-			$this->assertEquals('<h1>ßüöä</h1>', (string) $dom->find('h1')); // same header
-			$this->assertEquals('ßüöä', $dom->find('h1')->text()); // same text
-			$this->assertEquals('ßüöä', $dom->text()); 
-		}
-		
-		/*
-		 * Test simple links lookup
-		 */
-		public function testLoadHtmlAndGetLink() {
-			
-			$dom = new DomQuery;
-			$dom->LoadHtmlContent('<!DOCTYPE html> <html> <head></head> <body> <p><a href="test.html"></a></p> <a href="test2.html">X</a> </body> </html>');
-			$this->assertEquals('html', $dom->nodeName);
-			
-			$link_found = $dom->find('p > a[href^="test"]');
-			$this->assertEquals(1, count($link_found), 'finding link'); // 1 link is inside p
-			$this->assertEquals(1, $link_found->length, 'finding link');
-			$this->assertTrue(isset($link_found->href), 'finding link');
-			$this->assertEquals('test.html', $link_found->href, 'finding link');
-			$this->assertEquals('test.html', $link_found->attr('href'), 'finding link');
-			$this->assertEquals('a', $link_found->nodeName);
-			$this->assertEquals('a', $link_found->prop('tagName'));
-			$this->assertInstanceOf(DomQuery::class, $link_found);
-			$this->assertInstanceOf(DomQuery::class, $link_found[0]);
-			
-			$link_found = $dom->find('body > a');
-			$this->assertEquals(1, count($link_found), 'finding link');
-			$this->assertEquals('X', $link_found->text());
-			
-		}
-		
-		/*
-		 * Test filters, first and last
-		 */
-		public function testFirstAndLastFilters() {
-			
-			$html = '<div id="main" class="root">
-						<div class="level-a" id="first-child-a"></div>
-						<div class="level-a" id="second-child-a">
-							<p>Hai</p>
-							<div class="level-b"></div>
-							<div class="level-b"></div>
-							<div class="level-b">
-								<div class="level-c"></div>
-							</div>
-						</div>
-						<div class="level-a" id="last-child-a"></div>
-					</div>';
-			
-			$dom = new DomQuery($html);
-			$this->assertEquals('main', $dom->find('div')->first()->getAttribute('id'));
-			$this->assertEquals('main', $dom->children()->first()->getAttribute('id'));
-			
-			// first and last method, check id
-			$this->assertEquals('first-child-a', $dom->find('.root div')->first()->attr('id'));
-			$this->assertEquals('last-child-a', $dom->find('.root div')->last()->attr('id'));
-			
-			// first and last via psuedo selector, check id
-			$this->assertEquals('first-child-a', $dom->find('.root div:first')->attr('id')); // id of first div inside .root
-			$this->assertEquals('last-child-a', $dom->find('.root div:last')->attr('id')); // id of last div inside .root
-			
-			// first and last via get method, check id
-			$this->assertEquals('first-child-a', $dom->find('.root div')->get(0)->getAttribute('id'));
-			$this->assertEquals('last-child-a', $dom->find('.root div')->get(-1)->getAttribute('id'));
-			
-		}
 
 		/*
-		 * Test basic use examples from readme
+		 * Test create single node
 		 */
-		public function testBasicUsageReadmeExamples() {
-
-			$dom = new DomQuery('<div><h1 class="title">Hello</h1></div>');
-
-			$this->assertEquals('Hello', $dom->find('div')->text()); 
-			$this->assertEquals('<div><h1 class="title">Hello</h1></div>', $dom->find('div')->prop('outerHTML')); 
-			$this->assertEquals('title', $dom->find('div > h1')->class); 
-			$this->assertEquals('title', $dom->find('div > h1')->attr('class')); 
-			$this->assertEquals('h1', $dom->find('div > h1')->prop('tagName')); 
-			$this->assertEquals('h1', $dom->find('div')->children('h1')->prop('tagName')); 
-			$this->assertEquals('<h1 class="title">Hello</h1>', (string) $dom->find('div > h1')); 
-			$this->assertEquals('h1', $dom->find('div')->children('h1')->prop('tagName')); 
-			$this->assertEquals(2, count($dom->find('div, h1'))); 
-
-		}
-
-		/*
-		 * Test traversing nodes from readme
-		 */
-		public function testTraversingNodesReadmeExamples() {
-
-			$dom = new DomQuery('<a>1</a> <a>2</a> <a>3</a>');
-			$links = $dom->children('a');
-
-			$result = '';
-			foreach($links as $elm) $result .= $elm->text(); 
-			$this->assertEquals('123', $result);
-
-			$this->assertEquals('1', $links[0]->text());
-			$this->assertEquals('3', $links->last()->text());
-
-			$this->assertEquals('2', $links->first()->next()->text());
-			$this->assertEquals('2', $links->last()->prev()->text());
-
-			$this->assertEquals('1', $links->get(0)->textContent);
-			$this->assertEquals('3', $links->get(-1)->textContent);
+		public function testSingleNodeAttr() {
+			
+			$this->assertEquals('hello', DomQuery::create('<a title="hello"></a>')->attr('title'));
 
 		}
 
 		/*
 		 * Test create single node
 		 */
-		public function testSingleNodeAttr() {
-
-			$this->assertEquals('hello', DomQuery::create('<a title="hello"></a>')->attr('title'));
+		public function testSingleNodeAttrChange() {
+			
+			$this->assertEquals('oke', DomQuery::create('<a title="hello"></a>')->attr('title', 'oke')->attr('title'));
 
 		}
 
 		/*
-		 * Test instance without nodes
+		 * Test change text
 		 */
+		public function testSingleNodeTextChange() {
+			
+			$dom = DomQuery::create('<a title="hello">Some text</a>');
+			$new_html = (string) $dom->text('Changed text');
+			$this->assertEquals('<a title="hello">Changed text</a>', $new_html);
+			$this->assertEquals('Changed text', $dom->text());
+
+		}
+
+		/*
+		* Test instance without nodes
+		*/
 		public function testDomQueryNoDocument() {
 			
 			$dom = new DomQuery;
@@ -262,8 +284,8 @@
 		}
 
 		/* 
-		 * Test constructor exception 
-		 */
+		* Test constructor exception 
+		*/
 		public function testConstructorException() {
 
 			$this->expectException(\InvalidArgumentException::class);
