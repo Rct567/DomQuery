@@ -41,7 +41,7 @@
 		private $css_query;
 
 		/**
-		 * Jquery style propertie; css selector given to create result of this instance
+		 * Jquery style property; css selector given to create result of this instance
 		 *  
 		 * @var string
 		 */
@@ -892,7 +892,7 @@
 		 */
 		public function offsetSet($key, $value) {
 
-			throw new BadMethodCallException('Attempting to write to a read-only list');
+			throw new \BadMethodCallException('Attempting to write to a read-only list');
 
 		}
 
@@ -903,7 +903,7 @@
 		 */
 		public function offsetUnset($key) {
 
-			throw new BadMethodCallException('Attempting to unset on a read-only list');
+			throw new \BadMethodCallException('Attempting to unset on a read-only list');
 			
 		}
 		
