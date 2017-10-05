@@ -81,7 +81,7 @@
 		 */
 		public static function create() {
 
-			return new DomQuery(...func_get_args());
+			return new self(...func_get_args());
 
 		}
 		
@@ -184,7 +184,7 @@
 			
 			if (isset($this->document)) {
 			
-				$result = new DomQuery($this->document, $this->dom_xpath);
+				$result = new self($this->document, $this->dom_xpath);
 				$result->xpath_query = $xpath_query;
 				
 				if ($this->length > 0 && isset($this->xpath_query)) {  // all nodes as context
@@ -437,7 +437,7 @@
 			
 			if (isset($this->document) && $this->length > 0) {
 			
-				$result = new DomQuery($this->document);
+				$result = new self($this->document);
 				
 				foreach($this->nodes as $node) {
 					
@@ -463,7 +463,7 @@
 			
 			if (isset($this->document) && $this->length > 0) {
 			
-				$result = new DomQuery($this->document);
+				$result = new self($this->document);
 				
 				foreach($this->nodes as $node) { // get all previous sibling of all nodes
 					
@@ -485,11 +485,9 @@
 		 */
 		private function getFirstDomNode() {
 			
-			if (isset($this->nodes[0])) {
+			if (isset($this->nodes[0]) && $this->nodes[0] instanceof \DOMNode) {
 				
-				$first_dom_elm = $this->nodes[0];
-			
-				if ($first_dom_elm instanceof \DOMNode) return $first_dom_elm;
+				return $this->nodes[0];
 			
 			}
 
@@ -875,7 +873,7 @@
 			
 			$iteration_result = array();
 			if (is_array($this->nodes)) {
-				foreach($this->nodes as $node) $iteration_result[] = new DomQuery($node);
+				foreach($this->nodes as $node) $iteration_result[] = new self($node);
 			}
 			
 			return new \ArrayIterator($iteration_result);
@@ -915,7 +913,7 @@
 		 */
 		public function offsetGet($key) {
 			
-			if (isset($this->nodes[$key])) return new DomQuery($this->nodes[$key]);
+			if (isset($this->nodes[$key])) return new self($this->nodes[$key]);
 			else return null;
 			
 		}
