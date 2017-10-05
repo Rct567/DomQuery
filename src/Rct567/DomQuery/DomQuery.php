@@ -41,7 +41,7 @@
 		private $css_query;
 
 		/**
-		 * Jquery style propertie; Css selector given to create result of this instance
+		 * Jquery style propertie; css selector given to create result of this instance
 		 *  
 		 * @var string
 		 */
@@ -68,8 +68,8 @@
 				elseif ($arg instanceof \DOMNode) $this->addDomNode($arg);
 				elseif ($arg instanceof \DOMXPath) $this->dom_xpath = $arg;
 				elseif (is_string($arg) && substr(ltrim($arg), 0, 1) == '<') $this->LoadHtmlContent($arg);
-				elseif (is_object($arg)) trigger_error('Unknown object '.get_class($arg));
-				else trigger_error('Unknown '.gettype($arg));
+				elseif (is_object($arg)) throw new \InvalidArgumentException('Unknown object '.get_class($arg).' given as argument');
+				else throw new \InvalidArgumentException('Unknown argument '.gettype($arg));
 				
 			}
 
@@ -83,7 +83,7 @@
 		 */
 		public function setDomDocument(\DOMDocument $document) {
 			
-			if (isset($this->document) && $this->document != $document) trigger_error('Other DOMDocument already set!');
+			if (isset($this->document) && $this->document != $document) throw new \Exception('Other DOMDocument already set!');
 			
 			$this->document = $document;
 			
@@ -97,7 +97,7 @@
 		 */
 		public function loadDomNodeList(\DOMNodeList $dom_node_list) {
 			
-			if (!isset($this->document)) trigger_error('DOMDocument is missing!');
+			if (!isset($this->document)) throw new \Exception('DOMDocument is missing!');
 			
 			foreach($dom_node_list as $node) $this->addDomNode($node);
 			
@@ -106,14 +106,14 @@
 		/**
 		 * Add node
 		 *
-		 * @param DOMNode $dom_elm
+		 * @param DOMNode $dom_node
 		 * @return void
 		 */
-		public function addDomNode(\DOMNode $dom_elm) {
+		public function addDomNode(\DOMNode $dom_node) {
 			
-			$this->nodes[] = $dom_elm;
+			$this->nodes[] = $dom_node;
 			$this->length = count($this->nodes);
-			$this->setDomDocument($dom_elm->ownerDocument);
+			$this->setDomDocument($dom_node->ownerDocument);
 			
 		}
 		
@@ -172,7 +172,7 @@
 					foreach($this->nodes as $node) {
 						
 						$result_node_list = $this->dom_xpath->query('.'.$xpath_query, $node);
-						if ($result_node_list === false) trigger_error('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
+						if ($result_node_list === false) throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
 						else $result->loadDomNodeList($result_node_list);
 						
 					}
@@ -181,7 +181,7 @@
 				} else { // whole document
 				
 					$result_node_list = $this->dom_xpath->query($xpath_query);
-					if ($result_node_list === false) trigger_error('Expression '.$xpath_query.' is malformed.');
+					if ($result_node_list === false) throw new \Exception('Expression '.$xpath_query.' is malformed.');
 					else $result->loadDomNodeList($result_node_list);
 					
 				}
@@ -288,9 +288,11 @@
 				
 				return $this;
 				
-			} else { // get attribute value for first element
-				
-				if ($node = $this->getFirstDomNode()) {
+			} else { // get propertie value for first element
+
+				if ($name == 'outerHTML') {
+					return $this->getOuterHtml();
+				} elseif ($node = $this->getFirstDomNode()) {
 					if (isset($node->$name)) return $node->$name;
 				}
 				
@@ -336,7 +338,8 @@
 				foreach($this->nodes as $node) {
 					
 					$result_node_list = $this->dom_xpath->query('.'.$xpath_query, $node->parentNode);
-					if ($result_node_list === false) trigger_error('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
+					
+					if ($result_node_list === false) throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
 					
 					if ($result_node_list->length > 0)  {
 						
@@ -463,8 +466,7 @@
 			elseif (isset($this->document)) $first_dom_elm = $this->document->documentElement; // root element node 
 			
 			if ($first_dom_elm instanceof \DOMNode) return $first_dom_elm;
-			//else trigger_error('Failed to get first dom node ('.gettype($first_dom_elm).')');
-			
+
 		}
 		
 		/**
@@ -474,7 +476,7 @@
 		public function __call($name, $arguments) {
 			
 			if (method_exists($this->getFirstDomNode(), $name)) return call_user_func_array(array($this->getFirstDomNode(), $name), $arguments);
-			else trigger_error('Unknown call '.$name);
+			else throw new \Exception('Unknown call '.$name);
 			
 		}
 		
@@ -488,6 +490,8 @@
 			
 			if ($name === 'dom_xpath') {
 				return new \DOMXPath($this->document);
+			} elseif ($name === 'outerHTML') {
+				return $this->getOuterHtml();
 			}
 			
 			if ($node = $this->getFirstDomNode()) {
@@ -510,6 +514,20 @@
 			return $this->__get($name) != null;
 			
 		}
+
+		/**
+		 * Return html of first domnode
+		 * @return string
+		 */
+		public function getOuterHtml() {
+
+			if ($node = $this->getFirstDomNode()) {
+				if (isset($this->document)) {
+					return $this->document->saveHTML($node);
+				}
+			}
+
+		}
 		
 		/**
 		 * Return html of first domnode
@@ -517,11 +535,7 @@
 		 */
 		public function __toString() {
 			
-			if ($node = $this->getFirstDomNode()) {
-				if (isset($this->document)) {
-					return $this->document->saveHTML($node);
-				}
-			}
+			return $this->getOuterHtml();
 			
 		}
 		
@@ -717,7 +731,7 @@
 			);
 			
 			if (isset($pseudo_class_selectors[$expression])) return $pseudo_class_selectors[$expression];
-			else trigger_error('Pseudo class '.$expression.' unknown');
+			else throw new \Exception('Pseudo class '.$expression.' unknown');
 			
 			return $expression;
 			
