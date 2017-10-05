@@ -247,7 +247,7 @@
 		}
 
 		/*
-		 * Test create single node
+		 * Test create single node and change attribute
 		 */
 		public function testSingleNodeAttrChange() {
 			
