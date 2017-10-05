@@ -812,7 +812,9 @@
 		 * @return string
 		 */
 		public function getCssQuery() {
+
 			return $this->css_query;
+
 		}
 
 		/**
@@ -820,7 +822,9 @@
 		 * @return string
 		 */
 		public function getXpathQuery() {
+
 			return $this->xpath_query;
+
 		}
 
 		/**
@@ -828,7 +832,9 @@
 		 * @return DOMDocument
 		 */
 		public function getDocument() {
+
 			return $this->document;
+			
 		}
 		
 		/**

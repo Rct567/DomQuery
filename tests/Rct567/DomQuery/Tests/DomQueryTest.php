@@ -250,6 +250,16 @@
 			$this->assertEquals(0, $num);
 			
 		}
+
+		/* 
+		 * Test constructor exception 
+		 */
+		public function testConstructorException() {
+
+			$this->expectException(\InvalidArgumentException::class);
+			$dom = new DomQuery(new \stdClass);
+
+		}
 		
 	}
 	
