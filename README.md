@@ -16,6 +16,8 @@ Note: DomQuery can also be used a a standalone class (no external dependencies).
 
 ## Basic Usage
 
+### Read attributes and properties:
+
 ``` php
 $dom = new DomQuery('<div><h1 class="title">Hello</h1></div>');
 
@@ -29,7 +31,7 @@ echo (string) $dom->find('div > h1'); // output: <h1 class="title">Hello</h1>
 echo count($dom->find('div, h1')); // output: 2
 ```
 
-### Traversing nodes (result set) 
+### Traversing nodes (result set):
 
 ``` php
 $dom = new DomQuery('<a>1</a> <a>2</a> <a>3</a>');
