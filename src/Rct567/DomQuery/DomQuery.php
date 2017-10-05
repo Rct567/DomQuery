@@ -490,9 +490,8 @@
 				$first_dom_elm = $this->nodes[0];
 			
 				if ($first_dom_elm instanceof \DOMNode) return $first_dom_elm;
-				else die('gggggggggggggggg');
 			
-			} else die('jjjjjjjjjjjjjjjj');
+			}
 
 		}
 		
