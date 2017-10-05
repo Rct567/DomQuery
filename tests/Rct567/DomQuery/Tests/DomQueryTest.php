@@ -169,7 +169,7 @@
 		 */
 		public function testLoadingUf8AndGettingSameContent() {
 			
-			$html = '<div><h1>ßüöä</h1></div>';
+			$html = '<div><h1>ßüöä</h1></div><a>k</a>';
 			$dom = new DomQuery($html);
 
 			$this->assertEquals($html, (string) $dom); // same result
@@ -198,6 +198,7 @@
 			
 			$dom = new DomQuery($html);
 			$this->assertEquals('main', $dom->id);
+			$this->assertEquals('root', $dom->class);
 			
 			// main selection
 			$main_selection = $dom->find('.level-a');

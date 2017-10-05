@@ -548,11 +548,15 @@
 		 */
 		public function getOuterHtml() {
 
-			if ($node = $this->getFirstDomNode()) {
+			$outer_html = '';
+
+			foreach($this->nodes as $node) {
 				if (isset($this->document)) {
-					return $this->document->saveHTML($node);
+					$outer_html .= $this->document->saveHTML($node);
 				}
 			}
+
+			return $outer_html;
 
 		}
 		
