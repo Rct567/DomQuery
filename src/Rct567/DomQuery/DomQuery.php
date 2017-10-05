@@ -220,7 +220,7 @@
 		 * or set the text contents of the matched elements.
 		 * 
 		 * @param string $val
-		 * @return self|string
+		 * @return self|string|void
 		 */
 		public function text($val=null) {
 			
