@@ -270,6 +270,36 @@
 		}
 
 		/*
+		 * Test append html
+		 */
+		public function testAppend() {
+
+			// string with html
+			$dom = new Domquery('<a></a><p></p><b></b><a></a>');
+			$dom->find('a')->append('<span></span>');
+			$this->assertEquals('<a><span></span></a><p></p><b></b><a><span></span></a>', (string) $dom);
+
+			// DomQuery instance
+			$dom = new Domquery('<a></a><p></p><b></b><a></a>');
+			$dom->find('a')->append(DomQuery::create('<i>X</i>'));
+			$this->assertEquals('<a><i>X</i></a><p></p><b></b><a><i>X</i></a>', (string) $dom);
+			$this->assertEquals('X', $dom->find('i')->text());
+
+		}
+
+		/*
+		 * Test prepend html
+		 */
+		public function testPrepend() {
+			
+			// string with html
+			$dom = new Domquery('<a>X</a>');
+			$dom->find('a')->prepend('<span></span>', '<i></i>');
+			$this->assertEquals('<a><i></i><span></span>X</a>', (string) $dom);
+
+		}
+
+		/*
 		* Test instance without nodes
 		*/
 		public function testDomQueryNoDocument() {

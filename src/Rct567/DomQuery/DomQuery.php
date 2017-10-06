@@ -478,6 +478,85 @@
 			}
 			
 		}
+
+		/**
+		 * Insert content to the end of each element in the set of matched elements.
+		 * @return self
+		 */
+		public function append($content) {
+
+			if (!is_array($content) && func_num_args() > 1) $content = func_get_args();
+
+			if (is_array($content)) {
+				foreach($content as $content_item) {
+					$this->append($content_item);
+				} 
+				
+			} else {
+
+				if (!($content instanceof DomQuery)) $content = new self($content);
+
+				foreach($this->nodes as $node) {
+
+					foreach($content->getNodes() as $content_node) {
+
+						$imported_node = $this->document->importNode($content_node, true);
+						$node->appendChild($imported_node);
+
+					}
+
+				}
+			
+			}
+
+			return $this;
+
+		}
+
+		/**
+		 * Insert content to the beginning of each element in the set of matched elements
+		 * @return self
+		 */
+		public function prepend($content) {
+
+			if (!is_array($content) && func_num_args() > 1) $content = func_get_args();
+			
+			if (is_array($content)) {
+
+				foreach($content as $content_item) {
+					$this->prepend($content_item);
+				} 
+				
+			} else {
+
+				if (!($content instanceof DomQuery)) $content = new self($content);
+
+				foreach($this->nodes as $node) {
+
+					foreach($content->getNodes() as $content_node) {
+
+						$imported_node = $this->document->importNode($content_node, true);
+						$node->insertBefore($imported_node, $node->childNodes->item(0));
+
+					}
+
+				}
+			
+			}
+
+			return $this;
+
+		}
+
+		/**
+		 * Return array with nodes
+		 * @return DOMNode[]
+		 */
+		private function getNodes() {
+
+			return $this->nodes;
+
+		}
 		
 		/**
 		 * Return first DOMNode
