@@ -255,8 +255,9 @@
 			$dom = new Domquery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
 			$selection = $dom->find('a');
 			$this->assertEquals(5, $selection->length);
+			$this->assertEquals(5, $selection->filter('a')->length);
 			$this->assertEquals(1, $selection->filter('#mmm')->length);
-			$this->assertEquals(1, $selection->filter('.xpp')->length);
+			$this->assertEquals(1, $selection->filter('a')->filter('.xpp')->length);
 			$this->assertEquals(3, $selection->filter('a[class], #mmm')->length);
 			$this->assertEquals(3, $selection->filter(':even')->length);
 
