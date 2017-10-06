@@ -368,6 +368,33 @@
 		}
 
 		/**
+		 * Get parent
+		 * Get the parent of each element in the current set of matched elements, optionally filtered by a selector
+		 * @return self|void
+		 */
+		public function parent($selector=null) {
+			
+			if (isset($this->document) && $this->length > 0) {
+			
+				$result = new self($this->document);
+				
+				foreach($this->nodes as $node) {
+					
+					if (!is_null($node->parentNode)) {
+						$result->addDomNode($node->parentNode);
+					}
+					
+				}
+
+				if ($selector) $result = $result->filter($selector);
+				
+				return $result;
+			
+			}
+			
+		}
+
+		/**
 		 * Reduce the set of matched elements to those that match the selector 
 		 *
 		 * @param string $selector
@@ -494,7 +521,6 @@
 		/**
 		 * Returns DomQuery with immediately following sibling of all nodes
 		 * jQuery: Get the immediately following sibling of each element in the set of matched elements.
-		 * @todo: If a selector is provided, it retrieves the previous sibling only if it matches that selector.
 		 * @return self|void
 		 */
 		public function next($selector=null) {
@@ -522,7 +548,6 @@
 		/**
 		 * Returns DomQuery with immediately preceding sibling of all nodes
 		 * jQuery: Get the immediately preceding sibling of each element in the set of matched elements. 
-		 * @todo If a selector is provided, it retrieves the previous sibling only if it matches that selector.
 		 * @return self|void
 		 */
 		public function prev($selector=null) {

@@ -65,6 +65,21 @@
 		}
 
 		/*
+		 *  Test get parent
+		 */
+		public function testParent() {
+
+			$dom = new DomQuery('<a></a><a></a><a class="link">
+				<b><span></span></b>
+			</a>');
+
+			$this->assertEquals('b', $dom->find('span')->parent()->tagName);
+			$this->assertEquals('link', $dom->find('span')->parent('b')->parent('a')->class);
+			$this->assertEquals(0, $dom->find('span')->parent('div')->length);
+
+		}
+
+		/*
 		 * Test traversing nodes from readme
 		 */
 		public function testTraversingNodesReadmeExamples() {

@@ -56,6 +56,7 @@ echo $links->get(-1)->textContent; // output 3
 
 - `.find( selector )`
 - `.children( [selector] )`
+- `.parent( [selector] )`
 - `.next( [selector] )`
 - `.prev( [selector] )`
 
