@@ -158,9 +158,10 @@
 			$this->assertEquals('level-b', $sub_selection->class);	
 			
 			// check what it is
-			$this->assertTrue($sub_selection->is('div.level-b'));
+			$this->assertTrue($sub_selection->is('.level-b'));
+			$this->assertTrue($sub_selection->is('.root .level-b'));
 			$this->assertTrue($sub_selection->is('div:not-empty'));	// last has child (div with class level-c)
-			$this->assertTrue($sub_selection->is('div div.level-c'));	// last has child (div with class level-c)
+			$this->assertTrue($sub_selection->is('div:has(.level-c)'));	// last has child (div with class level-c)
 			$this->assertFalse($sub_selection->is('div.level-a'));	
 			$this->assertFalse($sub_selection->is('div.level-c'));		
 			$this->assertFalse($sub_selection->is('p'));	

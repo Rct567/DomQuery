@@ -379,26 +379,17 @@
 			
 			if ($this->length > 0) {
 			
-				$xpath_query = self::cssToXpath('> '.ltrim($selector, ' >'));
+				$xpath_query = self::cssToXpath($selector);
+				$result_node_list = $this->dom_xpath->query($xpath_query);
+
+				if ($result_node_list === false) throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
+
+				if ($result_node_list->length > 0)  {
 				
-				foreach($this->nodes as $node) {
+					foreach($this->nodes as $node) {
 					
-					$result_node_list = $this->dom_xpath->query('.'.$xpath_query, $node->parentNode);
-					
-					if ($result_node_list === false) throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
-					
-					if ($result_node_list->length > 0)  {
-						
-						if (strpos($selector, ' ') !== false) { // any child matches
-							
-							return true;
-							
-						} else { // self only
-						
-							foreach($result_node_list as $result_node) {
-								if ($result_node->isSameNode($node)) return true;
-							}
-						
+						foreach($result_node_list as $result_node) {
+							if ($result_node->isSameNode($node)) return true;
 						}
 						
 					}
