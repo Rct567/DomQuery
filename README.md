@@ -62,6 +62,7 @@ echo $links->get(-1)->textContent; // output 3
  #### Traversing > Filtering
 
 - `.is( selector )`
+- `.filter ( selector )`
 - `.first()`
 - `.last()`
 

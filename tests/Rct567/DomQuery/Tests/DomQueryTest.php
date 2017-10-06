@@ -248,6 +248,44 @@
 		}
 
 		/*
+		 * Test filter
+		 */
+		public function testFilter() {
+
+			$dom = new Domquery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
+			$selection = $dom->find('a');
+			$this->assertEquals(5, $selection->length);
+			$this->assertEquals(1, $selection->filter('#mmm')->length);
+			$this->assertEquals(1, $selection->filter('.xpp')->length);
+			$this->assertEquals(3, $selection->filter('a[class], #mmm')->length);
+			$this->assertEquals(3, $selection->filter(':even')->length);
+
+		}
+
+		/*
+		 * Test odd even pseudo selector
+		 * @note :even and :odd use 0-based indexing, so even (0, 2, 4) becomes item (1, 3, 5)
+		 */
+		public function testOddEvenPseudoSelector() {
+
+			$dom = new DomQuery('<ul>
+				<li>list item 1</li>
+				<li>list item 2</li>
+				<li>list item 3</li>
+				<li>list item 4</li>
+				<li>list item 5</li>
+				<li>list item 6</li>
+			</ul>');
+
+			$this->assertEquals(3, $dom->find('li')->filter(':even')->length); // 1, 3, 5
+			$this->assertEquals('list item 5', $dom->find('li')->filter(':even')->last()->text());
+
+			$this->assertEquals(3, $dom->find('li')->filter(':odd')->length); // 2, 4, 6
+			$this->assertEquals('list item 6', $dom->find('li')->filter(':odd')->last()->text());
+
+		}
+
+		/*
 		 * Test html
 		 */
 		public function testGetHtml() {

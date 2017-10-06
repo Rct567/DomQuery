@@ -366,6 +366,46 @@
 			return $this->find($direct_children_selector);
 			
 		}
+
+		/**
+		 * Reduce the set of matched elements to those that match the selector 
+		 *
+		 * @param string $selector
+		 * @return void
+		 */
+		public function filter(string $selector) {
+
+			$result = new self($this->document, $this->dom_xpath);
+
+			if ($this->length > 0) {
+				
+				$xpath_query = self::cssToXpath($selector);
+				$selector_result_node_list = $this->dom_xpath->query($xpath_query);
+				
+				$result->xpath_query = $xpath_query;
+
+				if ($selector_result_node_list === false) throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
+
+				if ($selector_result_node_list->length > 0)  {
+				
+					foreach($this->nodes as $node) {
+					
+						foreach($selector_result_node_list as $result_node) {
+							if ($result_node->isSameNode($node)) {
+								$result->addDomNode($node);
+								break 1;
+							}
+						}
+						
+					}
+					
+				}
+				
+			}
+
+			return $result;
+
+		}
 		
 		/**
 		 * Check if any node matches the selector
@@ -844,8 +884,8 @@
 				'not-empty' => '[count(*) > 0 or string-length() > 0]',
 				'parent' => '[count(*) > 0]',
 				'header' => '[self::h1 or self::h2 or self::h3 or self::h5 or self::h5 or self::h6]',
-				'odd' => '[position() mod 2 = 1]',
-				'even' => 'not([position() mod 2 = 1])',
+				'odd' => '[position() mod 2 = 0]',
+				'even' => '[position() mod 2 = 1]',
 				'first' => '[1]',
 				'last' => '[last()]',
 				'root' => '[not(parent::*)]'
