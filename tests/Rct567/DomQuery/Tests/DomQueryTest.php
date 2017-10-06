@@ -66,6 +66,28 @@
 		}
 
 		/*
+		 * Test first last
+		 */
+		public function testFirstLast() {
+
+			$dom = new DomQuery('<a>1</a> <a>2</a> <a>3</a>');
+			$links = $dom->children('a');
+
+			$this->assertEquals(null, $links->first()->next('p')->text());
+			$this->assertEquals(null, $links->last()->prev('p')->text());
+
+			$this->assertEquals('2', $links->first()->next('a')->text());
+			$this->assertEquals('2', $links->last()->prev('a')->text());
+
+			$this->assertEquals(0, $links->first('p')->length);
+			$this->assertEquals(0, $links->last('p')->length);
+
+			$this->assertEquals(1, $links->first('a')->length);
+			$this->assertEquals(1, $links->last('a')->length);
+
+		}
+
+		/*
 		 * Test basic use examples from readme
 		 */
 		public function testBasicUsageReadmeExamples() {

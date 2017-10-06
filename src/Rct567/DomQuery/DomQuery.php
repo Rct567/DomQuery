@@ -462,9 +462,15 @@
 		 * jQuery: Reduce the set of matched elements to the first in the set.
 		 * @return self|void
 		 */
-		public function first() {
+		public function first($selector=null) {
 			
-			if (isset($this[0])) return $this[0];
+			if (isset($this[0])) {
+
+				$result = $this[0];
+				if ($selector) $result = $result->filter($selector);
+				return $result;
+
+			}
 			
 		}
 		
@@ -473,10 +479,14 @@
 		 * jQuery: Reduce the set of matched elements to the final one in the set.
 		 * @return self|void
 		 */
-		public function last() {
+		public function last($selector=null) {
 			
-			if ($this->length > 0) {
-				if (isset($this[$this->length-1])) return $this[$this->length-1];
+			if ($this->length > 0 && isset($this[$this->length-1])) {
+
+				$result = $this[$this->length-1];
+				if ($selector) $result = $result->filter($selector);
+				return $result;
+
 			}
 			
 		}
@@ -487,7 +497,7 @@
 		 * @todo: If a selector is provided, it retrieves the previous sibling only if it matches that selector.
 		 * @return self|void
 		 */
-		public function next() {
+		public function next($selector=null) {
 			
 			if (isset($this->document) && $this->length > 0) {
 			
@@ -500,6 +510,8 @@
 					}
 					
 				}
+
+				if ($selector) $result = $result->filter($selector);
 				
 				return $result;
 			
@@ -513,7 +525,7 @@
 		 * @todo If a selector is provided, it retrieves the previous sibling only if it matches that selector.
 		 * @return self|void
 		 */
-		public function prev() {
+		public function prev($selector=null) {
 			
 			if (isset($this->document) && $this->length > 0) {
 			
@@ -526,6 +538,8 @@
 					}
 					
 				}
+
+				if ($selector) $result = $result->filter($selector);
 				
 				return $result;
 			

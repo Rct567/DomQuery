@@ -56,15 +56,15 @@ echo $links->get(-1)->textContent; // output 3
 
 - `.find( selector )`
 - `.children( [selector] )`
-- `.next()`
-- `.prev()`
+- `.next( [selector] )`
+- `.prev( [selector])`
 
  #### Traversing > Filtering
 
 - `.is( selector )`
 - `.filter ( selector )`
-- `.first()`
-- `.last()`
+- `.first( [selector] )`
+- `.last( [selector] )`
 
  #### Manipulation > DOM Insertion, Inside
 
