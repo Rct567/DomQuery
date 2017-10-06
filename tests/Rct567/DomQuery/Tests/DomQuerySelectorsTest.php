@@ -6,7 +6,7 @@
 
 	class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase {
 
-        /*
+		/*
 		 * Test css to xpath conversion
 		 */
 		public function testCssToXpath() {
