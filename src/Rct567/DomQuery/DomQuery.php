@@ -253,11 +253,34 @@
 				
 			} else { // get value for first node
 				
-				if ($node = $this->getFirstDomNode()) {
+				if ($node = $this->getFirstElmNode()) {
 					return $node->nodeValue;
 				}
 				
 			}
+			
+		}
+
+		
+		/**
+		 * jQuery: Get the HTML contents of the first element in the set of matched elements 
+		 *
+		 * @return string
+		 */
+		public function html() {
+			
+			if ($node = $this->getFirstElmNode()) {
+
+				$html = '';
+				$document = $node->ownerDocument;
+
+				foreach ($node->childNodes as $node) {
+					$html .= $document->saveHTML($node);
+				}
+
+				return $html;
+
+			}		
 			
 		}
 		
@@ -283,7 +306,7 @@
 				
 			} else { // get attribute value for first element
 				
-				if ($node = $this->getFirstDomNode()) {
+				if ($node = $this->getFirstElmNode()) {
 					if ($node instanceof \DOMElement) {
 						return $node->getAttribute($name);
 					}
@@ -315,7 +338,7 @@
 
 				if ($name == 'outerHTML') {
 					return $this->getOuterHtml();
-				} elseif ($node = $this->getFirstDomNode()) {
+				} elseif ($node = $this->getFirstElmNode()) {
 					if (isset($node->$name)) return $node->$name;
 				}
 				
@@ -559,15 +582,15 @@
 		}
 		
 		/**
-		 * Return first DOMNode
-		 * @return DOMNode|void
+		 * Return first DOMElement
+		 * @return DOMElement|void
 		 */
-		private function getFirstDomNode() {
-			
-			if (isset($this->nodes[0]) && $this->nodes[0] instanceof \DOMNode) {
-				
-				return $this->nodes[0];
-			
+		private function getFirstElmNode() {
+
+			foreach($this->nodes as $node) {
+
+				if ($node instanceof \DOMElement) return $node;
+
 			}
 
 		}
@@ -578,7 +601,7 @@
 		 */
 		public function __call($name, $arguments) {
 			
-			if (method_exists($this->getFirstDomNode(), $name)) return call_user_func_array(array($this->getFirstDomNode(), $name), $arguments);
+			if (method_exists($this->getFirstElmNode(), $name)) return call_user_func_array(array($this->getFirstElmNode(), $name), $arguments);
 			else throw new \Exception('Unknown call '.$name);
 			
 		}
@@ -597,7 +620,7 @@
 				return $this->getOuterHtml();
 			}
 			
-			if ($node = $this->getFirstDomNode()) {
+			if ($node = $this->getFirstElmNode()) {
 				if (isset($node->$name)) return $node->{$name};
 				elseif ($node instanceof \DOMElement && $node->hasAttribute($name)) return $node->getAttribute($name);
 			}
@@ -619,7 +642,7 @@
 		}
 
 		/**
-		 * Return html of first domnode
+		 * Return html of all nodes
 		 * @return string
 		 */
 		public function getOuterHtml() {

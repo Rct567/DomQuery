@@ -300,6 +300,18 @@
 		}
 
 		/*
+		 * Test html
+		 */
+		public function testGetHtml() {
+			
+			// string with html
+			$dom = new Domquery('<p> <a>M<i>A</i></a> <span></span></p>');
+			$this->assertEquals('M<i>A</i>', $dom->find('a')->html());
+			$this->assertEquals('A', $dom->find('a i')->html());
+
+		}
+
+		/*
 		* Test instance without nodes
 		*/
 		public function testDomQueryNoDocument() {

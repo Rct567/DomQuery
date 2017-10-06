@@ -37,7 +37,10 @@ echo count($dom->find('div, h1')); // output: 2
 $dom = new DomQuery('<a>1</a> <a>2</a> <a>3</a>');
 $links = $dom->children('a');
 
-foreach($links as $elm) echo $elm->text(); // output 123
+foreach($links as $elm) {
+    echo $elm->text(); // output 123
+}
+
 echo $links[0]->text(); // output 1
 echo $links->last()->text(); // output 3
 echo $links->first()->next()->text(); // output 2
@@ -64,6 +67,7 @@ echo $links->get(-1)->textContent; // output 3
  #### Manipulation > DOM Insertion, Inside
 
 - `.text( [text] )`
+- `.html()`
 - `.append( [content], )`
 - `.prepend( [content], )`
 
