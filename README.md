@@ -46,6 +46,36 @@ echo $links->get(0)->textContent; // output 1
 echo $links->get(-1)->textContent; // output 3
 ```
 
+### Jquery methods available
+
+#### Traversing > Tree Traversal
+
+- `.find( selector )`
+- `.children( [selector] )`
+- `.next()`
+- `.prev()`
+
+ #### Traversing > Filtering
+
+- `.is( selector )`
+- `.first()`
+- `.last()`
+
+ #### Manipulation > DOM Insertion, Inside
+
+- `.text( [text] )`
+- `.append( [content], )`
+- `.prepend( [content], )`
+
+ #### Attributes | Manipulation > General Attributes
+
+- `.attr( [name, [val]] )`
+- `.prop( [name, [val]] )`
+
+ #### Miscellaneous > DOM Element Methods
+
+- `.get( index )`
+
 ## About
 
 ### Requirements
