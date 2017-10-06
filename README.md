@@ -57,7 +57,7 @@ echo $links->get(-1)->textContent; // output 3
 - `.find( selector )`
 - `.children( [selector] )`
 - `.next( [selector] )`
-- `.prev( [selector])`
+- `.prev( [selector] )`
 
  #### Traversing > Filtering
 
