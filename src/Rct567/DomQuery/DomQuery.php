@@ -67,7 +67,7 @@
 				elseif ($arg instanceof \DOMNodeList) $this->loadDomNodeList($arg);
 				elseif ($arg instanceof \DOMNode) $this->addDomNode($arg);
 				elseif ($arg instanceof \DOMXPath) $this->dom_xpath = $arg;
-				elseif (is_string($arg) && substr(ltrim($arg), 0, 1) == '<') $this->LoadHtmlContent($arg);
+				elseif (is_string($arg) && strpos($arg, '>') !== false) $this->LoadHtmlContent($arg);
 				elseif (is_object($arg)) throw new \InvalidArgumentException('Unknown object '.get_class($arg).' given as argument');
 				else throw new \InvalidArgumentException('Unknown argument '.gettype($arg));
 				
