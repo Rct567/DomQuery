@@ -176,6 +176,7 @@
 			$this->assertEquals('<h1>ßüöä</h1>', (string) $dom->find('h1')); // same header
 			$this->assertEquals('ßüöä', $dom->find('h1')->text()); // same text
 			$this->assertEquals('ßüöä', $dom->text()); 
+
 		}
 		
 		/*
@@ -252,6 +253,7 @@
 		public function testSingleNodeAttrChange() {
 			
 			$this->assertEquals('oke', DomQuery::create('<a title="hello"></a>')->attr('title', 'oke')->attr('title'));
+			$this->assertEquals('<a title="oke"></a>', (string) DomQuery::create('<a title="hello"></a>')->attr('title', 'oke'));
 
 		}
 
