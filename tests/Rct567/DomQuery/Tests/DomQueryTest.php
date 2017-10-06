@@ -128,6 +128,7 @@
 
 			$this->assertEquals('Hello', $dom->find('div')->text()); 
 			$this->assertEquals('<div><h1 class="title">Hello</h1></div>', $dom->find('div')->prop('outerHTML')); 
+			$this->assertEquals('<h1 class="title">Hello</h1>', $dom->find('div')->html());
 			$this->assertEquals('title', $dom->find('div > h1')->class); 
 			$this->assertEquals('title', $dom->find('div > h1')->attr('class')); 
 			$this->assertEquals('h1', $dom->find('div > h1')->prop('tagName')); 
@@ -253,7 +254,7 @@
 		public function testSingleNodeAttrChange() {
 			
 			$this->assertEquals('oke', DomQuery::create('<a title="hello"></a>')->attr('title', 'oke')->attr('title'));
-			
+
 			$this->assertEquals('<a title="oke"></a>', (string) DomQuery::create('<a title="hello"></a>')->attr('title', 'oke'));
 
 		}
@@ -275,12 +276,12 @@
 		 */
 		public function testAppend() {
 
-			// string with html
+			// append string with html
 			$dom = new Domquery('<a></a><p></p><b></b><a></a>');
 			$dom->find('a')->append('<span></span>');
 			$this->assertEquals('<a><span></span></a><p></p><b></b><a><span></span></a>', (string) $dom);
 
-			// DomQuery instance
+			// append DomQuery instance
 			$dom = new Domquery('<a></a><p></p><b></b><a></a>');
 			$dom->find('a')->append(DomQuery::create('<i>X</i>'));
 			$this->assertEquals('<a><i>X</i></a><p></p><b></b><a><i>X</i></a>', (string) $dom);
@@ -293,7 +294,6 @@
 		 */
 		public function testPrepend() {
 			
-			// string with html
 			$dom = new Domquery('<a>X</a>');
 			$dom->find('a')->prepend('<span></span>', '<i></i>');
 			$this->assertEquals('<a><i></i><span></span>X</a>', (string) $dom);
@@ -305,9 +305,9 @@
 		 */
 		public function testGetHtml() {
 			
-			// string with html
 			$dom = new Domquery('<p> <a>M<i>A</i></a> <span></span></p>');
-			$this->assertEquals('M<i>A</i>', $dom->find('a')->html());
+			$this->assertEquals('M<i>A</i>', $dom->find('a')->html()); // inner
+			$this->assertEquals('<a>M<i>A</i></a>', $dom->find('a')->prop('outerHTML')); // outer
 			$this->assertEquals('A', $dom->find('a i')->html());
 
 		}

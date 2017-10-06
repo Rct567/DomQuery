@@ -23,6 +23,7 @@ $dom = new DomQuery('<div><h1 class="title">Hello</h1></div>');
 
 echo $dom->find('h1')->text(); // output: Hello
 echo $dom->find('div')->prop('outerHTML'); // output: <div><h1 class="title">Hello</h1></div>
+echo $dom->find('div')->html(); // output: <h1 class="title">Hello</h1>
 echo $dom->find('div > h1')->class; // ouput: title
 echo $dom->find('div > h1')->attr('class'); // ouput: title
 echo $dom->find('div > h1')->prop('tagName'); // ouput: h1
