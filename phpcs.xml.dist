@@ -6,6 +6,8 @@
 
  <exclude-pattern>*/vendor/*</exclude-pattern>
 
+ <rule ref="PSR2"/>
+
  <rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
 
  <rule ref="Squiz.CSS.DuplicateStyleDefinition"/>
@@ -48,7 +50,6 @@
  </rule>
  
  <rule ref="Squiz.Functions.FunctionDeclaration"/>
- <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
  <rule ref="PEAR.Functions.ValidDefaultValue"/>
  <rule ref="Squiz.Functions.LowercaseFunctionKeywords"/>
 
@@ -68,8 +69,6 @@
  <rule ref="Generic.PHP.NoSilencedErrors"/>
  <rule ref="Generic.PHP.LowerCaseConstant"/>
  <rule ref="Generic.PHP.LowerCaseKeyword"/>
-
- <rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
 
  <rule ref="Squiz.Scope.MemberVarScope"/>
  <rule ref="Squiz.Scope.MethodScope"/>
