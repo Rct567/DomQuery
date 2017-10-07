@@ -10,13 +10,6 @@
 
  <rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
 
- <rule ref="Squiz.CSS.DuplicateStyleDefinition"/>
- <rule ref="Squiz.CSS.EmptyClassDefinition"/>
- <rule ref="Squiz.CSS.EmptyStyleDefinition"/>
- <rule ref="Squiz.CSS.MissingColon"/>
- <rule ref="Squiz.CSS.SemicolonSpacing"/>
- <rule ref="Squiz.CSS.ClassDefinitionClosingBraceSpace"/>
-
  <rule ref="Squiz.Classes.LowercaseClassKeywords"/>
  <rule ref="Squiz.Classes.SelfMemberReference"/>
 
@@ -80,7 +73,6 @@
  <rule ref="Squiz.WhiteSpace.ScopeClosingBrace"/>
  <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
 
- <!-- There MUST NOT be more than one statement per line. -->
  <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
 
  <rule ref="Generic.Metrics.CyclomaticComplexity">
