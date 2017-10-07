@@ -75,12 +75,12 @@
 				<li>list item 6</li>
 			</ul>');
 
-			$this->assertEquals(3, $dom->find('li')->filter(':even')->length); // 1, 3, 5
+			$this->assertEquals(3, $dom->find('li')->filter(':even')->length); // 1 3 5
 			$this->assertEquals('list item 5', $dom->find('li')->filter(':even')->last()->text());
 
-			$this->assertEquals(3, $dom->find('li')->filter(':odd')->length); // 2, 4, 6
+			$this->assertEquals(3, $dom->find('li')->filter(':odd')->length); // 2 4 6
 			$this->assertEquals('list item 6', $dom->find('li')->filter(':odd')->last()->text());
 
 		}
 
-    }
+	}
