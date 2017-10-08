@@ -25,7 +25,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             'a[href*=\'html\']' => '//a[contains(@href, \'html\')]',
             '[href*=\'html\']' => '//*[contains(@href, \'html\')]',
             '[href^=\'html\']' => '//*[starts-with(@href, \'html\')]',
-            '[href$=\'html\']' => '//*[@href = substring(@href, string-length(@href) - string-length(@href) +1)]',
+            '[href$=\'html\']' => '//*[@href and substring(@href, string-length(@href)-3) = \'html\']',
             '[href~=\'html\']' => '//*[contains(concat(\' \', normalize-space(@href), \' \'), \' html \')]',
             '> a' => '/a',
             'p > a' => '//p/a',
@@ -103,6 +103,38 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here">3</a><p><a>4</a></p>');
         $this->assertEquals('2', $dom->find('div > b')->text());
         $this->assertEquals(1, $dom->find('div > b')->length);
+        $this->assertEquals(0, $dom->find('a > b')->length);
+    }
+
+    /*
+     * Test multible selectors
+     */
+    public function testMultibleSelectors() 
+    {
+        $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here">3</a><p><a>4</a></p>');
+        $this->assertEquals(2, $dom->find('#here, div > b')->length);
+    }
+
+    /*
+     *
+     */
+    public function testAttributeSelector() 
+    {
+        $dom = new DomQuery('<ul>
+            <li>list item 1</li>
+            <li id="item2">list item 2</li>
+            <li id="item3">list item 3</li>
+            <li>list item 4</li>
+            <li>list item 5</li>
+            <li>list item 6</li>
+        </ul>');
+
+        $this->assertEquals(2, $dom->find('li[id]')->length);
+        $this->assertEquals(2, $dom->find('li[id^=\'item\']')->length);
+        $this->assertEquals(2, $dom->find('li[id*=\'tem\']')->length);
+        $this->assertEquals('list item 3', $dom->find('li[id$=\'tem3\']')->text());
+        $this->assertEquals(0, $dom->find('li[id$=\'item\']')->length);
+        $this->assertEquals('list item 3', $dom->find('li[id=\'item3\']')->text());
     }
 
     /*
