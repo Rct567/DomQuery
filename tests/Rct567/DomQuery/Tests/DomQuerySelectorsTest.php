@@ -60,7 +60,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     /*
      * Test select by tagname selector
      */
-    public function testElementTagnameSelector() 
+    public function testElementTagnameSelector()
     {
         $dom = new DomQuery('<a>1</a><b>2</b><i>3</i>');
         $this->assertEquals('2', $dom->find('b')->text());
@@ -69,7 +69,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     /*
      * Test wildcard selector
      */
-    public function testWildcardSelector() 
+    public function testWildcardSelector()
     {
         $dom = new DomQuery('<a>1</a><b>2</b>');
         $this->assertEquals(2, $dom->find('*')->length);
@@ -78,7 +78,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     /*
      * Test children selector
      */
-    public function testSelectChildrenSelector() 
+    public function testSelectChildrenSelector()
     {
         $dom = new DomQuery('<div><a>1</a><b>2</b></div><a>3</a>');
         $this->assertEquals('1', $dom->find('div > a')->text());
@@ -88,7 +88,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     /*
      * Test id selector
      */
-    public function testIdSelector() 
+    public function testIdSelector()
     {
         $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here">3</a>');
         $this->assertEquals('3', $dom->find('#here')->text());
@@ -98,7 +98,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     /*
      * Test descendant selector
      */
-    public function testDescendantSelector() 
+    public function testDescendantSelector()
     {
         $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here">3</a><p><a>4</a></p>');
         $this->assertEquals('2', $dom->find('div > b')->text());
@@ -109,7 +109,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     /*
      * Test multible selectors
      */
-    public function testMultibleSelectors() 
+    public function testMultibleSelectors()
     {
         $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here">3</a><p><a>4</a></p>');
         $this->assertEquals(2, $dom->find('#here, div > b')->length);
@@ -118,7 +118,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     /*
      *
      */
-    public function testAttributeSelector() 
+    public function testAttributeSelector()
     {
         $dom = new DomQuery('<ul>
             <li>list item 1</li>
