@@ -6,7 +6,6 @@ use Rct567\DomQuery\DomQuery;
 
 class DomQueryTest extends \PHPUnit\Framework\TestCase
 {
-
     /*
      * Test filters, first and last
      */
