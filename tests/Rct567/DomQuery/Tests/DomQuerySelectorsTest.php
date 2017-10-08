@@ -6,13 +6,11 @@ use Rct567\DomQuery\DomQuery;
 
 class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
 {
-
     /*
      * Test css to xpath conversion
      */
     public function testCssToXpath()
     {
-
         $css_to_xpath = array(
             'a' => '//a',
             '*' => '//*',
@@ -60,20 +58,67 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-         * Test odd even pseudo selector
-         * @note :even and :odd use 0-based indexing, so even (0, 2, 4) becomes item (1, 3, 5)
+     * Test select by tagname selector
+     */
+    public function testElementTagnameSelector() 
+    {
+        $dom = new DomQuery('<a>1</a><b>2</b><i>3</i>');
+        $this->assertEquals('2', $dom->find('b')->text());
+    }
+
+    /*
+     * Test wildcard selector
+     */
+    public function testWildcardSelector() 
+    {
+        $dom = new DomQuery('<a>1</a><b>2</b>');
+        $this->assertEquals(2, $dom->find('*')->length);
+    }
+
+    /*
+     * Test children selector
+     */
+    public function testSelectChildrenSelector() 
+    {
+        $dom = new DomQuery('<div><a>1</a><b>2</b></div><a>3</a>');
+        $this->assertEquals('1', $dom->find('div > a')->text());
+        $this->assertEquals(1, $dom->find('div > a')->length);
+    }
+
+    /*
+     * Test id selector
+     */
+    public function testIdSelector() 
+    {
+        $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here">3</a>');
+        $this->assertEquals('3', $dom->find('#here')->text());
+        $this->assertEquals(1, $dom->find('#here')->length);
+    }
+
+    /*
+     * Test descendant selector
+     */
+    public function testDescendantSelector() 
+    {
+        $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here">3</a><p><a>4</a></p>');
+        $this->assertEquals('2', $dom->find('div > b')->text());
+        $this->assertEquals(1, $dom->find('div > b')->length);
+    }
+
+    /*
+     * Test odd even pseudo selector
+     * @note :even and :odd use 0-based indexing, so even (0, 2, 4) becomes item (1, 3, 5)
      */
     public function testOddEvenPseudoSelector()
     {
-
-                    $dom = new DomQuery('<ul>
-                <li>list item 1</li>
-                <li>list item 2</li>
-                <li>list item 3</li>
-                <li>list item 4</li>
-                <li>list item 5</li>
-                <li>list item 6</li>
-            </ul>');
+        $dom = new DomQuery('<ul>
+            <li>list item 1</li>
+            <li>list item 2</li>
+            <li>list item 3</li>
+            <li>list item 4</li>
+            <li>list item 5</li>
+            <li>list item 6</li>
+        </ul>');
 
         $this->assertEquals(3, $dom->find('li')->filter(':even')->length); // 1 3 5
         $this->assertEquals('list item 5', $dom->find('li')->filter(':even')->last()->text());
