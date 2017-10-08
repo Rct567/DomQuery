@@ -10,7 +10,7 @@ namespace Rct567\DomQuery;
 class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 {
 
-        /**
+    /**
      * Instance of DOMDocument
      *
      * @var \DOMDocument
@@ -24,14 +24,14 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     private $nodes = array();
 
-        /**
+    /**
      * Number of nodes
      *
      * @var integer
      */
     public $length = null;
 
-        /**
+    /**
      * Xpath used to creates result of this instance
      *
      * @var string
@@ -52,7 +52,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public $selector;
 
-        /**
+    /**
      * LibXMl options used to load html for DOMDocument
      *
      * @var mixed
@@ -61,7 +61,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         LIBXML_HTML_NOIMPLIED // turns off the automatic adding of implied html/body
     | LIBXML_HTML_NODEFDTD; // prevents a default doctype being added when one is not found
 
-        /**
+    /**
      * Constructor
      */
     public function __construct()
@@ -96,7 +96,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         return new self(...func_get_args());
     }
 
-        /**
+    /**
      * Set dom document
      *
      * @param DOMDocument $document
@@ -113,7 +113,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $this->document = $document;
     }
 
-        /**
+    /**
      * Load nodes from dom list
      *
      * @param DOMNodeList $dom_node_list
@@ -132,7 +132,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-        /**
+    /**
      * Add node
      *
      * @param DOMNode $dom_node
@@ -141,13 +141,12 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function addDomNode(\DOMNode $dom_node)
     {
-
-                $this->nodes[] = $dom_node;
+        $this->nodes[] = $dom_node;
         $this->length = count($this->nodes);
         $this->setDomDocument($dom_node->ownerDocument);
     }
 
-        /**
+    /**
      * Load html content
      *
      * @param string $html
@@ -157,14 +156,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function loadHtmlContent(string $html, $encoding='UTF-8')
     {
-
-                $xml_pi_node_added = false;
+        $xml_pi_node_added = false;
         if ($encoding && stripos($html, '<?xml') === false) { // add pi nod to make libxml use the correct encoding
             $html = '<?xml encoding="'.$encoding.'">'.$html;
             $xml_pi_node_added = true;
         }
 
-                libxml_disable_entity_loader(true);
+        libxml_disable_entity_loader(true);
         libxml_use_internal_errors(true);
 
         $dom_document = new \DOMDocument('1.0', $encoding);
@@ -173,7 +171,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $dom_document->recover = true;
         $dom_document->loadHTML($html, $this->libxml_options);
 
-                $this->setDomDocument($dom_document);
+        $this->setDomDocument($dom_document);
 
         foreach ($dom_document->childNodes as $node) {
             if ($xml_pi_node_added) { // pi nod added, now remove it
@@ -190,7 +188,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $this->length = count($this->nodes);
     }
 
-        /**
+    /**
      * Use xpath and return new DomQuery with resulting nodes
      *
      * @param string $xpath_query
@@ -199,7 +197,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function xpath(string $xpath_query)
     {
-
         if (isset($this->document)) {
             $result = new self($this->document, $this->dom_xpath);
             $result->xpath_query = $xpath_query;
@@ -223,12 +220,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 }
             }
 
-                return $result;
+            return $result;
         }
     }
 
-
-        /**
+    /**
      * Use css expression and return new DomQuery with results
      *
      * @param string $css_expression
@@ -241,16 +237,16 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         if (isset($this->document)) {
             $xpath_expression = self::cssToXpath($css_expression);
 
-                $result = $this->xpath($xpath_expression);
+            $result = $this->xpath($xpath_expression);
 
-                $result->css_query = $css_expression;
+            $result->css_query = $css_expression;
             $result->selector = $css_expression; // jquery style
 
-                return $result;
+            return $result;
         }
     }
 
-        /**
+    /**
      * Get the combined text contents of each element in the set of matched elements, including their descendants,
      * or set the text contents of the matched elements.
      *
@@ -274,15 +270,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-
-        /**
+    /**
      * Get the HTML contents of the first element in the set of matched elements
      *
      * @return string
      */
     public function html()
     {
-
         if ($node = $this->getFirstElmNode()) {
             $html = '';
             $document = $node->ownerDocument;
@@ -295,7 +289,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-        /**
+    /**
      * Get the value of an attribute for the first element in the set of matched elements
      * or set one or more attributes for every matched element.
      *
@@ -306,15 +300,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function attr($name, $val=null)
     {
-
         if (!is_null($val)) { // set attribute for all nodes
             foreach ($this->nodes as $node) {
                 if ($node instanceof \DOMElement) {
                     $node->setAttribute($name, $val);
                 }
             }
-
-                return $this;
+            return $this;
         } else { // get attribute value for first element
             if ($node = $this->getFirstElmNode()) {
                 if ($node instanceof \DOMElement) {
@@ -341,7 +333,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $node->$name = $val;
             }
 
-                return $this;
+            return $this;
         } else { // get propertie value for first element
             if ($name == 'outerHTML') {
                 return $this->getOuterHtml();
@@ -353,7 +345,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-        /**
+    /**
      * Get the children of each element in the set of matched elements, optionally filtered by a selector.
      *
      * @param string $selector
@@ -362,21 +354,20 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function children($selector='*')
     {
-
         if (strpos($selector, ',') !== false) {
             $selectors = explode(',', $selector);
         } else {
             $selectors = array($selector);
         }
 
-                // make all selectors for direct children
+        // make all selectors for direct children
         foreach ($selectors as &$single_selector) {
             $single_selector = '> '.ltrim($single_selector, ' >');
         }
 
-                $direct_children_selector = implode(', ', $selectors);
+        $direct_children_selector = implode(', ', $selectors);
 
-                return $this->find($direct_children_selector);
+        return $this->find($direct_children_selector);
     }
 
     /**
@@ -400,7 +391,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $result = $result->filter($selector);
             }
 
-                return $result;
+            return $result;
         }
     }
 
@@ -413,7 +404,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function filter(string $selector)
     {
-
         $result = new self($this->document, $this->dom_xpath);
 
         if ($this->length > 0) {
@@ -441,7 +431,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         return $result;
     }
 
-        /**
+    /**
      * Check if any node matches the selector
      * Jquery: Check the current matched set of elements against a selector, element, or jQuery object
      * and return true if at least one of these elements matches the given arguments.
@@ -452,7 +442,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function is($selector)
     {
-
         if ($this->length > 0) {
             $xpath_query = self::cssToXpath($selector);
             $result_node_list = $this->dom_xpath->query($xpath_query);
@@ -472,10 +461,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-                return false;
+        return false;
     }
 
-        /**
+    /**
      * Grants access to the DOM nodes of this instance
      * jQuery: Retrieve the DOM elements matched by the jQuery object.
      *
@@ -486,7 +475,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function get($index)
     {
 
-                $result = array_slice($this->nodes, $index, 1); // note: index can be negative
+        $result = array_slice($this->nodes, $index, 1); // note: index can be negative
         if (count($result) > 0) {
             return $result[0];
         } else {
@@ -512,7 +501,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-        /**
+    /**
      * Returns DomQuery with last node
      * jQuery: Reduce the set of matched elements to the final one in the set.
      *
@@ -520,7 +509,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function last($selector=null)
     {
-
         if ($this->length > 0 && isset($this[$this->length-1])) {
             $result = $this[$this->length-1];
             if ($selector) {
@@ -530,7 +518,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-        /**
+    /**
      * Returns DomQuery with immediately following sibling of all nodes
      * jQuery: Get the immediately following sibling of each element in the set of matched elements.
      *
@@ -538,7 +526,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function next($selector=null)
     {
-
         if (isset($this->document) && $this->length > 0) {
             $result = new self($this->document);
 
@@ -556,7 +543,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-        /**
+    /**
      * Returns DomQuery with immediately preceding sibling of all nodes
      * jQuery: Get the immediately preceding sibling of each element in the set of matched elements.
      *
@@ -564,7 +551,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function prev($selector=null)
     {
-
         if (isset($this->document) && $this->length > 0) {
             $result = new self($this->document);
 
@@ -589,7 +575,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function append($content)
     {
-
         if (!is_array($content) && func_num_args() > 1) {
             $content = func_get_args();
         }
@@ -621,7 +606,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function prepend($content)
     {
-
         if (!is_array($content) && func_num_args() > 1) {
             $content = func_get_args();
         }
@@ -653,18 +637,16 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     private function getNodes()
     {
-
         return $this->nodes;
     }
 
-        /**
+    /**
      * Return first DOMElement
      *
      * @return DOMElement|void
      */
     private function getFirstElmNode()
     {
-
         foreach ($this->nodes as $node) {
             if ($node instanceof \DOMElement) {
                 return $node;
@@ -672,7 +654,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-        /**
+    /**
      * Call method of first DOMNode
      *
      * @return mixed
@@ -687,7 +669,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-        /**
+    /**
      * Access xpath or ... DOMNode properties (nodeName, parentNode etc) or get attribute value of first node
      *
      * @param string $name
@@ -696,7 +678,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function __get($name)
     {
-
         if ($name === 'dom_xpath') {
             return new \DOMXPath($this->document);
         } elseif ($name === 'outerHTML') {
@@ -714,7 +695,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 return null;
     }
 
-        /**
+    /**
      * Check if propertie exist for this instance
      *
      * @param string $name
@@ -723,8 +704,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function __isset($name)
     {
-
-                return $this->__get($name) != null;
+        return $this->__get($name) != null;
     }
 
     /**
@@ -734,7 +714,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function getOuterHtml()
     {
-
         $outer_html = '';
 
         foreach ($this->nodes as $node) {
@@ -746,7 +725,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         return $outer_html;
     }
 
-        /**
+    /**
      * Return html of first domnode
      *
      * @return string
@@ -757,7 +736,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 return $this->getOuterHtml();
     }
 
-        /**
+    /**
      * Transform CSS selector expression to XPath
      *
      * @param string $path css selector expression
@@ -766,7 +745,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public static function cssToXpath(string $path)
     {
-
         if (strstr($path, ',')) {
                 $paths = explode(',', $path);
             $expressions = array();
@@ -781,10 +759,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 }
             }
 
-                return implode('|', $expressions);
+            return implode('|', $expressions);
         }
 
-                // replace spaces inside (), to correcly create tokens
+        // replace spaces inside (), to correcly create tokens
 
         for ($i = 0; $i < strlen($path); $i++) {
             if ($path[$i] === ' ') {
@@ -794,13 +772,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-                // create and analyze tokens and create segments
+        // create and analyze tokens and create segments
 
-                $tokens = preg_split('/\s+/', $path);
+        $tokens = preg_split('/\s+/', $path);
 
-                $segments = array();
+        $segments = array();
 
-                $relation_tokens = array('>', '~', '+');
+        $relation_tokens = array('>', '~', '+');
 
         foreach ($tokens as $key => $token) {
                 $token = str_replace("\0", ' ', $token); // restore spaces
@@ -843,9 +821,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-                // use segments to create array with transformed tokens
+        // use segments to create array with transformed tokens
 
-                $new_path_tokens = array();
+        $new_path_tokens = array();
 
         foreach ($segments as $segment) {
             if ($segment->relation_filter === '>') {
@@ -877,7 +855,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-                return implode('', $new_path_tokens);
+        return implode('', $new_path_tokens);
     }
 
     /**
@@ -891,7 +869,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     private static function transformCssPseudoSelector($expression, array &$new_path_tokens)
     {
         if (strpos($expression, 'not(') === 0) {
-
             $expression = preg_replace_callback(
                 '|not\((.+)\)|i',
                 function ($matches) {
@@ -899,11 +876,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 },
                 $expression
             );
-
             return $expression;
-                
         } elseif (strpos($expression, 'contains(') === 0) {
-
             $expression = preg_replace_callback(
                 '|contains\((.+)\)|i',
                 function ($matches) {
@@ -911,11 +885,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 },
                 $expression
             );
-
             return $expression;
-            
         } elseif (strpos($expression, 'has(') === 0) {
-
             $expression = preg_replace_callback(
                 '|has\((.+)\)|i',
                 function ($matches) {
@@ -927,15 +898,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 },
                 $expression
             );
-
             return $expression;
-                
         } elseif ($expression === 'first' || $expression === 'last') { // new path inside selection
-            
             array_unshift($new_path_tokens, '(');
-            
             $new_path_tokens[] = ')';
-            
         }
 
         //  static replacement
