@@ -991,8 +991,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $expression = preg_replace_callback(
             '|\[([a-z0-9_-]+)\$=[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
-                return "[@" . strtolower($matches[1]) . " = substring(@" . strtolower($matches[1])
-                . ", string-length(@" . strtolower($matches[1]) . ") - string-length(@" . strtolower($matches[1]) . ") +1)]";
+                return "[@".$matches[1]." and substring(@".$matches[1].", string-length(@".$matches[1].")-".(strlen($matches[2])-1).") = '".$matches[2]."']";
             },
             $expression
         );
