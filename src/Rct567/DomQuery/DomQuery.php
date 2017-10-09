@@ -203,7 +203,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
             if ($this->length > 0 && isset($this->xpath_query)) {  // all nodes as context
                 foreach ($this->nodes as $node) {
-                            $result_node_list = $this->dom_xpath->query('.'.$xpath_query, $node);
+                    $result_node_list = $this->dom_xpath->query('.'.$xpath_query, $node);
 
                     if ($result_node_list === false) {
                         throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
@@ -407,10 +407,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $result = new self($this->document, $this->dom_xpath);
 
         if ($this->length > 0) {
-                        $xpath_query = self::cssToXpath($selector);
+            $xpath_query = self::cssToXpath($selector);
             $selector_result_node_list = $this->dom_xpath->query($xpath_query);
 
-                        $result->xpath_query = $xpath_query;
+            $result->xpath_query = $xpath_query;
 
             if ($selector_result_node_list === false) {
                 throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
@@ -872,7 +872,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             $expression = preg_replace_callback(
                 '|not\((.+)\)|i',
                 function ($matches) {
-                    return '[not(' . ltrim(self::cssToXpath($matches[1]), '/') .')]';
+                    return '[not(self::' . ltrim(self::cssToXpath($matches[1]), '/') .')]';
                 },
                 $expression
             );

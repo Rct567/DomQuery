@@ -38,8 +38,8 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             '.hidden-something' => '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden-something \')]',
             'a.hidden[href]' => '//a[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden \')][@href]',
             'a[href] > .hidden' => '//a[@href]/*[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden \')]',
-            'a:not(b[co-ol])' => '//a[not(b[@co-ol])]',
-            'a:not(.cool)' => '//a[not(*[contains(concat(\' \', normalize-space(@class), \' \'), \' cool \')])]',
+            'a:not(b[co-ol])' => '//a[not(self::b[@co-ol])]',
+            'a:not(.cool)' => '//a[not(self::*[contains(concat(\' \', normalize-space(@class), \' \'), \' cool \')])]',
             'a:contains(txt)' => '//a[text()[contains(.,\'txt\')]]',
             'h1 ~ ul' => '//h1/following-sibling::ul',
             'h1 + ul' => '//h1/following-sibling::ul[1]',
@@ -67,7 +67,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test wildcard selector
+     * Test wildcard / all selector
      */
     public function testWildcardSelector()
     {
@@ -104,6 +104,8 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('2', $dom->find('div > b')->text());
         $this->assertEquals(1, $dom->find('div > b')->length);
         $this->assertEquals(0, $dom->find('a > b')->length);
+        $this->assertEquals(1, $dom->find('> a')->length);
+        $this->assertEquals(2, $dom->find('* > a')->length);
     }
 
     /*
@@ -116,6 +118,30 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test class selector
+     */
+    public function testClassSelector()
+    {
+        $dom = new DomQuery('<div><a class="monkey-moon">1</a><b>2</b></div><a class="monkey">3</a>');
+        $this->assertEquals('3', $dom->find('.monkey')->text());
+        $this->assertEquals(1, $dom->find('.monkey')->length);
+        $this->assertEquals(1, $dom->find('a.monkey')->length);
+    }
+
+    /*
+     * Test not filter selector
+     */
+    public function testNotFilterSelector()
+    {
+        $dom = new DomQuery('<a>1</a><a class="monkey">2</a><a id="some-monkey">3</a>');
+
+        $this->assertEquals(2, $dom->find('a:not(.monkey)')->length);
+        $this->assertEquals(2, $dom->find('a:not([id])')->length);
+        $this->assertEquals(2, $dom->find('a:not(#some-monkey)')->length);
+        $this->assertEquals(3, $dom->find('a:not(b)')->length);
+    }
+
+    /*
      *
      */
     public function testAttributeSelector()
@@ -125,8 +151,8 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             <li id="item2">list item 2</li>
             <li id="item3">list item 3</li>
             <li>list item 4</li>
-            <li>list item 5</li>
-            <li>list item 6</li>
+            <li class="itemitem">list item 5</li>
+            <li class="item item6">list item 6</li>
         </ul>');
 
         $this->assertEquals(2, $dom->find('li[id]')->length);
@@ -135,6 +161,11 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('list item 3', $dom->find('li[id$=\'tem3\']')->text());
         $this->assertEquals(0, $dom->find('li[id$=\'item\']')->length);
         $this->assertEquals('list item 3', $dom->find('li[id=\'item3\']')->text());
+        $this->assertEquals('list item 6', $dom->find('li[class~=\'item6\']')->text());
+        $this->assertEquals(1, $dom->find('li[class~=\'item\']')->length);
+        $this->assertEquals(1, $dom->find('li[class~=\'item\'][class~=\'item6\']')->length);
+        $this->assertEquals(0, $dom->find('li[class~=\'item\'][id~=\'item\']')->length);
+        $this->assertEquals(2, $dom->find('li[class*=\'item\']')->length);
     }
 
     /*
