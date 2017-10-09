@@ -732,8 +732,34 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function __toString()
     {
+        return $this->getOuterHtml();
+    }
 
-                return $this->getOuterHtml();
+    /**
+     * Replace char with null bytes inside (optionaly specified) enclosure
+     *
+     * @param string $str
+     * @param string $search
+     * @param string $enclosure_open
+     * @param string $enclosure_close
+     *
+     * @return string $str
+     */
+    private static function replaceInsideEnclosure($str, $search_char, $enclosure_open='(', $enclosure_close=')')
+    {
+        if ($str == '') {
+            return $str;
+        }
+
+        for ($i = 0; $i < strlen($str); $i++) {
+            if ($str[$i] === $search_char && $i > 0) {
+                if (substr_count($str, $enclosure_open, 0, $i) != substr_count($str, $enclosure_close, 0, $i)) {
+                    $str[$i] = "\0";
+                }
+            }
+        }
+
+        return $str;
     }
 
     /**
@@ -745,12 +771,14 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public static function cssToXpath(string $path)
     {
-        if (strstr($path, ',')) {
-                $paths = explode(',', $path);
+        $tmp_path = self::replaceInsideEnclosure($path, ',');
+        if (strstr($tmp_path, ',')) {
+            $paths = explode(',', $tmp_path);
             $expressions = array();
 
             foreach ($paths as $path) {
-                    $xpath = static::cssToXpath(trim($path));
+                $path = str_replace("\0", ',', $path); // restore commas
+                $xpath = static::cssToXpath(trim($path));
 
                 if (is_string($xpath)) {
                     $expressions[] = $xpath;
@@ -764,13 +792,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         // replace spaces inside (), to correcly create tokens
 
-        for ($i = 0; $i < strlen($path); $i++) {
-            if ($path[$i] === ' ') {
-                if (substr_count($path, '(', 0, $i) != substr_count($path, ')', 0, $i)) {
-                    $path[$i] = "\0";
-                }
-            }
-        }
+        $path = self::replaceInsideEnclosure($path, ' ');
 
         // create and analyze tokens and create segments
 
@@ -781,7 +803,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $relation_tokens = array('>', '~', '+');
 
         foreach ($tokens as $key => $token) {
-                $token = str_replace("\0", ' ', $token); // restore spaces
+            $token = str_replace("\0", ' ', $token); // restore spaces
 
             if (!in_array($token, $relation_tokens)) {
                 $segment = (object) array('selector' => '', 'relation_filter' => false, 'attribute_filters' => array(), 'pseudo_filters' => array());
@@ -872,7 +894,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             $expression = preg_replace_callback(
                 '|not\((.+)\)|i',
                 function ($matches) {
-                    return '[not(self::' . ltrim(self::cssToXpath($matches[1]), '/') .')]';
+                    $parts = explode(',', $matches[1]);
+                    foreach ($parts as &$part) {
+                        $part = trim($part);
+                        $part = 'self::'.ltrim(self::cssToXpath($part), '/');
+                    }
+                    $not_selector = implode(' or ', $parts);
+                    return '[not('.$not_selector.')]';
                 },
                 $expression
             );

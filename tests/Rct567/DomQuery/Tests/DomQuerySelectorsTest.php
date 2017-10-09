@@ -39,6 +39,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             'a.hidden[href]' => '//a[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden \')][@href]',
             'a[href] > .hidden' => '//a[@href]/*[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden \')]',
             'a:not(b[co-ol])' => '//a[not(self::b[@co-ol])]',
+            'a:not(b,c)' => '//a[not(self::b or self::c)]',
             'a:not(.cool)' => '//a[not(self::*[contains(concat(\' \', normalize-space(@class), \' \'), \' cool \')])]',
             'a:contains(txt)' => '//a[text()[contains(.,\'txt\')]]',
             'h1 ~ ul' => '//h1/following-sibling::ul',
@@ -137,7 +138,10 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(2, $dom->find('a:not(.monkey)')->length);
         $this->assertEquals(2, $dom->find('a:not([id])')->length);
+        $this->assertEquals(1, $dom->find('a:not([id],[class])')->length);
         $this->assertEquals(2, $dom->find('a:not(#some-monkey)')->length);
+        $this->assertEquals(1, $dom->find('a:not(#some-monkey, .monkey)')->length);
+        $this->assertEquals(1, $dom->find('a:not(.monkey,#some-monkey)')->length);
         $this->assertEquals(3, $dom->find('a:not(b)')->length);
     }
 
