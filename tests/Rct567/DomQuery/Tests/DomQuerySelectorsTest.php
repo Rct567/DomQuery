@@ -45,9 +45,10 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             'h1 ~ ul' => '//h1/following-sibling::ul',
             'h1 + ul' => '//h1/following-sibling::ul[1]',
             'h1 ~ #id' => '//h1/following-sibling::[@id=\'id\']',
-            'p > a:has(> a)' => '//p/a[descendant::a]',
-            'p > a:has(b > a)' => '//p/a[b/a]',
-            'p > a:has(a)' => '//p/a[a]',
+            'p > a:has(> a)' => '//p/a[child::a]',
+            'p > a:has(b > a)' => '//p/a[descendant::b/a]',
+            'p > a:has(a)' => '//p/a[descendant::a]',
+            'a:has(b)' => '//a[descendant::b]',
             'a:first-child:first' => '(//a[1])[1]',
             'div > a:first' => '(//div/a)[1]',
             ':first' => '(//*)[1]'
@@ -165,6 +166,30 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $dom->find('a:not(#some-monkey, .monkey)')->length);
         $this->assertEquals(1, $dom->find('a:not(.monkey,#some-monkey)')->length);
         $this->assertEquals(3, $dom->find('a:not(b)')->length);
+    }
+
+    /*
+     * Test has filter selector
+     */
+    public function testHasFilterSelector()
+    {
+        $dom = new DomQuery('<ul>
+            <li id="item2">list item 1<a></a></li>
+            <li id="item2">list item 2</li>
+            <li id="item3"><b></b>list item 3</li>
+            <li >list item 4</li>
+            <li class="itemitem"><span id="anx">x</span></li>
+            <li class="item item6">list item 6</li>
+        </ul>');
+
+        $this->assertEquals('item2', $dom->find('li:has(a)')->id);
+        $this->assertEquals(1, $dom->find('li:has(b)')->length);
+        $this->assertEquals('itemitem', $dom->find('li:has(span#anx)')->class);
+        $this->assertEquals('itemitem', $dom->find('li:has(*#anx)')->class);
+        $this->assertEquals(1, $dom->find('ul:has(li.item)')->length);
+        $this->assertEquals(1, $dom->find('ul:has(span)')->length);
+        $this->assertEquals(1, $dom->find('ul:has(li span)')->length);
+        $this->assertEquals(0, $dom->find('ul:has(> span)')->length);
     }
 
     /*
