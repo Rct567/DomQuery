@@ -471,7 +471,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function get($index)
     {
-
         $result = array_slice($this->nodes, $index, 1); // note: index can be negative
         if (count($result) > 0) {
             return $result[0];
@@ -480,7 +479,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-        /**
+    /**
      * Returns DomQuery with first node
      * jQuery: Reduce the set of matched elements to the first in the set.
      *
@@ -488,7 +487,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function first($selector=null)
     {
-
         if (isset($this[0])) {
             $result = $this[0];
             if ($selector) {
@@ -536,7 +534,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $result = $result->filter($selector);
             }
 
-                return $result;
+            return $result;
         }
     }
 
@@ -561,7 +559,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $result = $result->filter($selector);
             }
 
-                return $result;
+            return $result;
         }
     }
 
@@ -658,7 +656,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function __call($name, $arguments)
     {
-
         if (method_exists($this->getFirstElmNode(), $name)) {
             return call_user_func_array(array($this->getFirstElmNode(), $name), $arguments);
         } else {
@@ -689,7 +686,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-                return null;
+        return null;
     }
 
     /**
