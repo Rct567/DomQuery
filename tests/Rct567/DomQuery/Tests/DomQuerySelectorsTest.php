@@ -110,14 +110,25 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test next sibling selector
+     * Test next adjacent selector
      */
-    public function testNexSiblingSelector() 
+    public function testNextAdjacentSelector()
     {
         $dom = new DomQuery('<b>a</b><a>1</a><a>2</a><a>3</a>');
         $this->assertEquals(1, $dom->find('b + a')->length);
         $this->assertEquals('1', $dom->find('b + a')->text());
         $this->assertEquals(0, $dom->find('a + b')->length);
+    }
+
+    /*
+     * Test next siblings selector
+     */
+    public function testNextSiblingsSelector()
+    {
+        $dom = new DomQuery('<b>a</b><a>1</a><a>2</a><a>3</a>');
+        $this->assertEquals(3, $dom->find('b ~ a')->length);
+        $this->assertEquals('3', $dom->find('b ~ a')->last()->text());
+        $this->assertEquals(0, $dom->find('a ~ b')->length);
     }
 
     /*
