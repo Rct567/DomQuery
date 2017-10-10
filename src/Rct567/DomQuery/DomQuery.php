@@ -32,7 +32,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public $length = null;
 
     /**
-     * Xpath used to creates result of this instance
+     * Xpath used to create the result of this instance
      *
      * @var string
      */
