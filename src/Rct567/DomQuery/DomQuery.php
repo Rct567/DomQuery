@@ -92,7 +92,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public static function create()
     {
-
         return new self(...func_get_args());
     }
 
@@ -105,12 +104,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function setDomDocument(\DOMDocument $document)
     {
-
         if (isset($this->document) && $this->document != $document) {
             throw new \Exception('Other DOMDocument already set!');
         }
 
-                $this->document = $document;
+        $this->document = $document;
     }
 
     /**
@@ -122,7 +120,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function loadDomNodeList(\DOMNodeList $dom_node_list)
     {
-
         if (!isset($this->document)) {
             throw new \Exception('DOMDocument is missing!');
         }
@@ -745,7 +742,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return string $str
      */
-    private static function replaceInsideEnclosure($str, $search_char, $enclosure_open='(', $enclosure_close=')')
+    private static function replaceCharInsideEnclosure($str, $search_char, $enclosure_open='(', $enclosure_close=')')
     {
         if ($str == '') {
             return $str;
@@ -753,7 +750,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         for ($i = 0; $i < strlen($str); $i++) {
             if ($str[$i] === $search_char && $i > 0) {
-                if (substr_count($str, $enclosure_open, 0, $i) != substr_count($str, $enclosure_close, 0, $i)) {
+                if (substr_count($str, $enclosure_open, 0, $i) != substr_count($str, $enclosure_close, 0, $i)) { // count char before position
                     $str[$i] = "\0";
                 }
             }
@@ -771,20 +768,15 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public static function cssToXpath(string $path)
     {
-        $tmp_path = self::replaceInsideEnclosure($path, ',');
-        if (strstr($tmp_path, ',')) {
+        $tmp_path = self::replaceCharInsideEnclosure($path, ',');
+        if (strpos($tmp_path, ',') !== false) {
             $paths = explode(',', $tmp_path);
             $expressions = array();
 
             foreach ($paths as $path) {
                 $path = str_replace("\0", ',', $path); // restore commas
                 $xpath = static::cssToXpath(trim($path));
-
-                if (is_string($xpath)) {
-                    $expressions[] = $xpath;
-                } elseif (is_array($xpath)) {
-                    $expressions = array_merge($expressions, $xpath);
-                }
+                $expressions[] = $xpath;
             }
 
             return implode('|', $expressions);
@@ -792,7 +784,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         // replace spaces inside (), to correcly create tokens
 
-        $path = self::replaceInsideEnclosure($path, ' ');
+        $path = self::replaceCharInsideEnclosure($path, ' ');
 
         // create and analyze tokens and create segments
 
@@ -812,7 +804,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                     $segment->relation_filter = $tokens[$key-1];
                 }
 
-                    $segment->selector = $token;
+                $segment->selector = $token;
 
                 while (preg_match('/(.*)\:(not|contains|has)\((.+)\)$/', $segment->selector, $matches)) { // pseudo selector
                     $segment->selector = $matches[1];
@@ -839,7 +831,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                     $segment->attribute_filters[] = 'id="'.$matches[2].'"';
                 }
 
-                    $segments[] = $segment;
+                $segments[] = $segment;
             }
         }
 
