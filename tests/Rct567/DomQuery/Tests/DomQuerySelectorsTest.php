@@ -55,7 +55,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         );
 
         foreach ($css_to_xpath as $css => $expected_xpath) {
-                $this->assertEquals($expected_xpath, DomQuery::cssToXpath($css, true), $css);
+            $this->assertEquals($expected_xpath, DomQuery::cssToXpath($css, true), $css);
         }
     }
 
