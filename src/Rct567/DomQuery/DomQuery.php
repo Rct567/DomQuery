@@ -908,9 +908,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 '|has\((.+)\)|i',
                 function ($matches) {
                     if (substr($matches[1], 0, 2) == '> ') {
-                        return '[descendant::' . ltrim(self::cssToXpath($matches[1]), '/') .']';
+                        return '[child::' . ltrim(self::cssToXpath($matches[1]), '/') .']';
                     } else {
-                        return '[' . ltrim(self::cssToXpath($matches[1]), '/') .']';
+                        return '[descendant::' . ltrim(self::cssToXpath($matches[1]), '/') .']';
                     }
                 },
                 $expression
