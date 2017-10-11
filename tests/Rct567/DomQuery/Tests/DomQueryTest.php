@@ -322,7 +322,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test html
+     * Test get html
      */
     public function testGetHtml()
     {
@@ -330,6 +330,16 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('M<i>A</i>', $dom->find('a')->html()); // inner
         $this->assertEquals('<a>M<i>A</i></a>', $dom->find('a')->prop('outerHTML')); // outer
         $this->assertEquals('A', $dom->find('a i')->html());
+    }
+
+    /*
+     * Test set html
+     */
+    public function testSetHtml()
+    {
+        $dom = new Domquery('<p> <a>M<i>A</i></a> <span></span> </p>');
+        $dom->find('a')->html('<i>x</i>');
+        $this->assertEquals('<p> <a><i>x</i></a> <span></span> </p>', (string) $dom);
     }
 
     /*

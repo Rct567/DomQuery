@@ -247,7 +247,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * Get the combined text contents of each element in the set of matched elements, including their descendants,
      * or set the text contents of the matched elements.
      *
-     * @param string $val
+     * @param string|null $val
      *
      * @return self|string|void
      */
@@ -259,7 +259,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $node->nodeValue = $val;
             }
 
-                return $this;
+            return $this;
         } else { // get value for first node
             if ($node = $this->getFirstElmNode()) {
                 return $node->nodeValue;
@@ -270,19 +270,29 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Get the HTML contents of the first element in the set of matched elements
      *
-     * @return string
+     * @param string|null $html_string
+     *
+     * @return self|string|void
      */
-    public function html()
+    public function html($html_string=null)
     {
-        if ($node = $this->getFirstElmNode()) {
-            $html = '';
-            $document = $node->ownerDocument;
-
-            foreach ($node->childNodes as $node) {
-                $html .= $document->saveHTML($node);
+        if (!is_null($html_string)) { // set html for all nodes
+            foreach ($this as $node) {
+                $node->get(0)->nodeValue = '';
+                $node->append($html_string);
             }
+            return $this;
+        } else { // get html for first node
+            if ($node = $this->getFirstElmNode()) {
+                $html = '';
+                $document = $node->ownerDocument;
 
-            return $html;
+                foreach ($node->childNodes as $node) {
+                    $html .= $document->saveHTML($node);
+                }
+
+                return $html;
+            }
         }
     }
 

@@ -70,7 +70,7 @@ echo $links->get(-1)->textContent; // output 3
  #### Manipulation > DOM Insertion, Inside
 
 - `.text( [text] )`
-- `.html()`
+- `.html( [html_string] )`
 - `.append( [content], )`
 - `.prepend( [content], )`
 
