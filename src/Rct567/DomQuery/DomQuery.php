@@ -313,7 +313,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-        /**
+    /**
      * Get the value of a property for the first element in the set of matched elements
      * or set one or more properties for every matched element.
      *
@@ -369,6 +369,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * Get the parent of each element in the current set of matched elements, optionally filtered by a selector
+     *
+     * @param string|null $selector expression that filters the set of matched elements
      *
      * @return self|void
      */
@@ -483,6 +485,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * Returns DomQuery with first node
      * jQuery: Reduce the set of matched elements to the first in the set.
      *
+     * @param string|null $selector expression that filters the set of matched elements
+     *
      * @return self|void
      */
     public function first($selector=null)
@@ -500,6 +504,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * Returns DomQuery with last node
      * jQuery: Reduce the set of matched elements to the final one in the set.
      *
+     * @param string|null $selector expression that filters the set of matched elements
+     *
      * @return self|void
      */
     public function last($selector=null)
@@ -516,6 +522,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Returns DomQuery with immediately following sibling of all nodes
      * jQuery: Get the immediately following sibling of each element in the set of matched elements.
+     *
+     * @param string|null $selector expression that filters the set of matched elements
      *
      * @return self|void
      */
@@ -542,6 +550,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * Returns DomQuery with immediately preceding sibling of all nodes
      * jQuery: Get the immediately preceding sibling of each element in the set of matched elements.
      *
+     * @param string|null $selector expression that filters the set of matched elements
+     *
      * @return self|void
      */
     public function prev($selector=null)
@@ -566,7 +576,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Remove the set of matched elements
      *
-     * @param string $selector selector expression that filters the set of matched elements to be removed
+     * @param string|null $selector expression that filters the set of matched elements to be removed
+     *
      * @return self
      */
     public function remove($selector=null)
@@ -575,8 +586,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         if ($selector) {
             $result = $result->filter($selector);
         }
-        foreach($result->nodes as $node) {
-            if($node->parentNode) {
+        foreach ($result->nodes as $node) {
+            if ($node->parentNode) {
                 $node->parentNode->removeChild($node);
             }
         }
