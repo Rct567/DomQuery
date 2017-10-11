@@ -83,6 +83,10 @@ echo $links->get(-1)->textContent; // output 3
 
 - `.get( index )`
 
+ #### Manipulation > DOM Removal
+
+- `.remove( [selector] )`
+
 ## About
 
 ### Requirements
