@@ -244,9 +244,19 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     public function testSingleNodeTextChange()
     {
         $dom = DomQuery::create('<a title="hello">Some text</a>');
-        $new_html = (string) $dom->text('Changed text');
-        $this->assertEquals('<a title="hello">Changed text</a>', $new_html);
+        $dom->text('Changed text');
+        $this->assertEquals('<a title="hello">Changed text</a>', (string) $dom);
         $this->assertEquals('Changed text', $dom->text());
+    }
+
+    /*
+     * Test change text
+     */
+    public function testMultibleNodesTextChange()
+    {
+        $dom = DomQuery::create('<div><a title="hello">Some text</a><a>B</a><span>C</span></div>');
+        $dom->find('a')->text('Changed text');
+        $this->assertEquals("<div>\n<a title=\"hello\">Changed text</a><a>Changed text</a><span>C</span>\n</div>", (string) $dom);
     }
 
     /*
