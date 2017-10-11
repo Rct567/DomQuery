@@ -59,7 +59,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public $libxml_options =
         LIBXML_HTML_NOIMPLIED // turns off the automatic adding of implied html/body
-    | LIBXML_HTML_NODEFDTD; // prevents a default doctype being added when one is not found
+      | LIBXML_HTML_NODEFDTD; // prevents a default doctype being added when one is not found
 
     /**
      * Constructor
