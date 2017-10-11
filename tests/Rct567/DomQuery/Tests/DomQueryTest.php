@@ -250,6 +250,26 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test remove
+     */
+    public function testRemove()
+    {
+        $dom = DomQuery::create('<div><a title="hello">Some text</a><a>B</a><span>C</span></div>');
+        $dom->find('a')->remove();
+        $this->assertEquals("<div><span>C</span></div>", (string) $dom);
+    }
+
+     /*
+     * Test remove with selector
+     */
+    public function testRemoveWithSelector()
+    {
+        $dom = DomQuery::create('<div><a title="hello">Some text</a><a>B</a><span>C</span></div>');
+        $dom->find('a')->remove('[title]');
+        $this->assertEquals("<div>\n<a>B</a><span>C</span>\n</div>", (string) $dom);
+    }
+
+    /*
      * Test change text
      */
     public function testMultibleNodesTextChange()

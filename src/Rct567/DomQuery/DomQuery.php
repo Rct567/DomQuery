@@ -564,6 +564,30 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Remove the set of matched elements
+     *
+     * @param string $selector selector expression that filters the set of matched elements to be removed
+     * @return self
+     */
+    public function remove($selector=null)
+    {
+        $result = $this;
+        if ($selector) {
+            $result = $result->filter($selector);
+        }
+        foreach($result->nodes as $node) {
+            if($node->parentNode) {
+                $node->parentNode->removeChild($node);
+            }
+        }
+
+        $result->nodes = array();
+        $result->length = 0;
+
+        return $result;
+    }
+
+    /**
      * Insert content to the end of each element in the set of matched elements.
      *
      * @return self
