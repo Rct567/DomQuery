@@ -260,9 +260,9 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
      /*
-     * Test remove with selector
+     * Test remove with selector filter
      */
-    public function testRemoveWithSelector()
+    public function testRemoveWithSelectorFilter()
     {
         $dom = DomQuery::create('<div><a title="hello">Some text</a><a>B</a><span>C</span></div>');
         $dom->find('a')->remove('[title]');
