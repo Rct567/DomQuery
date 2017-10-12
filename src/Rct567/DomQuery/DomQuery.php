@@ -230,7 +230,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function find(string $css_expression)
     {
-
         if (isset($this->document)) {
             $xpath_expression = self::cssToXpath($css_expression);
 
@@ -253,7 +252,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function text($val=null)
     {
-
         if (!is_null($val)) { // set node value for all nodes
             foreach ($this->nodes as $node) {
                 $node->nodeValue = $val;
@@ -402,6 +400,46 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
             return $result;
         }
+    }
+
+    /**
+     * Reduce the set of matched elements to those that match the selector
+     *
+     * @param string $selector
+     *
+     * @return void
+     */
+    public function not(string $selector)
+    {
+        $result = new self($this->document, $this->dom_xpath);
+
+        if ($this->length > 0) {
+            $xpath_query = self::cssToXpath($selector);
+            $selector_result_node_list = $this->dom_xpath->query($xpath_query);
+
+            $result->xpath_query = $xpath_query;
+
+            if ($selector_result_node_list === false) {
+                throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
+            }
+
+            if ($selector_result_node_list->length > 0) {
+                foreach ($this->nodes as $node) {
+                    $matched = false;
+                    foreach ($selector_result_node_list as $result_node) {
+                        if ($result_node->isSameNode($node)) {
+                            $matched = true;
+                            break 1;
+                        }
+                    }
+                    if (!$matched) {
+                        $result->addDomNode($node);
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
