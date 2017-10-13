@@ -114,7 +114,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Load nodes from dom list
      *
-     * @param DOMNodeList $dom_node_list
+     * @param \DOMNodeList $dom_node_list
      *
      * @return void
      */
@@ -132,7 +132,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Add node
      *
-     * @param DOMNode $dom_node
+     * @param \DOMNode $dom_node
      *
      * @return void
      */
@@ -480,8 +480,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * Check if any node matches the selector
-     * Jquery: Check the current matched set of elements against a selector, element, or jQuery object
-     * and return true if at least one of these elements matches the given arguments.
      *
      * @param string $selector
      *
@@ -513,11 +511,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * Grants access to the DOM nodes of this instance
-     * jQuery: Retrieve the DOM elements matched by the jQuery object.
      *
      * @param int $index
      *
-     * @return DOMNode|null
+     * @return \DOMNode|null
      */
     public function get($index)
     {
@@ -531,7 +528,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * Returns DomQuery with first node
-     * jQuery: Reduce the set of matched elements to the first in the set.
      *
      * @param string|null $selector expression that filters the set of matched elements
      *
@@ -550,7 +546,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * Returns DomQuery with last node
-     * jQuery: Reduce the set of matched elements to the final one in the set.
      *
      * @param string|null $selector expression that filters the set of matched elements
      *
@@ -569,7 +564,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * Returns DomQuery with immediately following sibling of all nodes
-     * jQuery: Get the immediately following sibling of each element in the set of matched elements.
      *
      * @param string|null $selector expression that filters the set of matched elements
      *
@@ -596,7 +590,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * Returns DomQuery with immediately preceding sibling of all nodes
-     * jQuery: Get the immediately preceding sibling of each element in the set of matched elements.
      *
      * @param string|null $selector expression that filters the set of matched elements
      *
@@ -711,7 +704,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Return array with nodes
      *
-     * @return DOMNode[]
+     * @return \DOMNode[]
      */
     private function getNodes()
     {
@@ -721,7 +714,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Return first DOMElement
      *
-     * @return DOMElement|void
+     * @return \DOMElement|void
      */
     private function getFirstElmNode()
     {
@@ -751,7 +744,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string $name
      *
-     * @return DOMXPath|DOMNode|string
+     * @return \DOMXPath|\DOMNode|string
      */
     public function __get($name)
     {
@@ -1132,7 +1125,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Retrieve DOMDocument
      *
-     * @return DOMDocument
+     * @return \DOMDocument
      */
     public function getDocument()
     {
@@ -1142,7 +1135,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * IteratorAggregate (note: using Iterator conflicts with next method in jquery)
      *
-     * @return ArrayIterator containing nodes as instaces of DomQuery
+     * @return \ArrayIterator containing nodes as instaces of DomQuery
      */
     public function getIterator()
     {
