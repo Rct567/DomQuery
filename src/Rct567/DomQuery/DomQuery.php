@@ -32,7 +32,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public $length = null;
 
     /**
-     * Xpath used to create the result of this instance
+     * Xpath expression used to create the result of this instance
      *
      * @var string
      */
@@ -720,9 +720,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
     }
 
-
     /**
-     * Perform query via xpath (DOMXPath::query)
+     * Perform query via xpath expression (using DOMXPath::query)
      *
      * @return \DOMNodeList|false
      */
@@ -782,7 +781,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Return html of all nodes
+     * Return html of all nodes (HTML fragment describing all the elements, including their descendants)
      *
      * @return string
      */
