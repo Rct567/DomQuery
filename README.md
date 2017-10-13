@@ -64,6 +64,7 @@ echo $links->get(-1)->textContent; // output 3
 
 - `.is( selector )`
 - `.filter ( selector )`
+- `.not( selector )`
 - `.first( [selector] )`
 - `.last( [selector] )`
 
