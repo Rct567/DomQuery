@@ -182,6 +182,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         foreach ($dom_document->childNodes as $node) {
             $this->nodes[] = $node;
         }
+
         $this->length = count($this->nodes);
     }
 
@@ -200,19 +201,12 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
             if ($this->length > 0 && isset($this->xpath_query)) {  // all nodes as context
                 foreach ($this->nodes as $node) {
-                    $result_node_list = $this->dom_xpath->query('.'.$xpath_query, $node);
-
-                    if ($result_node_list === false) {
-                        throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
-                    } else {
+                    if ($result_node_list = $this->xpathQuery('.'.$xpath_query, $node)) {
                         $result->loadDomNodeList($result_node_list);
                     }
                 }
             } else { // whole document
-                $result_node_list = $this->dom_xpath->query($xpath_query);
-                if ($result_node_list === false) {
-                    throw new \Exception('Expression '.$xpath_query.' is malformed.');
-                } else {
+                if ($result_node_list = $this->xpathQuery($xpath_query)) {
                     $result->loadDomNodeList($result_node_list);
                 }
             }
@@ -232,7 +226,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         if (isset($this->document)) {
             $xpath_expression = self::cssToXpath($css_expression);
-
             $result = $this->xpath($xpath_expression);
 
             $result->css_query = $css_expression;
@@ -415,13 +408,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         if ($this->length > 0) {
             $xpath_query = self::cssToXpath($selector);
-            $selector_result_node_list = $this->dom_xpath->query($xpath_query);
+            $selector_result_node_list = $this->xpathQuery($xpath_query);
 
             $result->xpath_query = $xpath_query;
-
-            if ($selector_result_node_list === false) {
-                throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
-            }
 
             if ($selector_result_node_list->length > 0) {
                 foreach ($this->nodes as $node) {
@@ -455,13 +444,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         if ($this->length > 0) {
             $xpath_query = self::cssToXpath($selector);
-            $selector_result_node_list = $this->dom_xpath->query($xpath_query);
+            $selector_result_node_list = $this->xpathQuery($xpath_query);
 
             $result->xpath_query = $xpath_query;
-
-            if ($selector_result_node_list === false) {
-                throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
-            }
 
             if ($selector_result_node_list->length > 0) {
                 foreach ($this->nodes as $node) {
@@ -489,11 +474,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         if ($this->length > 0) {
             $xpath_query = self::cssToXpath($selector);
-            $result_node_list = $this->dom_xpath->query($xpath_query);
-
-            if ($result_node_list === false) {
-                throw new \Exception('Expression '.$xpath_query.' is malformed or the first node of node_list as contextnode is invalid.');
-            }
+            $result_node_list = $this->xpathQuery($xpath_query);
 
             if ($result_node_list->length > 0) {
                 foreach ($this->nodes as $node) {
@@ -737,6 +718,30 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         } else {
             throw new \Exception('Unknown call '.$name);
         }
+    }
+
+
+    /**
+     * Perform query via xpath (DOMXPath::query)
+     *
+     * @return \DOMNodeList|false
+     */
+    public function xpathQuery(string $expression, \DOMNode $context_node=null) 
+    {
+        if ($this->dom_xpath) {
+            $node_list = $this->dom_xpath->query($expression, $context_node);
+
+            if ($node_list instanceof \DOMNodeList) {
+                return $node_list;
+            } elseif ($node_list === false && !is_null($context_node)) {
+                throw new \Exception('Expression '.$xpath_query.' is malformed or contextnode is invalid.');
+            } elseif ($node_list === false) {
+                throw new \Exception('Expression '.$xpath_query.' is malformed.');
+            }
+        }
+
+        return false;
+
     }
 
     /**
