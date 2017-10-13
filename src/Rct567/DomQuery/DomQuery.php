@@ -296,7 +296,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return self|string
      */
-    public function attr($name, $val=null)
+    public function attr(string $name, $val=null)
     {
         if (!is_null($val)) { // set attribute for all nodes
             foreach ($this->nodes as $node) {
@@ -323,7 +323,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return mixed
      */
-    public function prop($name, $val=null)
+    public function prop(string $name, $val=null)
     {
 
         if (!is_null($val)) { // set attribute for all nodes
@@ -350,7 +350,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return self
      */
-    public function children($selector='*')
+    public function children(string $selector='*')
     {
         if (strpos($selector, ',') !== false) {
             $selectors = explode(',', $selector);
@@ -375,7 +375,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return self|void
      */
-    public function parent($selector=null)
+    public function parent(string $selector=null)
     {
 
         if (isset($this->document) && $this->length > 0) {
@@ -470,7 +470,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return boolean
      */
-    public function is($selector)
+    public function is(string $selector)
     {
         if ($this->length > 0) {
             $xpath_query = self::cssToXpath($selector);
@@ -514,7 +514,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return self|void
      */
-    public function first($selector=null)
+    public function first(string $selector=null)
     {
         if (isset($this[0])) {
             $result = $this[0];
@@ -532,7 +532,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return self|void
      */
-    public function last($selector=null)
+    public function last(string $selector=null)
     {
         if ($this->length > 0 && isset($this[$this->length-1])) {
             $result = $this[$this->length-1];
@@ -550,7 +550,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return self|void
      */
-    public function next($selector=null)
+    public function next(string $selector=null)
     {
         if (isset($this->document) && $this->length > 0) {
             $result = new self($this->document);
@@ -576,7 +576,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return self|void
      */
-    public function prev($selector=null)
+    public function prev(string $selector=null)
     {
         if (isset($this->document) && $this->length > 0) {
             $result = new self($this->document);
@@ -602,7 +602,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return self
      */
-    public function remove($selector=null)
+    public function remove(string $selector=null)
     {
         $result = $this;
         if ($selector) {
@@ -726,7 +726,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return \DOMNodeList|false
      */
-    public function xpathQuery(string $expression, \DOMNode $context_node=null) 
+    public function xpathQuery(string $expression, \DOMNode $context_node=null)
     {
         if ($this->dom_xpath) {
             $node_list = $this->dom_xpath->query($expression, $context_node);
@@ -741,7 +741,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
 
         return false;
-
     }
 
     /**
