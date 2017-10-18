@@ -596,6 +596,27 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Iterate over result set and executing a callback for each node
+     *
+     * @param callable $callback
+     *
+     * @return $this
+     */
+    public function each(callable $callback)
+    {
+        foreach ($this->nodes as $index => $node) {
+
+            $return_value = $callback($index, $node);
+
+            if ($return_value === false) {
+                break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Remove the set of matched elements
      *
      * @param string|null $selector expression that filters the set of matched elements to be removed

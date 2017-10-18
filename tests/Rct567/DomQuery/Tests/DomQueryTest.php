@@ -358,6 +358,23 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test each iteration
+     */
+    public function testEachIteration()
+    {
+        $dom = new Domquery('<p> <a>1</a> <a>2</a> <span></span> </p>');
+
+        $result = array();
+
+        $dom->find('a')->each(function ($i, $elm) use (&$result) {
+            $result[$i] = $elm;
+        });
+
+        $this->assertEquals(2, count($result));
+        $this->assertInstanceOf(\DOMNode::class, $result[0]);
+    }
+
+    /*
      * Test instance without nodes
      */
     public function testDomQueryNoDocument()

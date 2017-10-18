@@ -80,9 +80,10 @@ echo $links->get(-1)->textContent; // output 3
 - `.attr( [name, [val]] )`
 - `.prop( [name, [val]] )`
 
- #### Miscellaneous > DOM Element Methods
+ #### Miscellaneous > DOM Element Methods | Traversing
 
 - `.get( index )`
+- `.each ( callable(i,elm) )`
 
  #### Manipulation > DOM Removal
 
