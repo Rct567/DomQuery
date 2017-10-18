@@ -266,7 +266,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     {
         $dom = DomQuery::create('<div><a title="hello">Some text</a><a>B</a><span>C</span></div>');
         $dom->find('a')->remove('[title]');
-        $this->assertEquals("<div>\n<a>B</a><span>C</span>\n</div>", (string) $dom);
+        $this->assertEquals("<div><a>B</a><span>C</span></div>", (string) $dom);
     }
 
     /*
@@ -276,7 +276,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     {
         $dom = DomQuery::create('<div><a title="hello">Some text</a><a>B</a><span>C</span></div>');
         $dom->find('a')->text('Changed text');
-        $this->assertEquals("<div>\n<a title=\"hello\">Changed text</a><a>Changed text</a><span>C</span>\n</div>", (string) $dom);
+        $this->assertEquals("<div><a title=\"hello\">Changed text</a><a>Changed text</a><span>C</span></div>", (string) $dom);
     }
 
     /*

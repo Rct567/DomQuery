@@ -53,6 +53,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public $selector;
 
     /**
+     * Preserve no newlines (prevent creating newlines in html result)
+     */
+    public $preserve_no_newlines;
+
+    /**
      * LibXMl options used to load html for DOMDocument
      *
      * @var mixed
@@ -153,6 +158,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function loadHtmlContent(string $html, $encoding='UTF-8')
     {
+        $this->preserve_no_newlines = (strpos($html, '<') !== false && strpos($html, "\n") === false);
+
         $xml_pi_node_added = false;
         if ($encoding && stripos($html, '<?xml') === false) { // add pi nod to make libxml use the correct encoding
             $html = '<?xml encoding="'.$encoding.'">'.$html;
@@ -272,6 +279,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $node->get(0)->nodeValue = '';
                 $node->append($html_string);
             }
+
+            if (strpos($html_string, "\n") !== false) {
+                $this->preserve_no_newlines = false;
+            }
+
             return $this;
         } else { // get html for first node
             if ($node = $this->getFirstElmNode()) {
@@ -280,6 +292,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
                 foreach ($node->childNodes as $node) {
                     $html .= $document->saveHTML($node);
+                }
+
+                if ($this->preserve_no_newlines) {
+                    $html = str_replace("\n", '', $html);
                 }
 
                 return $html;
@@ -605,7 +621,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function each(callable $callback)
     {
         foreach ($this->nodes as $index => $node) {
-
             $return_value = $callback($index, $node);
 
             if ($return_value === false) {
@@ -648,6 +663,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function append($content)
     {
+        if (strpos($content, "\n") !== false) {
+            $this->preserve_no_newlines = false;
+        }
+
         if (!is_array($content) && func_num_args() > 1) {
             $content = func_get_args();
         }
@@ -679,6 +698,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function prepend($content)
     {
+        if (strpos($content, "\n") !== false) {
+            $this->preserve_no_newlines = false;
+        }
+
         if (!is_array($content) && func_num_args() > 1) {
             $content = func_get_args();
         }
@@ -814,6 +837,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             if (isset($this->document)) {
                 $outer_html .= $this->document->saveHTML($node);
             }
+        }
+
+        if ($this->preserve_no_newlines) {
+            $outer_html = str_replace("\n", '', $outer_html);
         }
 
         return $outer_html;
