@@ -621,7 +621,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function each(callable $callback)
     {
         foreach ($this->nodes as $index => $node) {
-            $return_value = $callback($index, $node);
+            $return_value = call_user_func($callback, $index, $node);
 
             if ($return_value === false) {
                 break;
