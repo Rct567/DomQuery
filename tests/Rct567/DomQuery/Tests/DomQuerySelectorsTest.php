@@ -142,14 +142,17 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test class selector
+     * Test class selector with uppercase
      */
-    public function testClassSelector()
+    public function testClassSelectorWithUppercase()
     {
-        $dom = new DomQuery('<div><a class="monkey-moon">1</a><b>2</b></div><a class="monkey">3</a>');
-        $this->assertEquals('3', $dom->find('.monkey')->text());
-        $this->assertEquals(1, $dom->find('.monkey')->length);
-        $this->assertEquals(1, $dom->find('a.monkey')->length);
+        $dom = new DomQuery('<div><a class="monkey-moon">1</a><b>2</b></div><a class="Monkey">3</a>');
+        $this->assertEquals('3', $dom->find('.Monkey')->text());
+        $this->assertEquals(1, $dom->find('.Monkey')->length);
+        $this->assertEquals(1, $dom->find('a.Monkey')->length);
+        $this->assertEquals(0, $dom->find('a.monkey')->length);
+        $this->assertEquals(1, $dom->find('.monkey-moon')->length);
+        $this->assertEquals(1, $dom->find('a.monkey-moon')->length);
     }
 
     /*
