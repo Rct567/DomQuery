@@ -142,17 +142,35 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test class selector
+     */
+    public function testClassSelector()
+    {
+        $dom = new DomQuery('<div><a class="monkey moon">1</a><b>2</b></div><a class="monkey">3</a>');
+        $this->assertEquals(2, $dom->find('a.monkey')->length);
+        $this->assertEquals(1, $dom->find('.moon')->length);
+        $this->assertEquals(1, $dom->find('a.moon')->length);
+    }
+
+    /*
      * Test class selector with uppercase
      */
     public function testClassSelectorWithUppercase()
     {
-        $dom = new DomQuery('<div><a class="monkey-moon">1</a><b>2</b></div><a class="Monkey">3</a>');
+        $dom = new DomQuery('<div><a class="monkey">1</a><b>2</b></div><a class="Monkey">3</a>');
         $this->assertEquals('3', $dom->find('.Monkey')->text());
         $this->assertEquals(1, $dom->find('.Monkey')->length);
         $this->assertEquals(1, $dom->find('a.Monkey')->length);
-        $this->assertEquals(0, $dom->find('a.monkey')->length);
-        $this->assertEquals(1, $dom->find('.monkey-moon')->length);
-        $this->assertEquals(1, $dom->find('a.monkey-moon')->length);
+    }
+
+    /*
+     * Test class selector with underscore
+     */
+    public function testClassSelectorWithUnderscore()
+    {
+        $dom = new DomQuery('<div><a class="monkey_moon">1</a><b>2</b></div><a class="monkey-moon">3</a>');
+        $this->assertEquals('1', $dom->find('.monkey_moon')->text());
+        $this->assertEquals('3', $dom->find('.monkey-moon')->text());
     }
 
     /*
