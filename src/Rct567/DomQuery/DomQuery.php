@@ -750,7 +750,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Call method of first DOMNode
+     * Call method on first DOMElement
      *
      * @return mixed
      */
