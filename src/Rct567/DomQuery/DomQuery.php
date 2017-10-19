@@ -393,7 +393,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function parent(string $selector=null)
     {
-
         if (isset($this->document) && $this->length > 0) {
             $result = new self($this->document);
 
@@ -777,9 +776,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             if ($node_list instanceof \DOMNodeList) {
                 return $node_list;
             } elseif ($node_list === false && !is_null($context_node)) {
-                throw new \Exception('Expression '.$xpath_query.' is malformed or contextnode is invalid.');
+                throw new \Exception('Expression '.$expression.' is malformed or contextnode is invalid.');
             } elseif ($node_list === false) {
-                throw new \Exception('Expression '.$xpath_query.' is malformed.');
+                throw new \Exception('Expression '.$expression.' is malformed.');
             }
         }
 
@@ -860,7 +859,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * Replace char with null bytes inside (optionaly specified) enclosure
      *
      * @param string $str
-     * @param string $search
+     * @param string $search_char
      * @param string $enclosure_open
      * @param string $enclosure_close
      *
@@ -922,35 +921,35 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             $token = str_replace("\0", ' ', $token); // restore spaces
 
             if (!in_array($token, $relation_tokens)) {
-                $segment = (object) array('selector' => '', 'relation_filter' => false, 'attribute_filters' => array(), 'pseudo_filters' => array());
+                $segment = (object) array('selector' => '', 'relation_token' => false, 'attribute_filters' => array(), 'pseudo_filters' => array());
 
-                if (isset($tokens[$key-1]) && in_array($tokens[$key-1], $relation_tokens)) { // get relationship selector
-                    $segment->relation_filter = $tokens[$key-1];
+                if (isset($tokens[$key-1]) && in_array($tokens[$key-1], $relation_tokens)) { // get relationship token
+                    $segment->relation_token = $tokens[$key-1];
                 }
 
                 $segment->selector = $token;
 
-                while (preg_match('/(.*)\:(not|contains|has)\((.+)\)$/', $segment->selector, $matches)) { // pseudo selector
+                while (preg_match('/(.*)\:(not|contains|has)\((.+)\)$/i', $segment->selector, $matches)) { // pseudo selector
                     $segment->selector = $matches[1];
                     $segment->pseudo_filters[] = $matches[2].'('.$matches[3].')';
                 }
 
-                while (preg_match('/(.*)\:([a-z][a-z\-]*)$/', $segment->selector, $matches)) { // pseudo selector
+                while (preg_match('/(.*)\:([a-z][a-z\-]+)$/i', $segment->selector, $matches)) { // pseudo selector
                     $segment->selector = $matches[1];
                     $segment->pseudo_filters[] = $matches[2];
                 }
 
-                while (preg_match('/(.*)\[([^]]+)\]$/', $segment->selector, $matches)) { // attribute selector
+                while (preg_match('/(.*)\[([^]]+)\]$/i', $segment->selector, $matches)) { // attribute selector
                     $segment->selector = $matches[1];
                     $segment->attribute_filters[] = $matches[2];
                 }
 
-                while (preg_match('/(.*)\.([a-z][a-z0-9\-]+)$/', $segment->selector, $matches)) { // class selector
+                while (preg_match('/(.*)\.([a-z][a-z0-9\-]+)$/i', $segment->selector, $matches)) { // class selector
                     $segment->selector = $matches[1];
                     $segment->attribute_filters[] = 'class~="'.$matches[2].'"';
                 }
 
-                while (preg_match('/(.*)\#([a-z][a-z0-9\-]+)$/', $segment->selector, $matches)) { // id selector
+                while (preg_match('/(.*)\#([a-z][a-z0-9\-]+)$/i', $segment->selector, $matches)) { // id selector
                     $segment->selector = $matches[1];
                     $segment->attribute_filters[] = 'id="'.$matches[2].'"';
                 }
@@ -964,17 +963,17 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $new_path_tokens = array();
 
         foreach ($segments as $segment) {
-            if ($segment->relation_filter === '>') {
+            if ($segment->relation_token === '>') {
                 $new_path_tokens[] = '/';
-            } elseif ($segment->relation_filter === '~') {
+            } elseif ($segment->relation_token === '~') {
                 $new_path_tokens[] = '/following-sibling::';
-            } elseif ($segment->relation_filter === '+') {
+            } elseif ($segment->relation_token === '+') {
                 $new_path_tokens[] = '/following-sibling::';
             } else {
                 $new_path_tokens[] = '//';
             }
 
-            if ($segment->relation_filter === '+') {
+            if ($segment->relation_token === '+') {
                 $segment->pseudo_filters[] = 'first-child';
             }
 
