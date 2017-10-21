@@ -32,7 +32,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('first-child-a', $dom->find('.root div')->first()->attr('id'));
         $this->assertEquals('last-child-a', $dom->find('.root div')->last()->attr('id'));
 
-        // first and last via psuedo selector, check id
+        // first and last via pseudo selector, check id
         $this->assertEquals('first-child-a', $dom->find('.root div:first')->attr('id')); // id of first div inside .root
         $this->assertEquals('last-child-a', $dom->find('.root div:last')->attr('id')); // id of last div inside .root
 
@@ -282,7 +282,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     /*
      * Test change text
      */
-    public function testMultibleNodesTextChange()
+    public function testMultipleNodesTextChange()
     {
         $dom = DomQuery::create('<div><a title="hello">Some text</a><a>B</a><span>C</span></div>');
         $dom->find('a')->text('Changed text');

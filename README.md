@@ -1,7 +1,7 @@
 # DomQuery
 
 
-DomQuery is a PHP library that allows you to easily traverse and modify the DOM (HTML/XML). As a libery it aims to
+DomQuery is a PHP library that allows you to easily traverse and modify the DOM (HTML/XML). As a library it aims to
 provide 'jQuery like' access to the PHP DOMDocument class (http://php.net/manual/en/book.dom.php).  
 
 ## Installation

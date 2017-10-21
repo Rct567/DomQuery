@@ -133,9 +133,9 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test multible selectors
+     * Test multiple selectors
      */
-    public function testMultibleSelectors()
+    public function testMultipleSelectors()
     {
         $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here">3</a><p><a>4</a></p>');
         $this->assertEquals(2, $dom->find('#here, div > b')->length);

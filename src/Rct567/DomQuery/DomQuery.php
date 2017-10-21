@@ -104,7 +104,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Set dom document
      *
-     * @param DOMDocument $document
+     * @param \DOMDocument $document
      *
      * @return void
      */
@@ -366,7 +366,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             }
 
             return $this;
-        } else { // get propertie value for first element
+        } else { // get property value for first element
             if ($name == 'outerHTML') {
                 return $this->getOuterHtml();
             } elseif ($node = $this->getFirstElmNode()) {
@@ -804,7 +804,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Call method on first DOMElement
      *
+     * @param string $name
+     * @param $arguments
      * @return mixed
+     * @throws \Exception
      */
     public function __call($name, $arguments)
     {
@@ -818,7 +821,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Perform query via xpath expression (using DOMXPath::query)
      *
+     * @param string $expression
+     * @param \DOMNode|null $context_node
      * @return \DOMNodeList|false
+     * @throws \Exception
      */
     public function xpathQuery(string $expression, \DOMNode $context_node=null)
     {
@@ -864,7 +870,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Check if propertie exist for this instance
+     * Check if property exist for this instance
      *
      * @param string $name
      *
@@ -908,7 +914,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Replace char with null bytes inside (optionaly specified) enclosure
+     * Replace char with null bytes inside (optionally specified) enclosure
      *
      * @param string $str
      * @param string $search_char
@@ -957,7 +963,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             return implode('|', $expressions);
         }
 
-        // replace spaces inside (), to correcly create tokens
+        // replace spaces inside (), to correctly create tokens
 
         $path = self::replaceCharInsideEnclosure($path, ' ');
 
@@ -1036,7 +1042,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             }
 
             foreach (array_reverse($segment->attribute_filters) as $attr) {
-                $new_path_tokens[] = self::tranformAttrSelection($attr);
+                $new_path_tokens[] = self::transformAttrSelection($attr);
             }
 
             foreach (array_reverse($segment->pseudo_filters) as $attr) {
@@ -1048,12 +1054,12 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Tranform 'css pseudo selector' expression to xpath expression
+     * Transform 'css pseudo selector' expression to xpath expression
      *
      * @param string $expression
      * @param array $new_path_tokens
      *
-     * @return string trandformed expression (xpath)
+     * @return string transformed expression (xpath)
      */
     private static function transformCssPseudoSelector($expression, array &$new_path_tokens)
     {
@@ -1127,13 +1133,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Tranform 'css attribute selector' expression to xpath expression
+     * Transform 'css attribute selector' expression to xpath expression
      *
      * @param string $expression
      *
-     * @return string trandformed expression (xpath)
+     * @return string transformed expression (xpath)
      */
-    private static function tranformAttrSelection($expression)
+    private static function transformAttrSelection($expression)
     {
         $expression = '['.$expression.']';
 
@@ -1237,7 +1243,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * IteratorAggregate (note: using Iterator conflicts with next method in jquery)
      *
-     * @return \ArrayIterator containing nodes as instaces of DomQuery
+     * @return \ArrayIterator containing nodes as instances of DomQuery
      */
     public function getIterator()
     {
