@@ -50,7 +50,13 @@ echo $links->get(0)->textContent; // output 1
 echo $links->get(-1)->textContent; // output 3
 ```
 
-### Jquery methods available
+### Create instance alternative:
+
+```php
+DomQuery::create('<a title="hello"></a>')->attr('title') // hello
+```
+
+## Jquery methods available
 
 #### Traversing > Tree Traversal
 
