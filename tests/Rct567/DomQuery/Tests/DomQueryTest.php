@@ -304,6 +304,29 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $dom = new Domquery('<a>X</a>');
         $dom->find('a')->prepend('<span></span>', '<i></i>');
         $this->assertEquals('<a><i></i><span></span>X</a>', (string) $dom);
+        $this->assertEquals(1, $dom->find('span')->length);
+    }
+
+    /*
+     * Test before
+     */
+    public function testBefore()
+    {
+        $dom = new Domquery('<div> <a>X</a> </div>');
+        $dom->find('a')->before('<span></span>');
+        $this->assertEquals('<div> <span></span><a>X</a> </div>', (string) $dom);
+        $this->assertEquals(1, $dom->find('span')->length);
+    }
+
+    /*
+     * Test after
+     */
+    public function testAfter()
+    {
+        $dom = new Domquery('<div> <a>X</a> </div>');
+        $dom->find('a')->after('<span></span>');
+        $this->assertEquals('<div> <a>X</a><span></span> </div>', (string) $dom);
+        $this->assertEquals(1, $dom->find('span')->length);
     }
 
     /*

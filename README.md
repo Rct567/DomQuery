@@ -68,12 +68,14 @@ echo $links->get(-1)->textContent; // output 3
 - `.first( [selector] )`
 - `.last( [selector] )`
 
- #### Manipulation > DOM Insertion, Inside
+ #### Manipulation > DOM Insertion
 
 - `.text( [text] )`
 - `.html( [html_string] )`
-- `.append( [content], )`
-- `.prepend( [content], )`
+- `.append( [content],... )`
+- `.prepend( [content],... )`
+- `.after( [content],... )`
+- `.before( [content],... )`
 
  #### Attributes | Manipulation > General Attributes
 

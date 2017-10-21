@@ -656,25 +656,24 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Insert content to the end of each element in the set of matched elements.
+     * Import nodes and do something with them
      *
-     * @return self
+     * @param string|self|array $content
+     * @param callable $import_function
+     *
+     * @return void
      */
-    public function append($content)
+    private function importNodes($content, callable $import_function)
     {
-        if (strpos($content, "\n") !== false) {
-            $this->preserve_no_newlines = false;
-        }
-
-        if (!is_array($content) && func_num_args() > 1) {
-            $content = func_get_args();
-        }
-
         if (is_array($content)) {
-            foreach ($content as $content_item) {
-                $this->append($content_item);
+            foreach ($content as $item) {
+                $this->importNodes($item, $import_function);
             }
         } else {
+            if (is_string($content) && strpos($content, "\n") !== false) {
+                $this->preserve_no_newlines = false;
+            }
+
             if (!($content instanceof DomQuery)) {
                 $content = new self($content);
             }
@@ -682,10 +681,24 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             foreach ($this->nodes as $node) {
                 foreach ($content->getNodes() as $content_node) {
                     $imported_node = $this->document->importNode($content_node, true);
-                    $node->appendChild($imported_node);
+                    $import_function($node, $imported_node);
                 }
             }
         }
+    }
+
+    /**
+     * Insert content to the end of each element in the set of matched elements.
+     *
+     * @param string|self $content,...
+     *
+     * @return self
+     */
+    public function append()
+    {
+        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+            $node->appendChild($imported_node);
+        });
 
         return $this;
     }
@@ -693,34 +706,55 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Insert content to the beginning of each element in the set of matched elements
      *
+     * @param string|self $content,...
+     *
      * @return self
      */
-    public function prepend($content)
+    public function prepend()
     {
-        if (strpos($content, "\n") !== false) {
-            $this->preserve_no_newlines = false;
-        }
+        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+            $node->insertBefore($imported_node, $node->childNodes->item(0));
+        });
 
-        if (!is_array($content) && func_num_args() > 1) {
-            $content = func_get_args();
-        }
+        return $this;
+    }
 
-        if (is_array($content)) {
-            foreach ($content as $content_item) {
-                $this->prepend($content_item);
+    /**
+     * Insert content before each element in the set of matched elements.
+     *
+     * @param string|self $content,...
+     *
+     * @return self
+     */
+    public function before()
+    {
+        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+            if ($node->parentNode instanceof \DOMDocument) {
+                throw new \Exception('Can not set before root element '.$node->tagName.' of document');
+            } else {
+                $node->parentNode->insertBefore($imported_node, $node);
             }
-        } else {
-            if (!($content instanceof DomQuery)) {
-                $content = new self($content);
-            }
+        });
 
-            foreach ($this->nodes as $node) {
-                foreach ($content->getNodes() as $content_node) {
-                    $imported_node = $this->document->importNode($content_node, true);
-                    $node->insertBefore($imported_node, $node->childNodes->item(0));
-                }
+        return $this;
+    }
+
+    /**
+     * Insert content after each element in the set of matched elements.
+     *
+     * @param string|self $content,...
+     *
+     * @return self
+     */
+    public function after()
+    {
+        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+            if ($node->nextSibling) {
+                $node->parentNode->insertBefore($imported_node, $node->nextSibling);
+            } else { // node is last, so there is no next sibling to insert before
+                $node->parentNode->appendChild($imported_node);
             }
-        }
+        });
 
         return $this;
     }
