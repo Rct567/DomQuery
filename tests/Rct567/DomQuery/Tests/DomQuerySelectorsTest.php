@@ -199,14 +199,14 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             <li id="item2">list item 2</li>
             <li id="item3"><b></b>list item 3</li>
             <li >list item 4</li>
-            <li class="itemitem"><span id="anx">x</span></li>
+            <li class="item-item"><span id="anx">x</span></li>
             <li class="item item6">list item 6</li>
         </ul>');
 
         $this->assertEquals('item2', $dom->find('li:has(a)')->id);
         $this->assertEquals(1, $dom->find('li:has(b)')->length);
-        $this->assertEquals('itemitem', $dom->find('li:has(span#anx)')->class);
-        $this->assertEquals('itemitem', $dom->find('li:has(*#anx)')->class);
+        $this->assertEquals('item-item', $dom->find('li:has(span#anx)')->class);
+        $this->assertEquals('item-item', $dom->find('li:has(*#anx)')->class);
         $this->assertEquals(1, $dom->find('ul:has(li.item)')->length);
         $this->assertEquals(1, $dom->find('ul:has(span)')->length);
         $this->assertEquals(1, $dom->find('ul:has(li span)')->length);
@@ -223,7 +223,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             <li id="item2">list item 2</li>
             <li id="item3">list item 3</li>
             <li>list item 4</li>
-            <li class="itemitem">list item 5</li>
+            <li class="item-item">list item 5</li>
             <li class="item item6">list item 6</li>
         </ul>');
 

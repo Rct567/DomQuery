@@ -806,6 +806,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string $name
      * @param $arguments
+     *
      * @return mixed
      * @throws \Exception
      */
@@ -823,6 +824,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string $expression
      * @param \DOMNode|null $context_node
+     *
      * @return \DOMNodeList|false
      * @throws \Exception
      */
