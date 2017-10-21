@@ -239,6 +239,16 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test remove attribute
+     */
+    public function testRemoveAttribute()
+    {
+        $dom = DomQuery::create('<a title="hello">Some text</a>');
+        $dom->removeAttr('title');
+        $this->assertEquals('<a>Some text</a>', (string) $dom);
+    }
+
+    /*
      * Test change text
      */
     public function testSingleNodeTextChange()

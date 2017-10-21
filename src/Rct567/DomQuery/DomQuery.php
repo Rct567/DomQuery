@@ -331,6 +331,23 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Remove an attribute from each element in the set of matched elements
+     *
+     * @param [type] $name
+     * @return void
+     */
+    public function removeAttr($name)
+    {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof \DOMElement) {
+                $node->removeAttribute($name);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Get the value of a property for the first element in the set of matched elements
      * or set one or more properties for every matched element.
      *
