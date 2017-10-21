@@ -248,7 +248,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|null $val
      *
-     * @return self|string|void
+     * @return $this|string|void
      */
     public function text($val=null)
     {
@@ -270,7 +270,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|null $html_string
      *
-     * @return self|string|void
+     * @return $this|string|void
      */
     public function html($html_string=null)
     {
@@ -310,7 +310,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * @param string $name
      * @param string $val
      *
-     * @return self|string
+     * @return $this|string
      */
     public function attr(string $name, $val=null)
     {
@@ -333,8 +333,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Remove an attribute from each element in the set of matched elements
      *
-     * @param [type] $name
-     * @return void
+     * @param string $name
+     *
+     * @return $this
      */
     public function removeAttr($name)
     {
@@ -354,11 +355,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * @param string $name
      * @param string $val
      *
-     * @return mixed
+     * @return $this|mixed
      */
     public function prop(string $name, $val=null)
     {
-
         if (!is_null($val)) { // set attribute for all nodes
             foreach ($this->nodes as $node) {
                 $node->$name = $val;
@@ -432,7 +432,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string $selector
      *
-     * @return void
+     * @return self
      */
     public function not(string $selector)
     {
@@ -468,7 +468,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string $selector
      *
-     * @return void
+     * @return self
      */
     public function filter(string $selector)
     {
@@ -709,7 +709,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|self $content,...
      *
-     * @return self
+     * @return $this
      */
     public function append()
     {
@@ -725,7 +725,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|self $content,...
      *
-     * @return self
+     * @return $this
      */
     public function prepend()
     {
@@ -741,7 +741,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|self $content,...
      *
-     * @return self
+     * @return $this
      */
     public function before()
     {
@@ -761,7 +761,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|self $content,...
      *
-     * @return self
+     * @return $this
      */
     public function after()
     {
