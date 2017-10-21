@@ -382,7 +382,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string $selector
      *
-     * @return self
+     * @return self|void
      */
     public function children(string $selector='*')
     {
@@ -842,7 +842,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string $name
      *
-     * @return \DOMXPath|\DOMNode|string
+     * @return \DOMXPath|\DOMNode|string|null
      */
     public function __get($name)
     {
