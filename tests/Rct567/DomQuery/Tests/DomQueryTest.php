@@ -318,7 +318,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test before
+     * Test insert before
      */
     public function testBefore()
     {
@@ -329,7 +329,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test after
+     * Test insert after
      */
     public function testAfter()
     {
@@ -340,7 +340,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test filter
+     * Test filter on selection result
      */
     public function testFilter()
     {
@@ -355,7 +355,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test not 
+     * Test not filter on selection result 
      */
     public function testNot()
     {
