@@ -152,17 +152,17 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testLoadingUf8AndGettingSameContent()
     {
-        $html = '<div><h1>ßüöä</h1></div><a>k</a>';
+        $html = '<div><h1>Iñtërnâtiônàlizætiøn</h1></div><a>k</a>';
         $dom = new DomQuery($html);
 
         $this->assertEquals($html, (string) $dom); // same result
-        $this->assertEquals('<h1>ßüöä</h1>', (string) $dom->find('h1')); // same header
-        $this->assertEquals('ßüöä', $dom->find('h1')->text()); // same text
-        $this->assertEquals('ßüöä', $dom->text());
+        $this->assertEquals('<h1>Iñtërnâtiônàlizætiøn</h1>', (string) $dom->find('h1')); // same header
+        $this->assertEquals('Iñtërnâtiônàlizætiøn', $dom->find('h1')->text()); // same text
+        $this->assertEquals('Iñtërnâtiônàlizætiøn', $dom->text());
     }
 
     /*
-     * Make selection and subselection
+     * Make selection and sub selection
      */
     public function testSubSelection()
     {
@@ -295,12 +295,12 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     public function testAppend()
     {
         // append string with html
-        $dom = new Domquery('<a></a><p></p><b></b><a></a>');
+        $dom = new DomQuery('<a></a><p></p><b></b><a></a>');
         $dom->find('a')->append('<span></span>');
         $this->assertEquals('<a><span></span></a><p></p><b></b><a><span></span></a>', (string) $dom);
 
         // append DomQuery instance
-        $dom = new Domquery('<a></a><p></p><b></b><a></a>');
+        $dom = new DomQuery('<a></a><p></p><b></b><a></a>');
         $dom->find('a')->append(DomQuery::create('<i>X</i>'));
         $this->assertEquals('<a><i>X</i></a><p></p><b></b><a><i>X</i></a>', (string) $dom);
         $this->assertEquals('X', $dom->find('i')->text());
@@ -311,7 +311,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testPrepend()
     {
-        $dom = new Domquery('<a>X</a>');
+        $dom = new DomQuery('<a>X</a>');
         $dom->find('a')->prepend('<span></span>', '<i></i>');
         $this->assertEquals('<a><i></i><span></span>X</a>', (string) $dom);
         $this->assertEquals(1, $dom->find('span')->length);
@@ -322,7 +322,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testBefore()
     {
-        $dom = new Domquery('<div> <a>X</a> </div>');
+        $dom = new DomQuery('<div> <a>X</a> </div>');
         $dom->find('a')->before('<span></span>');
         $this->assertEquals('<div> <span></span><a>X</a> </div>', (string) $dom);
         $this->assertEquals(1, $dom->find('span')->length);
@@ -333,7 +333,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testAfter()
     {
-        $dom = new Domquery('<div> <a>X</a> </div>');
+        $dom = new DomQuery('<div> <a>X</a> </div>');
         $dom->find('a')->after('<span></span>');
         $this->assertEquals('<div> <a>X</a><span></span> </div>', (string) $dom);
         $this->assertEquals(1, $dom->find('span')->length);
@@ -344,7 +344,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testFilter()
     {
-        $dom = new Domquery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
+        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
         $selection = $dom->find('a');
         $this->assertEquals(5, $selection->length);
         $this->assertEquals(5, $selection->filter('a')->length);
@@ -359,7 +359,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testNot()
     {
-        $dom = new Domquery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
+        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
         $selection = $dom->find('a');
         $this->assertEquals(5, $selection->length);
         $this->assertEquals(0, $selection->not('a')->length);
@@ -374,7 +374,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetHtml()
     {
-        $dom = new Domquery('<p> <a>M<i>A</i></a> <span></span></p>');
+        $dom = new DomQuery('<p> <a>M<i>A</i></a> <span></span></p>');
         $this->assertEquals('M<i>A</i>', $dom->find('a')->html()); // inner
         $this->assertEquals('<a>M<i>A</i></a>', $dom->find('a')->prop('outerHTML')); // outer
         $this->assertEquals('A', $dom->find('a i')->html());
@@ -385,7 +385,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetHtml()
     {
-        $dom = new Domquery('<p> <a>M<i>A</i></a> <span></span> </p>');
+        $dom = new DomQuery('<p> <a>M<i>A</i></a> <span></span> </p>');
         $dom->find('a')->html('<i>x</i>');
         $this->assertEquals('<p> <a><i>x</i></a> <span></span> </p>', (string) $dom);
     }
@@ -395,7 +395,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testEachIteration()
     {
-        $dom = new Domquery('<p> <a>1</a> <a>2</a> <span></span> </p>');
+        $dom = new DomQuery('<p> <a>1</a> <a>2</a> <span></span> </p>');
 
         $result = array();
 
