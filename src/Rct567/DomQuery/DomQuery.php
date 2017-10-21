@@ -5,11 +5,12 @@ namespace Rct567\DomQuery;
 /**
  * Class DomQuery
  *
+ * @property \DOMXPath $dom_xpath
+ *
  * @package Rct567\DomQuery
  */
 class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 {
-
     /**
      * Instance of DOMDocument
      *

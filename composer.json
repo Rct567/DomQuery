@@ -7,6 +7,9 @@
 	"autoload": {
         "psr-4": {"Rct567\\": "src/Rct567"}
 	},
+	"autoload-dev": {
+        "psr-4": {"Rct567\\": "tests/Rct567"}
+	},
     "authors": [
         {
             "name": "Rct567",

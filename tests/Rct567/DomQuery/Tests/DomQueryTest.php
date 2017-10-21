@@ -126,7 +126,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     {
         $dom = new DomQuery;
 
-        $dom->LoadHtmlContent('<!DOCTYPE html> <html> <head></head> <body> <p><a href="test.html"></a></p> 
+        $dom->loadHtmlContent('<!DOCTYPE html> <html> <head></head> <body> <p><a href="test.html"></a></p> 
         <a href="test2.html">X</a> </body> </html>');
 
         $this->assertEquals('html', $dom->nodeName);

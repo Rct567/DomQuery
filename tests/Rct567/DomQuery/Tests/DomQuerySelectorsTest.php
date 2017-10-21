@@ -19,7 +19,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             'p#someid' => '//p[@id=\'someid\']',
             'p a' => '//p//a',
             'div, span' => '//div|//span',
-            'p a[href]' => '//p//a[@href]',
+            'a[href]' => '//a[@href]',
             'a[href="html"]' => '//a[@href=\'html\']',
             'a[href!="html"]' => '//a[@href!=\'html\']',
             'a[href*=\'html\']' => '//a[contains(@href, \'html\')]',
@@ -55,7 +55,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         );
 
         foreach ($css_to_xpath as $css => $expected_xpath) {
-            $this->assertEquals($expected_xpath, DomQuery::cssToXpath($css, true), $css);
+            $this->assertEquals($expected_xpath, DomQuery::cssToXpath($css), $css);
         }
     }
 
