@@ -24,10 +24,10 @@ $dom = new DomQuery('<div><h1 class="title">Hello</h1></div>');
 echo $dom->find('h1')->text(); // output: Hello
 echo $dom->find('div')->prop('outerHTML'); // output: <div><h1 class="title">Hello</h1></div>
 echo $dom->find('div')->html(); // output: <h1 class="title">Hello</h1>
-echo $dom->find('div > h1')->class; // ouput: title
-echo $dom->find('div > h1')->attr('class'); // ouput: title
-echo $dom->find('div > h1')->prop('tagName'); // ouput: h1
-echo $dom->find('div')->children('h1')->prop('tagName'); // ouput: h1
+echo $dom->find('div > h1')->class; // output: title
+echo $dom->find('div > h1')->attr('class'); // output: title
+echo $dom->find('div > h1')->prop('tagName'); // output: h1
+echo $dom->find('div')->children('h1')->prop('tagName'); // output: h1
 echo (string) $dom->find('div > h1'); // output: <h1 class="title">Hello</h1>
 echo count($dom->find('div, h1')); // output: 2
 ```
