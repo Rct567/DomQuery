@@ -166,5 +166,4 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<div>');
         $dom->xpathQuery("\n[]");
     }
-
 }

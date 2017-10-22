@@ -40,6 +40,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     private $xpath_query;
 
     /**
+     * Root instance who began the chain
+     *
+     * @var self
+     */
+    private $root_instance;
+
+    /**
      * Css selector given to create result of this instance
      *
      * @var string
@@ -205,6 +212,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         if (isset($this->document)) {
             $result = new self($this->document, $this->dom_xpath);
+            if (isset($this->root_instance)) {
+                $result->root_instance = $this->root_instance;
+            } else {
+                $result->root_instance = $this;
+            }
             $result->xpath_query = $xpath_query;
 
             if ($this->length > 0 && isset($this->xpath_query)) {  // all nodes as context
@@ -781,6 +793,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         } else {
             if (is_string($content) && strpos($content, "\n") !== false) {
                 $this->preserve_no_newlines = false;
+                if (isset($this->root_instance)) {
+                    $this->root_instance->preserve_no_newlines = false;
+                }
             }
 
             if (!($content instanceof DomQuery)) {

@@ -87,6 +87,18 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test insert after with white spaces
+     * @note white space is detected in child instance and set back to root
+     */
+    public function testAfterWithWhiteSpaces()
+    {
+        $dom = new DomQuery("<div> <a>X</a> </div>");
+        $dom->find('div')->find('a')->after("<span>\n</span>");
+        $this->assertEquals("<div> <a>X</a><span>\n</span> </div>", (string) $dom);
+        $this->assertFalse($dom->preserve_no_newlines);
+    }
+
+    /*
      * Test get html
      */
     public function testGetHtml()
