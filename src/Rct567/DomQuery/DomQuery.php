@@ -350,6 +350,97 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Adds the specified class(es) to each element in the set of matched elements.
+     *
+     * @param string $class_name class name(s)
+     *
+     * @return $this
+     */
+    public function addClass($class_name)
+    {
+        $add_names = preg_split('#\s+#s', $class_name);
+
+        foreach ($this->nodes as $node) {
+            if ($node instanceof \DOMElement) {
+                $node_classes = array();
+                if ($node_class_attr = $node->getAttribute('class')) {
+                    $node_classes = preg_split('#\s+#s', $node_class_attr);
+                }
+                foreach ($add_names as $add_name) {
+                    if (!in_array($add_name, $node_classes)) {
+                        $node_classes[] = $add_name;
+                    }
+                }
+                if (count($node_classes) > 0) {
+                    $node->setAttribute('class', implode(' ', $node_classes));
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Determine whether any of the matched elements are assigned the given class.
+     *
+     * @param string $class_name
+     *
+     * @return boolean
+     */
+    public function hasClass($class_name)
+    {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof \DOMElement) {
+                if ($node_class_attr = $node->getAttribute('class')) {
+                    $node_classes = preg_split('#\s+#s', $node_class_attr);
+                    if (in_array($class_name, $node_classes)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Remove a single class, multiple classes, or all classes from each element in the set of matched elements.
+     *
+     * @param string $class_name
+     *
+     * @return $this
+     */
+    public function removeClass($class_name='')
+    {
+        $remove_names = preg_split('#\s+#s', $class_name);
+        
+        foreach ($this->nodes as $node) {
+            if ($node instanceof \DOMElement && $node->hasAttribute('class')) {
+                $node_classes = preg_split('#\s+#s', $node->getAttribute('class'));
+                $class_removed = false;
+            
+                if ($class_name === '') { // remove all
+                    $node_classes = array();
+                    $class_removed = true;
+                } else {
+                    foreach ($remove_names as $remove_name) {
+                        $key = array_search($remove_name, $node_classes);
+                        if ($key !== false) {
+                            unset($node_classes[$key]);
+                            $class_removed = true;
+                        }
+                    }
+                }
+                if ($class_removed) {
+                    $node->setAttribute('class', implode(' ', $node_classes));
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Get the value of a property for the first element in the set of matched elements
      * or set one or more properties for every matched element.
      *

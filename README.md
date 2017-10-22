@@ -83,11 +83,14 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.after( [content],... )`
 - `.before( [content],... )`
 
- #### Attributes | Manipulation > General Attributes
+ #### Attributes | Manipulation 
 
 - `.attr( name [, val] )`
 - `.prop( name [, val] )`
 - `.removeAttr( name )`
+- `.addClass( name )`
+- `.hasClass( name )`
+- `.removeClass( [name] )`
 
  #### Miscellaneous > DOM Element Methods | Traversing
 
