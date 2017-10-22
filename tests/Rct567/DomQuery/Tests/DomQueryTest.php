@@ -103,6 +103,15 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test loading html with new lines
+     */
+    public function testLoadingWithNewLines()
+    {
+        $dom = new DomQuery("<div>\n<h1>X</h1>\n</div>");
+        $this->assertEquals("<div>\n<h1>X</h1>\n</div>", (string) $dom);
+    }
+
+    /*
      * Test each iteration
      */
     public function testEachIteration()
@@ -129,6 +138,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(isset($dom[0]));
         $this->assertEquals(0, count($dom->find('*')));
         $this->assertEquals(0, count($dom->children()));
+        $this->assertNull($dom->get(0));
 
         $num = 0;
         foreach ($dom as $node) {
@@ -146,4 +156,15 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\InvalidArgumentException::class);
         $dom = new DomQuery(new \stdClass);
     }
+
+    /*
+     * Test invalid xpath expression
+     */
+    public function testInvalidXpath()
+    {
+        $this->expectException(\Exception::class);
+        $dom = new DomQuery('<div>');
+        $dom->xpathQuery("\n[]");
+    }
+
 }

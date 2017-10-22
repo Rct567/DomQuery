@@ -261,4 +261,13 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(3, $dom->find('li')->filter(':odd')->length); // 2 4 6
         $this->assertEquals('list item 6', $dom->find('li')->filter(':odd')->last()->text());
     }
+
+    /*
+     * Test invalid xpath expression
+     */
+    public function testInvalidPseudoSelector()
+    {
+        $this->expectException(\Exception::class);
+        DomQuery::cssToXpath('a:not-a-selector');
+    }
 }

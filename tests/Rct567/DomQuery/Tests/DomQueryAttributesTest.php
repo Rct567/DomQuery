@@ -75,6 +75,16 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test remove multiple class name
+     */
+    public function testRemoveAllClass()
+    {
+        $dom = DomQuery::create('<a class="before go stay"></a><a class="go before"></a>');
+        $dom->find('a')->removeClass();
+        $this->assertEquals('<a class=""></a><a class=""></a>', (string) $dom);
+    }
+
+    /*
      * Test change text
      */
     public function testSingleNodeTextChange()
