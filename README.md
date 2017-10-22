@@ -74,7 +74,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.first( [selector] )`
 - `.last( [selector] )`
 
- #### Manipulation > DOM Insertion
+ #### Manipulation > DOM Insertion & removal
 
 - `.text( [text] )`
 - `.html( [html_string] )`
@@ -82,6 +82,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.prepend( [content],... )`
 - `.after( [content],... )`
 - `.before( [content],... )`
+- `.remove( [selector] )`
 
  #### Attributes | Manipulation 
 
@@ -96,10 +97,6 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 
 - `.get( index )`
 - `.each ( callable(i,elm) )`
-
- #### Manipulation > DOM Removal
-
-- `.remove( [selector] )`
 
 ## About
 
