@@ -110,7 +110,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function setDomDocument(\DOMDocument $document)
     {
-        if (isset($this->document) && $this->document != $document) {
+        if (isset($this->document) && $this->document !== $document) {
             throw new \Exception('Other DOMDocument already set!');
         }
 
