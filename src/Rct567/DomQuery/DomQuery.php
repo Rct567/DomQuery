@@ -6,6 +6,10 @@ namespace Rct567\DomQuery;
  * Class DomQuery
  *
  * @property \DOMXPath $dom_xpath
+ * @property string $tagName
+ * @property string $nodeName
+ * @property string $nodeValue 
+ * @method string getAttribute(string $name)
  *
  * @package Rct567\DomQuery
  */
