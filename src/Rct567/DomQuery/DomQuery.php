@@ -8,7 +8,8 @@ namespace Rct567\DomQuery;
  * @property \DOMXPath $dom_xpath
  * @property string $tagName
  * @property string $nodeName
- * @property string $nodeValue 
+ * @property string $nodeValue
+ *
  * @method string getAttribute(string $name)
  *
  * @package Rct567\DomQuery
@@ -1091,7 +1092,12 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             $token = str_replace("\0", ' ', $token); // restore spaces
 
             if (!in_array($token, $relation_tokens)) {
-                $segment = (object) array('selector' => '', 'relation_token' => false, 'attribute_filters' => array(), 'pseudo_filters' => array());
+                $segment = (object) array(
+                    'selector' => '',
+                    'relation_token' => false,
+                    'attribute_filters' => array(),
+                    'pseudo_filters' => array()
+                );
 
                 if (isset($tokens[$key-1]) && in_array($tokens[$key-1], $relation_tokens)) { // get relationship token
                     $segment->relation_token = $tokens[$key-1];
