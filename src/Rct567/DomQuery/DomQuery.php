@@ -1080,7 +1080,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $path = self::replaceCharInsideEnclosure($path, ' ');
 
-        // create and analyze tokens and create segments
+        // create tokens and analyze to create segments
 
         $tokens = preg_split('/\s+/', $path);
 
@@ -1101,6 +1101,18 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
                 if (isset($tokens[$key-1]) && in_array($tokens[$key-1], $relation_tokens)) { // get relationship token
                     $segment->relation_token = $tokens[$key-1];
+                }
+
+                $char_tmp_replaced = false;
+                if (strpos($token, '\\') !== false) {
+                    $token = preg_replace_callback( // temporary replace escaped characters
+                        '#(\\\\)(.{1})#',
+                        function ($matches) {
+                            return 'ESCAPED'.ord($matches[2]);
+                        },
+                        $token
+                    );
+                    $char_tmp_replaced = true;
                 }
 
                 $segment->selector = $token;
@@ -1130,14 +1142,46 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                     $segment->attribute_filters[] = 'id="'.$matches[2].'"';
                 }
 
+                if ($char_tmp_replaced) { // restore temporary replaced characters
+                    $set_escape_back = function (string $str) {
+                        return preg_replace_callback(
+                            '#(ESCAPED)([0-9]{1,3})#',
+                            function ($matches) {
+                                return chr($matches[2]);
+                            },
+                            $str
+                        );
+                    };
+
+                    $segment->selector = $set_escape_back($segment->selector);
+
+                    foreach ($segment->attribute_filters as &$attr_filter) {
+                        $attr_filter = $set_escape_back($attr_filter);
+                    }
+                }
+
                 $segments[] = $segment;
             }
         }
 
         // use segments to create array with transformed tokens
 
-        $new_path_tokens = array();
+        $new_path_tokens = self::transformCssSegments($segments);
 
+        return implode('', $new_path_tokens);
+    }
+
+    /**
+     * Transform css segments to xpath
+     *
+     * @param array $segments
+     *
+     * @return array $new_path_tokens
+     */
+    private static function transformCssSegments(array $segments)
+    {
+        $new_path_tokens = array();
+        
         foreach ($segments as $segment) {
             if ($segment->relation_token === '>') {
                 $new_path_tokens[] = '/';
@@ -1168,7 +1212,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             }
         }
 
-        return implode('', $new_path_tokens);
+        return $new_path_tokens;
     }
 
     /**

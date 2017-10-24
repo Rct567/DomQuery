@@ -17,6 +17,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             '* > a' => '//*/a',
             '#someid' => '//*[@id=\'someid\']',
             'p#someid' => '//p[@id=\'someid\']',
+            '#some\\.id' => '//*[@id=\'some.id\']',
             'p a' => '//p//a',
             'div, span' => '//div|//span',
             'a[href]' => '//a[@href]',
@@ -95,6 +96,15 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here">3</a>');
         $this->assertEquals('3', $dom->find('#here')->text());
         $this->assertEquals(1, $dom->find('#here')->length);
+    }
+
+    /*
+     * Test id selector with meta character
+     */
+    public function testIdSelectorWithMetaCharacter()
+    {
+        $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here.here">3</a>');
+        $this->assertEquals('3', $dom->find('#here\\.here')->text());
     }
 
     /*
