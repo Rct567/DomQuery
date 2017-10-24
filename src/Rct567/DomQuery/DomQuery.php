@@ -1076,7 +1076,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             return implode('|', $expressions);
         }
 
-        // replace spaces inside (), to correctly create tokens
+        // replace spaces inside (), to correctly create tokens (restore later)
 
         $path = self::replaceCharInsideEnclosure($path, ' ');
 
