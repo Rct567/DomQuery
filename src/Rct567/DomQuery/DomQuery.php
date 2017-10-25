@@ -1086,80 +1086,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $segments = array();
 
-        $relation_tokens = array('>', '~', '+');
-
         foreach ($tokens as $key => $token) {
             $token = str_replace("\0", ' ', $token); // restore spaces
-
-            if (!in_array($token, $relation_tokens)) {
-                $segment = (object) array(
-                    'selector' => '',
-                    'relation_token' => false,
-                    'attribute_filters' => array(),
-                    'pseudo_filters' => array()
-                );
-
-                if (isset($tokens[$key-1]) && in_array($tokens[$key-1], $relation_tokens)) { // get relationship token
-                    $segment->relation_token = $tokens[$key-1];
-                }
-
-                $char_tmp_replaced = false;
-                if (strpos($token, '\\') !== false) {
-                    $token = preg_replace_callback( // temporary replace escaped characters
-                        '#(\\\\)(.{1})#',
-                        function ($matches) {
-                            return 'ESCAPED'.ord($matches[2]);
-                        },
-                        $token
-                    );
-                    $char_tmp_replaced = true;
-                }
-
-                $segment->selector = $token;
-
-                while (preg_match('/(.*)\:(not|contains|has)\((.+)\)$/i', $segment->selector, $matches)) { // pseudo selector
-                    $segment->selector = $matches[1];
-                    $segment->pseudo_filters[] = $matches[2].'('.$matches[3].')';
-                }
-
-                while (preg_match('/(.*)\:([a-z][a-z\-]+)$/i', $segment->selector, $matches)) { // pseudo selector
-                    $segment->selector = $matches[1];
-                    $segment->pseudo_filters[] = $matches[2];
-                }
-
-                while (preg_match('/(.*)\[([^]]+)\]$/', $segment->selector, $matches)) { // attribute selector
-                    $segment->selector = $matches[1];
-                    $segment->attribute_filters[] = $matches[2];
-                }
-
-                while (preg_match('/(.*)\.([a-z][a-z0-9\-\_]+)$/i', $segment->selector, $matches)) { // class selector
-                    $segment->selector = $matches[1];
-                    $segment->attribute_filters[] = 'class~="'.$matches[2].'"';
-                }
-
-                while (preg_match('/(.*)\#([a-z][a-z0-9\-\_]+)$/i', $segment->selector, $matches)) { // id selector
-                    $segment->selector = $matches[1];
-                    $segment->attribute_filters[] = 'id="'.$matches[2].'"';
-                }
-
-                if ($char_tmp_replaced) { // restore temporary replaced characters
-                    $set_escape_back = function (string $str) {
-                        return preg_replace_callback(
-                            '#(ESCAPED)([0-9]{1,3})#',
-                            function ($matches) {
-                                return chr($matches[2]);
-                            },
-                            $str
-                        );
-                    };
-
-                    $segment->selector = $set_escape_back($segment->selector);
-
-                    foreach ($segment->attribute_filters as &$attr_filter) {
-                        $attr_filter = $set_escape_back($attr_filter);
-                    }
-                }
-
+                
+            if ($segment = self::getSegmentFromToken($token, $key, $tokens)) {
                 $segments[] = $segment;
             }
         }
@@ -1169,6 +1099,94 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $new_path_tokens = self::transformCssSegments($segments);
 
         return implode('', $new_path_tokens);
+    }
+
+    /**
+     * Get segment data from token (css selector delimited by space and commas)
+     *
+     * @param string $token
+     * @param integer $key
+     * @param array $tokens
+     *
+     * @return object|boolean $segment
+     */
+    private static function getSegmentFromToken($token, $key, array $tokens)
+    {
+        $relation_tokens = array('>', '~', '+');
+
+        if (in_array($token, $relation_tokens)) { // not a segment
+            return false;
+        }
+
+        $segment = (object) array(
+            'selector' => '',
+            'relation_token' => false,
+            'attribute_filters' => array(),
+            'pseudo_filters' => array()
+        );
+
+        if (isset($tokens[$key-1]) && in_array($tokens[$key-1], $relation_tokens)) { // get relationship token
+            $segment->relation_token = $tokens[$key-1];
+        }
+
+        $char_tmp_replaced = false;
+        if (strpos($token, '\\') !== false) {
+            $token = preg_replace_callback( // temporary replace escaped characters
+                '#(\\\\)(.{1})#',
+                function ($matches) {
+                    return 'ESCAPED'.ord($matches[2]);
+                },
+                $token
+            );
+            $char_tmp_replaced = true;
+        }
+
+        $segment->selector = $token;
+
+        while (preg_match('/(.*)\:(not|contains|has)\((.+)\)$/i', $segment->selector, $matches)) { // pseudo selector
+            $segment->selector = $matches[1];
+            $segment->pseudo_filters[] = $matches[2].'('.$matches[3].')';
+        }
+
+        while (preg_match('/(.*)\:([a-z][a-z\-]+)$/i', $segment->selector, $matches)) { // pseudo selector
+            $segment->selector = $matches[1];
+            $segment->pseudo_filters[] = $matches[2];
+        }
+
+        while (preg_match('/(.*)\[([^]]+)\]$/', $segment->selector, $matches)) { // attribute selector
+            $segment->selector = $matches[1];
+            $segment->attribute_filters[] = $matches[2];
+        }
+
+        while (preg_match('/(.*)\.([a-z][a-z0-9\-\_]+)$/i', $segment->selector, $matches)) { // class selector
+            $segment->selector = $matches[1];
+            $segment->attribute_filters[] = 'class~="'.$matches[2].'"';
+        }
+
+        while (preg_match('/(.*)\#([a-z][a-z0-9\-\_]+)$/i', $segment->selector, $matches)) { // id selector
+            $segment->selector = $matches[1];
+            $segment->attribute_filters[] = 'id="'.$matches[2].'"';
+        }
+
+        if ($char_tmp_replaced) { // restore temporary replaced characters
+            $set_escape_back = function (string $str) {
+                return preg_replace_callback(
+                    '#(ESCAPED)([0-9]{1,3})#',
+                    function ($matches) {
+                        return chr($matches[2]);
+                    },
+                    $str
+                );
+            };
+
+            $segment->selector = $set_escape_back($segment->selector);
+
+            foreach ($segment->attribute_filters as &$attr_filter) {
+                $attr_filter = $set_escape_back($attr_filter);
+            }
+        }
+
+        return $segment;
     }
 
     /**
