@@ -1204,7 +1204,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             }
 
             foreach (array_reverse($segment->attribute_filters) as $attr) {
-                $new_path_tokens[] = self::transformAttrSelection($attr);
+                $new_path_tokens[] = self::transformAttrSelector($attr);
             }
 
             foreach (array_reverse($segment->pseudo_filters) as $attr) {
@@ -1301,66 +1301,33 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return string transformed expression (xpath)
      */
-    private static function transformAttrSelection($expression)
+    private static function transformAttrSelector($expression)
     {
         $expression = '['.$expression.']';
 
-        // arbitrary attribute strict value equality
+        // attribute with value
         $expression = preg_replace_callback(
-            '|\[@?([a-z0-9_-]+)=[\'"]([^\'"]+)[\'"]\]|i',
+            '|\[@?([a-z0-9_-]+)(([\!\*\^\$\~]{0,1})=)[\'"]([^\'"]+)[\'"]\]|i',
             function ($matches) {
-                return '[@' . strtolower($matches[1]) . "='" . $matches[2] . "']";
+                if ($matches[3] === '') { // arbitrary attribute strict value equality
+                    return '[@' . strtolower($matches[1]) . "='" . $matches[4] . "']";
+                } elseif ($matches[3] === '!') { // arbitrary attribute negation strict value
+                    return '[@' . strtolower($matches[1]) . "!='" . $matches[4] . "']";
+                } elseif ($matches[3] === '~') { // arbitrary attribute value contains full word
+                    return "[contains(concat(' ', normalize-space(@" . strtolower($matches[1]) . "), ' '), ' ". $matches[4] . " ')]";
+                } elseif ($matches[3] === '*') {  // arbitrary attribute value contains specified content
+                    return "[contains(@" . strtolower($matches[1]) . ", '" . $matches[4] . "')]";
+                } elseif ($matches[3] === '^') { // attribute value starts with specified content
+                    return "[starts-with(@" . strtolower($matches[1]) . ", '" . $matches[4] . "')]";
+                } elseif ($matches[3] === '$') { // attribute value ends with specified content
+                    return "[@".$matches[1]." and substring(@".$matches[1].", string-length(@".$matches[1].")-".
+                    (strlen($matches[4])-1).") = '".$matches[4]."']";
+                }
             },
             $expression
         );
 
-        // arbitrary attribute Negation strict value
-        $expression = preg_replace_callback(
-            '|\[@?([a-z0-9_-]+)!=[\'"]([^\'"]+)[\'"]\]|i',
-            function ($matches) {
-                return '[@' . strtolower($matches[1]) . "!='" . $matches[2] . "']";
-            },
-            $expression
-        );
-
-        // arbitrary attribute value contains full word
-        $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]+)~=[\'"]([^\'"]+)[\'"]\]|i',
-            function ($matches) {
-                return "[contains(concat(' ', normalize-space(@" . strtolower($matches[1]) . "), ' '), ' ". $matches[2] . " ')]";
-            },
-            $expression
-        );
-
-        // arbitrary attribute value contains specified content
-        $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]+)\*=[\'"]([^\'"]+)[\'"]\]|i',
-            function ($matches) {
-                return "[contains(@" . strtolower($matches[1]) . ", '" . $matches[2] . "')]";
-            },
-            $expression
-        );
-
-        // attribute value starts with specified content
-        $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]+)\^=[\'"]([^\'"]+)[\'"]\]|i',
-            function ($matches) {
-                return "[starts-with(@" . strtolower($matches[1]) . ", '" . $matches[2] . "')]";
-            },
-            $expression
-        );
-
-        // attribute value ends with specified content
-        $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]+)\$=[\'"]([^\'"]+)[\'"]\]|i',
-            function ($matches) {
-                return "[@".$matches[1]." and substring(@".$matches[1].", string-length(@".$matches[1].")-".
-                (strlen($matches[2])-1).") = '".$matches[2]."']";
-            },
-            $expression
-        );
-
-        // attribute no value
+        // attribute without value
         $expression = preg_replace_callback(
             '|\[([a-z0-9]+)([a-z0-9_-]*)\]|i',
             function ($matches) {
