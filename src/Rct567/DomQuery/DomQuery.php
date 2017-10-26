@@ -782,7 +782,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Import nodes and do something with them
+     * Import nodes and insert or append them via callback function
      *
      * @param string|self|array $content
      * @param callable $import_function
