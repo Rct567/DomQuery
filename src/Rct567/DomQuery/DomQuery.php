@@ -341,9 +341,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             return $this;
         } else { // get attribute value for first element
             if ($node = $this->getFirstElmNode()) {
-                if ($node instanceof \DOMElement) {
-                    return $node->getAttribute($name);
-                }
+                return $node->getAttribute($name);
             }
         }
     }
