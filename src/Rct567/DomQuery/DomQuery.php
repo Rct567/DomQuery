@@ -148,7 +148,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Add node
+     * Add node to result set
      *
      * @param \DOMNode $dom_node
      *
@@ -174,7 +174,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $this->preserve_no_newlines = (strpos($html, '<') !== false && strpos($html, "\n") === false);
 
         $xml_pi_node_added = false;
-        if ($encoding && stripos($html, '<?xml') === false) { // add pi nod to make libxml use the correct encoding
+        if ($encoding && stripos($html, '<?xml') === false) { // add pi node to make libxml use the correct encoding
             $html = '<?xml encoding="'.$encoding.'">'.$html;
             $xml_pi_node_added = true;
         }
