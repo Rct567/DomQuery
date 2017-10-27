@@ -121,13 +121,22 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test change attribute without value in xml mode
+     * Test change attribute without value in xml write mode
      */
-    public function testChangeAttributeWithoutValueInXmlMode()
+    public function testChangeAttributeWithoutValueInXmlWriteMode()
     {
         $dom = new DomQuery('<div selected>a</div>');
         $dom->xml_mode = true;
         $this->assertEquals("<div selected=\"selected\">a</div>", (string) $dom);
+    }
+
+    /*
+     * Test change attribute without value in xml read+write mode
+     */
+    public function testChangeAttributeWithoutValueInXmlReadWriteModeWithDeclaration()
+    {
+        $dom = new DomQuery("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n\n<div selected>a</div>");
+        $this->assertEquals("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n\n<div>a</div>", (string) $dom);
     }
 
     /*

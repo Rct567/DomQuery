@@ -45,6 +45,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public $xml_mode;
 
     /**
+     * Return xml with pi node (XML declaration)
+     *
+     * @var boolean
+     */
+    public $xml_print_pi = false;
+
+    /**
      * Xpath expression used to create the result of this instance
      *
      * @var string
@@ -184,8 +191,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $this->preserve_no_newlines = (strpos($content, '<') !== false && strpos($content, "\n") === false);
         
         if (!is_bool($this->xml_mode)) {
-            $this->xml_mode = stripos($content, '<?xml') === 0;
+            $this->xml_mode = (stripos($content, '<?xml') === 0);
         }
+
+        $this->xml_print_pi = (stripos($content, '<?xml') === 0);
 
         $xml_pi_node_added = false;
         if (!$this->xml_mode && $encoding && stripos($content, '<?xml') === false) { // add pi node to make libxml use the correct encoding
@@ -242,6 +251,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $result->root_instance = $this;
             }
             $result->xpath_query = $xpath_query;
+            $result->xml_mode = $this->xml_mode;
 
             if ($this->length > 0 && isset($this->xpath_query)) {  // all nodes as context
                 foreach ($this->nodes as $node) {
@@ -1044,6 +1054,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function getOuterHtml()
     {
         $outer_html = '';
+
+        if ($this->xml_mode && $this->xml_print_pi) {
+            $outer_html .= '<?xml version="'.$this->document->xmlVersion.'" encoding="'.$this->document->xmlEncoding.'"?>';
+            $outer_html .= "\n\n";
+        }
 
         foreach ($this->nodes as $node) {
             if (isset($this->document)) {
