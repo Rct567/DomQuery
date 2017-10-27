@@ -38,6 +38,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public $length = 0;
 
     /**
+     * Load and return as xml
+     *
+     * @var boolean
+     */
+    public $xml_mode;
+
+    /**
      * Xpath expression used to create the result of this instance
      *
      * @var string
@@ -96,7 +103,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             } elseif ($arg instanceof \DOMXPath) {
                 $this->dom_xpath = $arg;
             } elseif (is_string($arg) && strpos($arg, '>') !== false) {
-                $this->loadHtmlContent($arg);
+                $this->loadContent($arg);
             } elseif (is_object($arg)) {
                 throw new \InvalidArgumentException('Unknown object '.get_class($arg).' given as argument');
             } else {
@@ -165,20 +172,24 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Load html content
+     * Load html or xml content
      *
-     * @param string $html
+     * @param string $content
      * @param string $encoding
      *
      * @return void
      */
-    public function loadHtmlContent(string $html, $encoding='UTF-8')
+    public function loadContent(string $content, $encoding='UTF-8')
     {
-        $this->preserve_no_newlines = (strpos($html, '<') !== false && strpos($html, "\n") === false);
+        $this->preserve_no_newlines = (strpos($content, '<') !== false && strpos($content, "\n") === false);
+        
+        if (!is_bool($this->xml_mode)) {
+            $this->xml_mode = stripos($content, '<?xml') === 0;
+        }
 
         $xml_pi_node_added = false;
-        if ($encoding && stripos($html, '<?xml') === false) { // add pi node to make libxml use the correct encoding
-            $html = '<?xml encoding="'.$encoding.'">'.$html;
+        if (!$this->xml_mode && $encoding && stripos($content, '<?xml') === false) { // add pi node to make libxml use the correct encoding
+            $content = '<?xml encoding="'.$encoding.'">'.$content;
             $xml_pi_node_added = true;
         }
 
@@ -189,12 +200,17 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $dom_document->strictErrorChecking = false;
         $dom_document->validateOnParse = false;
         $dom_document->recover = true;
-        $dom_document->loadHTML($html, $this->libxml_options);
+
+        if ($this->xml_mode) {
+            $dom_document->loadXML($content, $this->libxml_options);
+        } else {
+            $dom_document->loadHTML($content, $this->libxml_options);
+        }
 
         $this->setDomDocument($dom_document);
 
-        foreach ($dom_document->childNodes as $node) {
-            if ($xml_pi_node_added) { // pi node added, now remove it
+        if ($xml_pi_node_added) { // pi node added, now remove it
+            foreach ($dom_document->childNodes as $node) {
                 if ($node->nodeType == XML_PI_NODE) {
                     $dom_document->removeChild($node);
                     break;
@@ -312,7 +328,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $document = $node->ownerDocument;
 
                 foreach ($node->childNodes as $node) {
-                    $html .= $document->saveHTML($node);
+                    if ($this->xml_mode) {
+                        $html .= $document->saveXML($node);
+                    } else {
+                        $html .= $document->saveHTML($node);
+                    }
                 }
 
                 if ($this->preserve_no_newlines) {
@@ -957,6 +977,27 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         return false;
     }
 
+
+    /**
+     * Create dom xpath instance
+     *
+     * @return \DOMXPath
+     */
+    private function createDomXpath()
+    {
+        $xpath = new \DOMXPath($this->document);
+
+        if ($this->xml_mode) { // register all name spaces
+            foreach ($xpath->query('namespace::*') as $node) {
+                if ($node->prefix !== 'xml') {
+                    $xpath->registerNamespace($node->prefix, $node->namespaceURI);
+                }
+            }
+        }
+
+        return $xpath;
+    }
+
     /**
      * Access xpath or ... DOMNode properties (nodeName, parentNode etc) or get attribute value of first node
      *
@@ -967,7 +1008,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function __get($name)
     {
         if ($name === 'dom_xpath') {
-            return new \DOMXPath($this->document);
+            return $this->createDomXpath();
         } elseif ($name === 'outerHTML') {
             return $this->getOuterHtml();
         }
@@ -1006,7 +1047,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         foreach ($this->nodes as $node) {
             if (isset($this->document)) {
-                $outer_html .= $this->document->saveHTML($node);
+                if ($this->xml_mode) {
+                    $outer_html .= $this->document->saveXML($node);
+                } else {
+                    $outer_html .= $this->document->saveHTML($node);
+                }
             }
         }
 

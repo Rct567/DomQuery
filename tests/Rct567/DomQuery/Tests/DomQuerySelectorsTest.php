@@ -70,6 +70,29 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test select by tagname selector with xml
+     */
+    public function testElementTagnameSelectorWithXml()
+    {
+        $dom = new DomQuery('<?xml version="1.0" encoding="UTF-8"?><root>'
+        .'<link>Hi</link><b:link>Hi2</b:link></root>');
+        $this->assertEquals('Hi', $dom->find('link')->text());
+        $this->assertEquals(1, $dom->find('link')->length);
+    }
+
+     /*
+     * Test select by tagname selector with xml name space
+     */
+    public function testElementTagnameSelectorWithXmlNameSpace()
+    {
+        $dom = new DomQuery('<?xml version="1.0" encoding="UTF-8"?>'
+        .'<root xmlns:h="http://www.w3.org/TR/html4/" xmlns:f="https://www.w3schools.com/furniture">'
+        .'<f:link>Hi</f:link><b:link>Hi2</b:link></root>');
+        $this->assertEquals('Hi', $dom->find('f\\:link')->text());
+        $this->assertEquals(1, $dom->find('f\\:link')->length);
+    }
+
+    /*
      * Test wildcard / all selector
      */
     public function testWildcardSelector()

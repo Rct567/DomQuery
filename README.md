@@ -98,6 +98,17 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.get( index )`
 - `.each ( callable(i,elm) )`
 
+## XML support
+
+- XML content will automatically be loaded '[as XML](http://php.net/manual/en/domdocument.loadxml.php)'
+- Namespaces should be automatically registered (no need to do it [manually](http://php.net/manual/en/domxpath.registernamespace.php))
+
+Escaping meta chars in selector to find elements with namespace:
+
+```php
+$dom->find('namespace\\:h1')->text();
+```
+
 ## About
 
 ### Requirements
