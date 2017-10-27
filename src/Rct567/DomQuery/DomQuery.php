@@ -1241,6 +1241,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * @param array $new_path_tokens
      *
      * @return string transformed expression (xpath)
+     * @throws \Exception
      */
     private static function transformCssPseudoSelector($expression, array &$new_path_tokens)
     {
@@ -1457,7 +1458,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * @param mixed $key
      * @param mixed $value
      *
-     * @throws Exception\BadMethodCallException when attempting to write to a read-only item
+     * @throws \BadMethodCallException when attempting to write to a read-only item
      */
     public function offsetSet($key, $value)
     {
@@ -1469,7 +1470,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param mixed $key
      *
-     * @throws Exception\BadMethodCallException when attempting to unset a read-only item
+     * @throws \BadMethodCallException when attempting to unset a read-only item
      */
     public function offsetUnset($key)
     {
