@@ -35,7 +35,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @var integer
      */
-    public $length = null;
+    public $length = 0;
 
     /**
      * Xpath expression used to create the result of this instance
@@ -81,6 +81,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * Constructor
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct()
     {
@@ -107,6 +109,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * Create new instance
      *
      * @return self
+     * @throws \InvalidArgumentException
      */
     public static function create()
     {
@@ -191,7 +194,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $this->setDomDocument($dom_document);
 
         foreach ($dom_document->childNodes as $node) {
-            if ($xml_pi_node_added) { // pi nod added, now remove it
+            if ($xml_pi_node_added) { // pi node added, now remove it
                 if ($node->nodeType == XML_PI_NODE) {
                     $dom_document->removeChild($node);
                     break;
