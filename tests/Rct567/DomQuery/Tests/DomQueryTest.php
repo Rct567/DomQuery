@@ -112,6 +112,25 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test preserve attribute without value
+     */
+    public function testPreserverAttributeWithoutValue()
+    {
+        $dom = new DomQuery('<div selected>a</div>');
+        $this->assertEquals('<div selected>a</div>', (string) $dom);
+    }
+
+    /*
+     * Test change attribute without value in xml mode
+     */
+    public function testChangeAttributeWithoutValueInXmlMode()
+    {
+        $dom = new DomQuery('<div selected>a</div>');
+        $dom->xml_mode = true;
+        $this->assertEquals("<div selected=\"selected\">a</div>", (string) $dom);
+    }
+
+    /*
      * Test each iteration
      */
     public function testEachIteration()
