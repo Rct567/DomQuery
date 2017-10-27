@@ -1,7 +1,7 @@
 {
     "name": "rct567/dom-query",
     "description": "DomQuery is a PHP library that allows easy 'jQuery like' DOM traversing and manipulation",
-	"keywords": ["jquery", "dom", "html", "xml"],
+	"keywords": ["jquery", "dom", "html", "xml", "css", "selector"],
     "type": "library",
     "license": "MIT",
 	"autoload": {
