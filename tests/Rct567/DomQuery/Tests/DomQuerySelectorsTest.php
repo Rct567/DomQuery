@@ -440,6 +440,21 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test root pseudo selector
+     */
+    public function testRootPseudoSelector()
+    {
+        $dom = new DomQuery('<div id="yep">
+            <span>nope</span>
+            <h1>nope</h1>
+            <h6>nope</h6>
+        </div>');
+
+        $this->assertEquals('yep', $dom->find(':root')->attr('id'));
+        $this->assertEquals(1, $dom->find(':root')->length);
+    }
+
+    /*
      * Test invalid xpath expression
      */
     public function testInvalidPseudoSelector()
