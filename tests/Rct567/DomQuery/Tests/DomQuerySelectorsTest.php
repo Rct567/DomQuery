@@ -378,6 +378,37 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test empty pseudo selector
+     */
+    public function testEmptyPseudoSelector()
+    {
+        $dom = new DomQuery('<ul id="list-b">
+            <li id="nope">nope</li>
+            <li id="yep"></li>
+            <li id="nope"><span></span></li>
+        </ul>');
+
+        $this->assertEquals('yep', $dom->find('li:empty')->attr('id'));
+        $this->assertEquals(1, $dom->find('li:empty')->length);
+    }
+
+    /*
+     * Test empty pseudo selector
+     */
+    public function testNotEmptyPseudoSelector()
+    {
+        $dom = new DomQuery('<ul id="list-b">
+            <li id="nope"></li>
+            <li id="yep">hi</li>
+            <li id="yep2"><span></span></li>
+        </ul>');
+
+        $this->assertEquals('yep', $dom->find('li:not-empty')->attr('id'));
+        $this->assertEquals('yep2', $dom->find('li:not-empty')->last()->attr('id'));
+        $this->assertEquals(2, $dom->find('li:not-empty')->length);
+    }
+
+    /*
      * Test invalid xpath expression
      */
     public function testInvalidPseudoSelector()
