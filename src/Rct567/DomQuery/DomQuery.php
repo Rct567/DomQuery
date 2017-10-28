@@ -1272,14 +1272,14 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $new_path_tokens[] = '//';
             }
 
-            if ($segment->relation_token === '+') {
-                $segment->pseudo_filters[] = 'first-child';
-            }
-
             if ($segment->selector != '') {
                 $new_path_tokens[] = $segment->selector; // specific tagname
             } elseif (substr(array_slice($new_path_tokens, -1)[0], -2) != '::') {
                 $new_path_tokens[] = '*'; // any tagname
+            }
+
+            if ($segment->relation_token === '+') {
+                $new_path_tokens[] = '[1]';
             }
 
             foreach (array_reverse($segment->attribute_filters) as $attr) {
@@ -1351,8 +1351,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $pseudo_class_selectors = array(
             'disabled' => '[@disabled]',
-            'first-child' => '[1]',
-            'last-child' => '[last()]',
+            'first-child' => '[not(preceding-sibling::*)]',
+            'last-child' => '[not(following-sibling::*)]',
             'only-child' => '[count(*)=1]',
             'empty' => '[count(*) = 0 and string-length() = 0]',
             'not-empty' => '[count(*) > 0 or string-length() > 0]',

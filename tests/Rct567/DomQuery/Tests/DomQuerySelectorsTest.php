@@ -50,7 +50,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             'p > a:has(b > a)' => '//p/a[descendant::b/a]',
             'p > a:has(a)' => '//p/a[descendant::a]',
             'a:has(b)' => '//a[descendant::b]',
-            'a:first-child:first' => '(//a[1])[1]',
+            'a:first-child:first' => '(//a[not(preceding-sibling::*)])[1]',
             'div > a:first' => '(//div/a)[1]',
             ':first' => '(//*)[1]'
         );
@@ -87,9 +87,10 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     {
         $dom = new DomQuery('<?xml version="1.0" encoding="UTF-8"?>'
         .'<root xmlns:h="http://www.w3.org/TR/html4/" xmlns:f="https://www.w3schools.com/furniture">'
-        .'<f:link>Hi</f:link><b:link>Hi2</b:link></root>');
+        .'<f:link>Hi</f:link><b:link>Hi2</b:link><h:link>Hi3</h:link></root>');
         $this->assertEquals('Hi', $dom->find('f\\:link')->text());
         $this->assertEquals(1, $dom->find('f\\:link')->length);
+        $this->assertEquals('Hi3', $dom->find('h\\:link')->text());
     }
 
     /*
@@ -293,6 +294,47 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(3, $dom->find('li')->filter(':odd')->length); // 2 4 6
         $this->assertEquals('list item 6', $dom->find('li')->filter(':odd')->last()->text());
+    }
+
+    /*
+     * Test first child pseudo selector
+     */
+    public function testFirstChildPseudoSelector()
+    {
+        $dom = new DomQuery('<div>
+        <div id="list-a">
+            <span>a</span>
+            <li>nope</li>
+        </div>
+        <ul id="list-b">
+            <li>item 1</li>
+            <li>item 2</li>
+            <li>item 3</li>
+        </ul></div>');
+
+        $this->assertEquals(0, $dom->find('ul:first-child')->length);
+        $this->assertEquals(1, $dom->find('div > div:first-child')->length);
+        $this->assertEquals('item 1', $dom->find('li:first-child')->text());
+    }
+
+    /*
+     * Test last child pseudo selector
+     */
+    public function testLastChildPseudoSelector()
+    {
+        $dom = new DomQuery('<section>
+        <div id="list-a">
+            <li>nope</li>
+            <span>a</span>
+        </div>
+        <ul id="list-b">
+            <li>item 1</li>
+            <li>item 2</li>
+            <li>item 3</li>
+        </ul></section>');
+
+        $this->assertEquals(0, $dom->find('div:last-child')->length);
+        $this->assertEquals('item 3', $dom->find('li:last-child')->text());
     }
 
     /*
