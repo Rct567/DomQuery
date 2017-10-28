@@ -148,7 +148,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
 
         $result = array();
 
-        $dom->find('a')->each(function ($i, $elm) use (&$result) {
+        $dom->find('a')->each(function ($elm, $i) use (&$result) {
             $result[$i] = $elm;
         });
 

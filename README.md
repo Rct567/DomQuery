@@ -96,7 +96,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
  #### Miscellaneous > DOM Element Methods | Traversing
 
 - `.get( index )`
-- `.each ( callable(i,elm) )`
+- `.each ( callable(elm,i) )`
 
 ## XML support
 
