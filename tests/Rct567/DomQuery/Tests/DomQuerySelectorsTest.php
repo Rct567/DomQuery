@@ -409,6 +409,37 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test header pseudo selector
+     */
+    public function testHeaderPseudoSelector()
+    {
+        $dom = new DomQuery('<div>
+            <span>nope</span>
+            <h1>yep</h1>
+            <h6>yep2</h6>
+        </div>');
+
+        $this->assertEquals('yep', $dom->find(':header')->text());
+        $this->assertEquals('yep2', $dom->find(':header')->last()->text());
+        $this->assertEquals('nope', $dom->find('div > *:not(:header)')->text());
+    }
+
+    /*
+     * Test first and last pseudo selector
+     */
+    public function testFirstAndLastPseudoSelector()
+    {
+        $dom = new DomQuery('<div>
+            <span>yep</span>
+            <h1>nope</h1>
+            <h6>yep2</h6>
+        </div>');
+
+        $this->assertEquals('yep', $dom->find('div > *:first')->text());
+        $this->assertEquals('yep2', $dom->find('div > *:last')->text());
+    }
+
+    /*
      * Test invalid xpath expression
      */
     public function testInvalidPseudoSelector()
