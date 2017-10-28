@@ -361,6 +361,23 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test parent pseudo selector
+     */
+    public function testParentPseudoSelector()
+    {
+        $dom = new DomQuery('<section>
+        <ul id="list-b">
+            <li>nope</li>
+            <li><span>yep</span></li>
+            <li>nope</li>
+        </ul></section>');
+
+        $this->assertEquals('yep', $dom->find('li:parent')->text());
+        $this->assertEquals(1, $dom->find('li:parent')->length);
+        $this->assertEquals(2, $dom->find('li:not(:parent)')->length);
+    }
+
+    /*
      * Test invalid xpath expression
      */
     public function testInvalidPseudoSelector()
