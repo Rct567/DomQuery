@@ -1353,7 +1353,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             'disabled' => '[@disabled]',
             'first-child' => '[not(preceding-sibling::*)]',
             'last-child' => '[not(following-sibling::*)]',
-            'only-child' => '[count(*)=1]',
+            'only-child' => '[not(preceding-sibling::*) and not(following-sibling::*)]',
             'empty' => '[count(*) = 0 and string-length() = 0]',
             'not-empty' => '[count(*) > 0 or string-length() > 0]',
             'parent' => '[count(*) > 0]',

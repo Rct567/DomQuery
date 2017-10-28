@@ -335,6 +335,27 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(0, $dom->find('div:last-child')->length);
         $this->assertEquals('item 3', $dom->find('li:last-child')->text());
+        $this->assertTrue($dom->find('ul')->is(':last-child'));
+    }
+
+    /*
+     * Test only child pseudo selector
+     */
+    public function testOnlyChildPseudoSelector()
+    {
+        $dom = new DomQuery('<section>
+        <ul id="list-b">
+            <li>nope</li>
+            <span>nope</span>
+        </ul>
+        <ul id="list-b">
+            <li>yep</li>
+        </ul></section>');
+
+        $this->assertEquals(0, $dom->find('span:only-child')->length);
+        $this->assertEquals(0, $dom->find('ul:only-child')->length);
+        $this->assertTrue($dom->is(':only-child'));
+        $this->assertEquals('yep', $dom->find('li:only-child')->text());
     }
 
     /*
