@@ -21,6 +21,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             'p a' => '//p//a',
             'div, span' => '//div|//span',
             'a[href]' => '//a[@href]',
+            'a[href][rel]' => '//a[@href][@rel]',
             'a[href="html"]' => '//a[@href=\'html\']',
             'a[href!="html"]' => '//a[@href!=\'html\']',
             'a[href*=\'html\']' => '//a[contains(@href, \'html\')]',
@@ -258,7 +259,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             <li id="item3">list item 3</li>
             <li>list item 4</li>
             <li class="item-item">list item 5</li>
-            <li class="item item6">list item 6</li>
+            <li class="item item6" rel="x">list item 6</li>
         </ul>');
 
         $this->assertEquals(2, $dom->find('li[id]')->length);
@@ -268,6 +269,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(0, $dom->find('li[id$=\'item\']')->length);
         $this->assertEquals('list item 3', $dom->find('li[id=\'item3\']')->text());
         $this->assertEquals('list item 6', $dom->find('li[class~=\'item6\']')->text());
+        $this->assertEquals('list item 6', $dom->find('li[class][rel]')->text());
         $this->assertEquals(1, $dom->find('li[class~=\'item\']')->length);
         $this->assertEquals(1, $dom->find('li[class~=\'item\'][class~=\'item6\']')->length);
         $this->assertEquals(0, $dom->find('li[class~=\'item\'][id~=\'item\']')->length);
