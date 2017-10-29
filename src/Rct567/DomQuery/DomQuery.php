@@ -1099,7 +1099,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     private static function replaceCharInsideEnclosure($str, $search_char, $enclosure_open='(', $enclosure_close=')')
     {
-        if ($str == '') {
+        if ($str == '' || strpos($str, $search_char) === false || strpos($str, $enclosure_open) === false) {
             return $str;
         }
 
@@ -1188,6 +1188,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         if (isset($tokens[$key-1]) && in_array($tokens[$key-1], $relation_tokens)) { // get relationship token
             $segment->relation_token = $tokens[$key-1];
+        }
+
+        if (ctype_alpha($token)) { // simple element selector
+            $segment->selector = $token;
+            return $segment;
         }
 
         $char_tmp_replaced = false;
