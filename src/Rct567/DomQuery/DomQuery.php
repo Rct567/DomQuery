@@ -1305,43 +1305,22 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     private static function transformCssPseudoSelector($expression, array &$new_path_tokens)
     {
-        if (strpos($expression, 'not(') === 0) {
-            $expression = preg_replace_callback(
-                '|not\((.+)\)|i',
-                function ($matches) {
-                    $parts = explode(',', $matches[1]);
-                    foreach ($parts as &$part) {
-                        $part = trim($part);
-                        $part = 'self::'.ltrim(self::cssToXpath($part), '/');
-                    }
-                    $not_selector = implode(' or ', $parts);
-                    return '[not('.$not_selector.')]';
-                },
-                $expression
-            );
-            return $expression;
-        } elseif (strpos($expression, 'contains(') === 0) {
-            $expression = preg_replace_callback(
-                '|contains\((.+)\)|i',
-                function ($matches) {
-                    return '[text()[contains(.,\''.$matches[1].'\')]]'; // contain the specified text
-                },
-                $expression
-            );
-            return $expression;
-        } elseif (strpos($expression, 'has(') === 0) {
-            $expression = preg_replace_callback(
-                '|has\((.+)\)|i',
-                function ($matches) {
-                    if (substr($matches[1], 0, 2) == '> ') {
-                        return '[child::' . ltrim(self::cssToXpath($matches[1]), '/') .']';
-                    } else {
-                        return '[descendant::' . ltrim(self::cssToXpath($matches[1]), '/') .']';
-                    }
-                },
-                $expression
-            );
-            return $expression;
+        if (preg_match('|not\((.+)\)|i', $expression, $matches)) {
+            $parts = explode(',', $matches[1]);
+            foreach ($parts as &$part) {
+                $part = trim($part);
+                $part = 'self::'.ltrim(self::cssToXpath($part), '/');
+            }
+            $not_selector = implode(' or ', $parts);
+            return '[not('.$not_selector.')]';
+        } elseif (preg_match('|contains\((.+)\)|i', $expression, $matches)) {
+            return '[text()[contains(.,\''.$matches[1].'\')]]'; // contain the specified text
+        } elseif (preg_match('|has\((.+)\)|i', $expression, $matches)) {
+            if (substr($matches[1], 0, 2) === '> ') {
+                return '[child::' . ltrim(self::cssToXpath($matches[1]), '/') .']';
+            } else {
+                return '[descendant::' . ltrim(self::cssToXpath($matches[1]), '/') .']';
+            }
         } elseif ($expression === 'first' || $expression === 'last') { // new path inside selection
             array_unshift($new_path_tokens, '(');
             $new_path_tokens[] = ')';
