@@ -1383,38 +1383,27 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     private static function transformAttrSelector($expression)
     {
-        $expression = '['.$expression.']';
-
-        // attribute with value
-        $expression = preg_replace_callback(
-            '|\[@?([a-z0-9_-]+)(([\!\*\^\$\~]{0,1})=)[\'"]([^\'"]+)[\'"]\]|i',
-            function ($matches) {
-                if ($matches[3] === '') { // arbitrary attribute strict value equality
-                    return '[@' . strtolower($matches[1]) . "='" . $matches[4] . "']";
-                } elseif ($matches[3] === '!') { // arbitrary attribute negation strict value
-                    return '[@' . strtolower($matches[1]) . "!='" . $matches[4] . "']";
-                } elseif ($matches[3] === '~') { // arbitrary attribute value contains full word
-                    return "[contains(concat(' ', normalize-space(@" . strtolower($matches[1]) . "), ' '), ' ". $matches[4] . " ')]";
-                } elseif ($matches[3] === '*') {  // arbitrary attribute value contains specified content
-                    return "[contains(@" . strtolower($matches[1]) . ", '" . $matches[4] . "')]";
-                } elseif ($matches[3] === '^') { // attribute value starts with specified content
-                    return "[starts-with(@" . strtolower($matches[1]) . ", '" . $matches[4] . "')]";
-                } elseif ($matches[3] === '$') { // attribute value ends with specified content
-                    return "[@".$matches[1]." and substring(@".$matches[1].", string-length(@".$matches[1].")-".
-                    (strlen($matches[4])-1).") = '".$matches[4]."']";
-                }
-            },
-            $expression
-        );
+        if (preg_match('|@?([a-z0-9_-]+)(([\!\*\^\$\~]{0,1})=)[\'"]([^\'"]+)[\'"]|i', $expression, $matches)) {
+            if ($matches[3] === '') { // arbitrary attribute strict value equality
+                return '[@' . strtolower($matches[1]) . "='" . $matches[4] . "']";
+            } elseif ($matches[3] === '!') { // arbitrary attribute negation strict value
+                return '[@' . strtolower($matches[1]) . "!='" . $matches[4] . "']";
+            } elseif ($matches[3] === '~') { // arbitrary attribute value contains full word
+                return "[contains(concat(' ', normalize-space(@" . strtolower($matches[1]) . "), ' '), ' ". $matches[4] . " ')]";
+            } elseif ($matches[3] === '*') {  // arbitrary attribute value contains specified content
+                return "[contains(@" . strtolower($matches[1]) . ", '" . $matches[4] . "')]";
+            } elseif ($matches[3] === '^') { // attribute value starts with specified content
+                return "[starts-with(@" . strtolower($matches[1]) . ", '" . $matches[4] . "')]";
+            } elseif ($matches[3] === '$') { // attribute value ends with specified content
+                return "[@".$matches[1]." and substring(@".$matches[1].", string-length(@".$matches[1].")-".
+                (strlen($matches[4])-1).") = '".$matches[4]."']";
+            }
+        }
 
         // attribute without value
-        $expression = preg_replace_callback(
-            '|\[([a-z0-9]+)([a-z0-9_-]*)\]|i',
-            function ($matches) {
-                return "[@" . $matches[1].$matches[2] . "]";
-            },
-            $expression
-        );
+        if (preg_match('|([a-z0-9]+)([a-z0-9_-]*)|i', $expression, $matches)) {
+            return "[@" . $matches[1].$matches[2] . "]";
+        }
 
         return $expression;
     }
