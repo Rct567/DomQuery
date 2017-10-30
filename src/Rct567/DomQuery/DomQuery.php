@@ -45,7 +45,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public $xml_mode;
 
     /**
-     * Return xml with pi node (XML declaration)
+     * Return xml with pi node (xml declaration) if in xml mode
      *
      * @var boolean
      */
