@@ -234,24 +234,50 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $this->length = count($this->nodes);
     }
 
+
+    /**
+     * Create new instance of self with some properties of its parents
+     *
+     * @return self
+     */
+    private function createChildInstance()
+    {
+        $instance = new self(...func_get_args());
+
+        if (isset($this->document)) {
+            $instance->setDomDocument($this->document);
+        }
+
+        if (isset($this->root_instance)) {
+            $instance->root_instance = $this->root_instance;
+        } else {
+            $instance->root_instance = $this;
+        }
+
+        if (is_bool($this->xml_mode)) {
+            $instance->xml_mode = $this->xml_mode;
+        }
+
+        if (isset($this->document) && $this->dom_xpath instanceof \DOMXPath) {
+            $instance->dom_xpath = $this->dom_xpath;
+        }
+
+        return $instance;
+    }
+
     /**
      * Use xpath and return new DomQuery with resulting nodes
      *
      * @param string $xpath_query
      *
-     * @return self|void
+     * @return self
      */
     public function xpath(string $xpath_query)
     {
+        $result = $this->createChildInstance();
+
         if (isset($this->document)) {
-            $result = new self($this->document, $this->dom_xpath);
-            if (isset($this->root_instance)) {
-                $result->root_instance = $this->root_instance;
-            } else {
-                $result->root_instance = $this;
-            }
             $result->xpath_query = $xpath_query;
-            $result->xml_mode = $this->xml_mode;
 
             if ($this->length > 0 && isset($this->xpath_query)) {  // all nodes as context
                 foreach ($this->nodes as $node) {
@@ -264,9 +290,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                     $result->loadDomNodeList($result_node_list);
                 }
             }
-
-            return $result;
         }
+
+        return $result;
     }
 
     /**
@@ -274,19 +300,18 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string $css_expression
      *
-     * @return self|void
+     * @return self
      */
     public function find(string $css_expression)
     {
-        if (isset($this->document)) {
-            $xpath_expression = self::cssToXpath($css_expression);
-            $result = $this->xpath($xpath_expression);
 
-            $result->css_query = $css_expression;
-            $result->selector = $css_expression; // jquery style
+        $xpath_expression = self::cssToXpath($css_expression);
+        $result = $this->xpath($xpath_expression);
 
-            return $result;
-        }
+        $result->css_query = $css_expression;
+        $result->selector = $css_expression; // jquery style
+
+        return $result;
     }
 
     /**
@@ -521,7 +546,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string $selector
      *
-     * @return self|void
+     * @return self
      */
     public function children(string $selector='*')
     {
@@ -546,13 +571,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|null $selector expression that filters the set of matched elements
      *
-     * @return self|void
+     * @return self
      */
     public function parent(string $selector=null)
     {
-        if (isset($this->document) && $this->length > 0) {
-            $result = new self($this->document);
+        $result = $this->createChildInstance();
 
+        if (isset($this->document) && $this->length > 0) {
             foreach ($this->nodes as $node) {
                 if (!is_null($node->parentNode)) {
                     $result->addDomNode($node->parentNode);
@@ -562,9 +587,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             if ($selector) {
                 $result = $result->filter($selector);
             }
-
-            return $result;
         }
+
+        return $result;
     }
 
     /**
@@ -576,7 +601,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function not(string $selector)
     {
-        $result = new self($this->document, $this->dom_xpath);
+        $result = $this->createChildInstance();
 
         if ($this->length > 0) {
             $xpath_query = self::cssToXpath($selector);
@@ -612,7 +637,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function filter(string $selector)
     {
-        $result = new self($this->document, $this->dom_xpath);
+        $result = $this->createChildInstance();
 
         if ($this->length > 0) {
             $xpath_query = self::cssToXpath($selector);
@@ -684,17 +709,15 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|null $selector expression that filters the set of matched elements
      *
-     * @return self|void
+     * @return self
      */
     public function first(string $selector=null)
     {
-        if (isset($this[0])) {
-            $result = $this[0];
-            if ($selector) {
-                $result = $result->filter($selector);
-            }
-            return $result;
+        $result = $this[0];
+        if ($selector) {
+            $result = $result->filter($selector);
         }
+        return $result;
     }
 
     /**
@@ -702,17 +725,15 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|null $selector expression that filters the set of matched elements
      *
-     * @return self|void
+     * @return self
      */
     public function last(string $selector=null)
     {
-        if ($this->length > 0 && isset($this[$this->length-1])) {
-            $result = $this[$this->length-1];
-            if ($selector) {
-                $result = $result->filter($selector);
-            }
-            return $result;
+        $result = $this[$this->length-1];
+        if ($selector) {
+            $result = $result->filter($selector);
         }
+        return $result;
     }
 
     /**
@@ -720,12 +741,14 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|null $selector expression that filters the set of matched elements
      *
-     * @return self|void
+     * @return self
      */
     public function next(string $selector=null)
     {
+        $result = $this->createChildInstance();
+
         if (isset($this->document) && $this->length > 0) {
-            $result = new self($this->document);
+            $result->setDomDocument($this->document);
 
             foreach ($this->nodes as $node) {
                 if (!is_null($node->nextSibling)) {
@@ -736,9 +759,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             if ($selector) {
                 $result = $result->filter($selector);
             }
-
-            return $result;
         }
+
+        return $result;
     }
 
     /**
@@ -746,12 +769,14 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|null $selector expression that filters the set of matched elements
      *
-     * @return self|void
+     * @return self
      */
     public function prev(string $selector=null)
     {
+        $result = $this->createChildInstance();
+
         if (isset($this->document) && $this->length > 0) {
-            $result = new self($this->document);
+            $result->setDomDocument($this->document);
 
             foreach ($this->nodes as $node) { // get all previous sibling of all nodes
                 if (!is_null($node->previousSibling)) {
@@ -762,9 +787,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             if ($selector) {
                 $result = $result->filter($selector);
             }
-
-            return $result;
         }
+
+        return $result;
     }
 
     /**
@@ -1432,7 +1457,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $iteration_result = array();
         if (is_array($this->nodes)) {
             foreach ($this->nodes as $node) {
-                $iteration_result[] = new self($node);
+                $iteration_result[] = $this->createChildInstance($node);
             }
         }
 
@@ -1474,14 +1499,14 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param int $key
      *
-     * @return mixed
+     * @return self
      */
     public function offsetGet($key)
     {
         if (isset($this->nodes[$key])) {
-            return new self($this->nodes[$key]);
+            return $this->createChildInstance($this->nodes[$key]);
         } else {
-            return null;
+            return $this->createChildInstance();
         }
     }
 

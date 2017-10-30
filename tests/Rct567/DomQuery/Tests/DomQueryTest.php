@@ -163,11 +163,16 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     {
         $dom = new DomQuery;
         $this->assertEquals(0, count($dom));
-        $this->assertNull($dom[0]);
         $this->assertFalse(isset($dom[0]));
         $this->assertEquals(0, count($dom->find('*')));
         $this->assertEquals(0, count($dom->children()));
+
         $this->assertNull($dom->get(0));
+
+        $this->assertInstanceOf(DomQuery::class, $dom[0]);
+        $this->assertInstanceOf(DomQuery::class, $dom->children('a')->first('b')->last('c')->find('d'));
+        $this->assertInstanceOf(DomQuery::class, $dom->parent('a')->next('b')->prev('c'));
+        $this->assertInstanceOf(DomQuery::class, $dom->not('a')->filter('b'));
 
         $this->assertNull($dom->getDocument());
         $this->assertNull($dom->getXpathQuery());
