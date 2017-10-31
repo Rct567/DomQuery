@@ -82,6 +82,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.prepend( [content],... )`
 - `.after( [content],... )`
 - `.before( [content],... )`
+- `.wrap( [content] )`
 - `.remove( [selector] )`
 
  #### Attributes | Manipulation 

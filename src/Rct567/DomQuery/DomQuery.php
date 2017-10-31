@@ -945,6 +945,34 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Wrap an HTML structure around each element in the set of matched elements
+     *
+     * @param string|self $content,...
+     *
+     * @return $this
+     */
+    public function wrap()
+    {
+        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+            if ($node->parentNode instanceof \DOMDocument) {
+                throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
+            } else {
+                // replace node with imported
+                $old = $node->parentNode->replaceChild($imported_node, $node);
+                // old node goes inside the most inner child of wrapper
+                $target = $imported_node;
+                while ($target->hasChildNodes()) {
+                    $target = $target->childNodes[0];
+                }
+
+                $target->appendChild($old);
+            }
+        });
+
+        return $this;
+    }
+
+    /**
      * Return array with nodes
      *
      * @return \DOMNode[]

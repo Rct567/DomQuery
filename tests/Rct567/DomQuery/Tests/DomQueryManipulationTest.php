@@ -6,6 +6,47 @@ use Rct567\DomQuery\DomQuery;
 
 class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
 {
+
+    /*
+     * Test wrap on element with sibling
+     */
+    public function testWrapOnElementWithSibling()
+    {
+        $dom = DomQuery::create('<p> <span>Hi</span> <a>Hello</a> </p>');
+        $dom->find('a')->wrap('<x></x>');
+        $this->assertEquals("<p> <span>Hi</span> <x><a>Hello</a></x> </p>", (string) $dom);
+    }
+
+    /*
+     * Test wrap
+     */
+    public function testWrap()
+    {
+        $dom = DomQuery::create('<p><a>Hello</a></p>');
+        $dom->find('a')->wrap('<div></div>');
+        $this->assertEquals("<p><div><a>Hello</a></div></p>", (string) $dom);
+    }
+
+    /*
+     * Test wrap on multiple elements
+     */
+    public function testWrapOnMultipleElements()
+    {
+        $dom = DomQuery::create('<p> <span>Hi</span> <a>Hello</a> </p>');
+        $dom->find('a, span')->wrap('<x></x>');
+        $this->assertEquals("<p> <x><span>Hi</span></x> <x><a>Hello</a></x> </p>", (string) $dom);
+    }
+
+    /*
+     * Test wrap where wrapper has multiple elements
+     */
+    public function testWrapWithMultipleElementsWrapper()
+    {
+        $dom = DomQuery::create('<p><a>Hello</a></p>');
+        $dom->find('a')->wrap('<div><x></x></div>');
+        $this->assertEquals("<p><div><x><a>Hello</a></x></div></p>", (string) $dom);
+    }
+
     /*
      * Test remove
      */
