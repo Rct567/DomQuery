@@ -567,6 +567,36 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Get the siblings of each element in the set of matched elements, optionally filtered by a selector.
+     *
+     * @param string|null $selector expression that filters the set of matched elements
+     *
+     * @return self
+     */
+    public function siblings(string $selector=null)
+    {
+        $result = $this->createChildInstance();
+
+        if (isset($this->document) && $this->length > 0) {
+            foreach ($this->nodes as $node) {
+                if (!is_null($node->parentNode)) {
+                    foreach ($node->parentNode->childNodes as $sibling) {
+                        if (!$sibling->isSameNode($node) && $sibling instanceof \DOMElement) {
+                            $result->addDomNode($sibling);
+                        }
+                    }
+                }
+            }
+
+            if ($selector) {
+                $result = $result->filter($selector);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Get the parent of each element in the current set of matched elements, optionally filtered by a selector
      *
      * @param string|null $selector expression that filters the set of matched elements

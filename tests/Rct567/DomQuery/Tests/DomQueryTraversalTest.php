@@ -30,6 +30,19 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test first last, with and without filter selector
+     */
+    public function testSiblings()
+    {
+        $dom = new DomQuery('<div><a>1</a> <a id="target">2</a> <a>3</a></div>');
+        $siblings = $dom->find('#target')->siblings();
+
+        $this->assertEquals(2, $siblings->length);
+        $this->assertEquals('1', $siblings->first()->text());
+        $this->assertEquals('3', $siblings->last()->text());
+    }
+
+    /*
      *  Test get parent
      */
     public function testParent()

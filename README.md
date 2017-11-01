@@ -65,6 +65,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.parent( [selector] )`
 - `.next( [selector] )`
 - `.prev( [selector] )`
+- `.siblings( [selector] )`
 
  #### Traversing > Filtering
 
