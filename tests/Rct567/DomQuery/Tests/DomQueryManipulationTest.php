@@ -24,6 +24,22 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test wrap all with non wrapping sibling
+     */
+    public function testWrapAllWithNonWrappingSibling()
+    {
+        $dom = DomQuery::create('<html><div class="container">'.
+            '<div class="inner">Hello</div> <div class="nope">Goodbye</div>'.
+        '</div></html>');
+
+        $dom->find('.inner')->wrapAll('<div class="new" />');
+
+        $this->assertEquals('<html><div class="container">'.
+            '<div class="new"><div class="inner">Hello</div></div> <div class="nope">Goodbye</div>'.
+        '</div></html>', (string) $dom);
+    }
+
+    /*
      * Test wrap all with multiple elements wrapper
      */
     public function testWrapAllWithMultipleElementsWrapper()
@@ -110,16 +126,21 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
      /*
-     * Test append html
-     */
+      * Test append html string
+      */
     public function testAppend()
     {
-        // append string with html
         $dom = new DomQuery('<a></a><p></p><b></b><a></a>');
         $dom->find('a')->append('<span></span>');
         $this->assertEquals('<a><span></span></a><p></p><b></b><a><span></span></a>', (string) $dom);
 
-        // append DomQuery instance
+    }
+
+    /*
+     * Test append DomQuery instance
+     */
+    public function testAppendDomQueryInstance() 
+    {
         $dom = new DomQuery('<a></a><p></p><b></b><a></a>');
         $dom->find('a')->append(DomQuery::create('<i>X</i>'));
         $this->assertEquals('<a><i>X</i></a><p></p><b></b><a><i>X</i></a>', (string) $dom);
