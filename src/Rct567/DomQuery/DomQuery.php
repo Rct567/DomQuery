@@ -972,6 +972,50 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Wrap an HTML structure around all elements in the set of matched elements
+     *
+     * @param string|self $content,...
+     *
+     * @return $this
+     */
+    public function wrapAll()
+    {
+        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+            if ($node->parentNode instanceof \DOMDocument) {
+                throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
+            } else {
+                if ($node->parentNode->childNodes[0] instanceof \DOMElement && $node->parentNode->childNodes[0]->hasAttribute('dq_is_wrapper')) {
+                    // already wrapped before, so target/wrapper is first sibling
+                    $target = $node->parentNode->childNodes[0];
+                    $old = $node->parentNode->removeChild($node);
+
+                    while (!$target->hasAttribute('dq_wrap_target') && $target->hasChildNodes()) {
+                        $target = $target->childNodes[0];
+                    }
+
+                    $target->appendChild($old);
+                } else {
+                    $imported_node->setAttribute('dq_is_wrapper', 'y');
+                    // replace node with imported wrapper
+                    $old = $node->parentNode->replaceChild($imported_node, $node);
+                    // old node goes inside the most inner child of wrapper
+                    $target = $imported_node;
+
+                    while ($target->hasChildNodes()) {
+                        $target = $target->childNodes[0];
+                    }
+                    $target->setAttribute('dq_wrap_target', 'y');
+                    $target->appendChild($old);
+                }
+            }
+        });
+    
+        $this->parent()->find('[dq_wrap_target], [dq_is_wrapper]')->removeAttr('dq_wrap_target')->removeAttr('dq_is_wrapper');
+
+        return $this;
+    }
+
+    /**
      * Return array with nodes
      *
      * @return \DOMNode[]

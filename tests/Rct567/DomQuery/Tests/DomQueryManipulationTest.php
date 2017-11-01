@@ -8,6 +8,38 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
 {
 
     /*
+     * Test wrap all
+     */
+    public function testWrapAll()
+    {
+        $dom = DomQuery::create('<html><div class="container">'.
+            '<div class="inner">Hello</div> <div class="inner">Goodbye</div>'.
+        '</div></html>');
+
+        $dom->find('.inner')->wrapAll('<div class="new" />');
+
+        $this->assertEquals('<html><div class="container">'.
+            '<div class="new"><div class="inner">Hello</div><div class="inner">Goodbye</div></div>'.
+        ' </div></html>', (string) $dom);
+    }
+
+    /*
+     * Test wrap all with multiple elements wrapper
+     */
+    public function testWrapAllWithMultipleElementsWrapper()
+    {
+        $dom = DomQuery::create('<html><div class="container">'.
+            '<div class="inner">Hello</div> <div class="inner">Goodbye</div>'.
+        '</div></html>');
+
+        $dom->find('.inner')->wrapAll('<div class="new"><x></x></div>');
+
+        $this->assertEquals('<html><div class="container">'.
+            '<div class="new"><x><div class="inner">Hello</div><div class="inner">Goodbye</div></x></div>'.
+        ' </div></html>', (string) $dom);
+    }
+
+    /*
      * Test wrap on element with sibling
      */
     public function testWrapOnElementWithSibling()
