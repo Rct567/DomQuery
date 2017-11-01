@@ -865,7 +865,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
             foreach ($this->nodes as $node) {
                 foreach ($content->getNodes() as $content_node) {
-                    $imported_node = $this->document->importNode($content_node, true);
+                    if ($content_node->ownerDocument === $node->ownerDocument) {
+                        $imported_node = $content_node->cloneNode(true);
+                    } else {
+                        $imported_node = $this->document->importNode($content_node, true);
+                    }
                     $import_function($node, $imported_node);
                 }
             }

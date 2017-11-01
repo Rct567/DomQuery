@@ -133,18 +133,27 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<a></a><p></p><b></b><a></a>');
         $dom->find('a')->append('<span></span>');
         $this->assertEquals('<a><span></span></a><p></p><b></b><a><span></span></a>', (string) $dom);
-
     }
 
     /*
      * Test append DomQuery instance
      */
-    public function testAppendDomQueryInstance() 
+    public function testAppendDomQueryInstance()
     {
         $dom = new DomQuery('<a></a><p></p><b></b><a></a>');
         $dom->find('a')->append(DomQuery::create('<i>X</i>'));
         $this->assertEquals('<a><i>X</i></a><p></p><b></b><a><i>X</i></a>', (string) $dom);
         $this->assertEquals('X', $dom->find('i')->text());
+    }
+
+    /*
+     * Test append clone
+     */
+    public function testAppendClone()
+    {
+        $dom = new DomQuery('<a></a><p></p><b id="clone"></b><a></a>');
+        $dom->find('a')->append($dom->find('#clone'));
+        $this->assertEquals('<a><b id="clone"></b></a><p></p><b id="clone"></b><a><b id="clone"></b></a>', (string) $dom);
     }
 
     /*
