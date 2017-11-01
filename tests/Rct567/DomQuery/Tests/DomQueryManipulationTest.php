@@ -190,8 +190,8 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test insert after with white spaces
-     * @note white space is detected in child instance and set back to root
+     * Test insert after with nl
+     * @note nl is detected in child instance and set back to root
      */
     public function testAfterWithWhiteSpaces()
     {
