@@ -249,6 +249,15 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test contains selector
+     */
+    public function testContainsSelector() 
+    {
+        $dom = new DomQuery('<a>no</a><a id="ok">yes it is!</a><a>no</a>');
+        $this->assertEquals('ok', $dom->find('a:contains(yes)')->attr('id'));
+    }
+
+    /*
      *
      */
     public function testAttributeSelector()
