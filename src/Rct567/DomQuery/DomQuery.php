@@ -957,14 +957,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
             } else {
-                // replace node with imported
+                // replace node with imported wrapper
                 $old = $node->parentNode->replaceChild($imported_node, $node);
                 // old node goes inside the most inner child of wrapper
                 $target = $imported_node;
                 while ($target->hasChildNodes()) {
                     $target = $target->childNodes[0];
                 }
-
                 $target->appendChild($old);
             }
         });
