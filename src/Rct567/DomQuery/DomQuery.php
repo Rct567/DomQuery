@@ -778,7 +778,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $result = $this->createChildInstance();
 
         if (isset($this->document) && $this->length > 0) {
-            $result->setDomDocument($this->document);
 
             foreach ($this->nodes as $node) {
                 if (!is_null($node->nextSibling)) {
@@ -806,7 +805,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $result = $this->createChildInstance();
 
         if (isset($this->document) && $this->length > 0) {
-            $result->setDomDocument($this->document);
 
             foreach ($this->nodes as $node) { // get all previous sibling of all nodes
                 if (!is_null($node->previousSibling)) {
