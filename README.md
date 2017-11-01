@@ -100,6 +100,38 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.get( index )`
 - `.each ( callable(elm,i) )`
 
+## Supported selectors
+
+- `.class`
+- `#foo`
+- `parent > child`
+- `foo, bar` multiple selectors
+- `prev + next` elements matching "next" that are immediately preceded by a sibling "prev"
+- `prev ~ siblings` elements matching "siblings" that are preceded by "prev" 
+- `*` all selector
+- `[name="foo"]` attribute value equal foo
+- `[name*="foo"]` attribute value contains foo
+- `[name~="foo"]` attribute value contains word foo
+- `[name^="foo"]` attribute value starts with foo
+- `[name$="foo"]` attribute value ends with foo
+
+### Pseudo selectors
+
+- `:empty`
+- `:even`
+- `:odd`
+- `:first-child`
+- `:last-child`
+- `:only-child`
+- `:parent` elements that have at least one child node
+- `:first`
+- `:last`
+- `:header` selects h1, h2, h3 etc.
+- `:not(foo)` elements that do not match selector foo
+- `:has(foo)` elements containing at least one element that matches foo selector
+- `:contains(foo)` elements that contain text foo
+- `:root` element that is the root of the document
+
 ## XML support
 
 - XML content will automatically be loaded '[as XML](http://php.net/manual/en/domdocument.loadxml.php)' if a XML declaration is found
