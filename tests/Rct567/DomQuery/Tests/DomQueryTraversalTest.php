@@ -14,6 +14,8 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<a>1</a> <a>2</a> <a>3</a>');
         $links = $dom->children('a');
 
+        $this->assertEquals(3, $links->length);
+
         $this->assertEquals(null, $links->first()->next('p')->text());
         $this->assertEquals(null, $links->last()->prev('p')->text());
 
