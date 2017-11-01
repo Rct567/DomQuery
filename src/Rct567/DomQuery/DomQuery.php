@@ -304,7 +304,6 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function find(string $css_expression)
     {
-
         $xpath_expression = self::cssToXpath($css_expression);
         $result = $this->xpath($xpath_expression);
 
