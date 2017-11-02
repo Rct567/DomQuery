@@ -9,6 +9,7 @@ namespace Rct567\DomQuery;
  * @property string $tagName
  * @property string $nodeName
  * @property string $nodeValue
+ * @property string $outerHTML
  *
  * @method string getAttribute(string $name)
  *
