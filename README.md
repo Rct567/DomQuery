@@ -74,6 +74,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.not( selector )`
 - `.first( [selector] )`
 - `.last( [selector] )`
+- `.slice( [offset] [, length])` like array_slice in php, not js/jquery
 
  #### Manipulation > DOM Insertion & removal
 

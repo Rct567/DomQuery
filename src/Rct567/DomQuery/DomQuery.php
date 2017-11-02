@@ -717,6 +717,21 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Reduce the set of matched elements to a subset specified by the offset and length (php like)
+     *
+     * @param integer $offset
+     * @param integer $length
+     * @return self
+     */
+    public function slice($offset=0, $length=null) 
+    {
+        $result = $this->createChildInstance();
+        $result->nodes = array_slice($this->nodes, $offset, $length);
+        $result->length = count($result->nodes);
+        return $result;
+    }
+
+    /**
      * Grants access to the DOM nodes of this instance
      *
      * @param int $index

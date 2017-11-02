@@ -140,6 +140,18 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test slice
+     */
+    public function testSlice() 
+    {
+        $dom = new DomQuery('<a>1</a><a>2</a><a>3</a><a>4</a><a>5</a><a>6</a>');
+        $this->assertEquals('<a>1</a><a>2</a>', $dom->find('a')->slice(0, 2)->outerHTML);
+        $this->assertEquals('<a>3</a><a>4</a><a>5</a><a>6</a>', $dom->find('a')->slice(2)->outerHTML);
+        $this->assertEquals('<a>6</a>', $dom->find('a')->slice(-1)->outerHTML);
+        $this->assertEquals('<a>5</a>', $dom->find('a')->slice(-2, -1)->outerHTML);
+    }
+
+    /*
      * Test each iteration
      */
     public function testEachIteration()
