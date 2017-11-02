@@ -142,7 +142,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     /*
      * Test slice
      */
-    public function testSlice() 
+    public function testSlice()
     {
         $dom = new DomQuery('<a>1</a><a>2</a><a>3</a><a>4</a><a>5</a><a>6</a>');
         $this->assertEquals('<a>1</a><a>2</a>', $dom->find('a')->slice(0, 2)->outerHTML);

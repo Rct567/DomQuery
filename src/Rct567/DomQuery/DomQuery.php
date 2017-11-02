@@ -722,9 +722,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param integer $offset
      * @param integer $length
+     *
      * @return self
      */
-    public function slice($offset=0, $length=null) 
+    public function slice($offset=0, $length=null)
     {
         $result = $this->createChildInstance();
         $result->nodes = array_slice($this->nodes, $offset, $length);
