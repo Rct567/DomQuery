@@ -729,7 +729,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         if (count($result) > 0) {
             return $result[0];
         } else {
-            return null; // return null if nu result for key
+            return null; // return null if no result for key
         }
     }
 
