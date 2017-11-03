@@ -1026,23 +1026,19 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function wrapAll()
     {
-        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+        $wrapper_node = null; // node given as wrapper
+        $wrap_target_node = null; // node that wil be parent of content to be wrapped
+
+        $this->importNodes(func_get_args(), function ($node, $imported_node) use (&$wrapper_node, &$wrap_target_node) {
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
             } else {
-                if ($node->parentNode->childNodes[0] instanceof \DOMElement && $node->parentNode->childNodes[0]->hasAttribute('dq_is_wrapper')) {
-                    // already wrapped before, so target/wrapper is first sibling
-                    $target = $node->parentNode->childNodes[0];
+                if ($wrapper_node && $wrap_target_node) { // already wrapped before
                     $old = $node->parentNode->removeChild($node);
-
-                    while (!$target->hasAttribute('dq_wrap_target') && $target->hasChildNodes()) {
-                        $target = $target->childNodes[0];
-                    }
-
-                    $target->appendChild($old);
+                    $wrap_target_node->appendChild($old);
                 } else {
-                    $imported_node->setAttribute('dq_is_wrapper', 'y');
-                    // replace node with imported wrapper
+                    $wrapper_node = $imported_node;
+                    // replace node with (imported) wrapper
                     $old = $node->parentNode->replaceChild($imported_node, $node);
                     // old node goes inside the most inner child of wrapper
                     $target = $imported_node;
@@ -1050,13 +1046,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                     while ($target->hasChildNodes()) {
                         $target = $target->childNodes[0];
                     }
-                    $target->setAttribute('dq_wrap_target', 'y');
                     $target->appendChild($old);
+                    $wrap_target_node = $target; // save for next round
                 }
             }
         });
-    
-        $this->parent()->find('[dq_wrap_target], [dq_is_wrapper]')->removeAttr('dq_wrap_target')->removeAttr('dq_is_wrapper');
 
         return $this;
     }
