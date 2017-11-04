@@ -1286,11 +1286,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         // replace spaces inside (), to correctly create tokens (restore later)
 
-        $path = self::replaceCharInsideEnclosure($path, ' ');
+        $path_escaped = self::replaceCharInsideEnclosure($path, ' ');
 
         // create tokens and analyze to create segments
 
-        $tokens = preg_split('/\s+/', $path);
+        $tokens = preg_split('/\s+/', $path_escaped);
 
         $segments = array();
 
