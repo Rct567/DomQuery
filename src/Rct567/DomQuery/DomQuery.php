@@ -86,6 +86,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public $preserve_no_newlines;
 
     /**
+     * Css selector to xpath cache
+     *
+     * @var array
+     */
+    private static $xpath_cache = array();
+
+    /**
      * LibXMl options used to load html for DOMDocument
      *
      * @var mixed
@@ -1259,6 +1266,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public static function cssToXpath(string $path)
     {
+        if (isset(self::$xpath_cache[$path])) {
+            return self::$xpath_cache[$path];
+        }
+
         $tmp_path = self::replaceCharInsideEnclosure($path, ',');
         if (strpos($tmp_path, ',') !== false) {
             $paths = explode(',', $tmp_path);
@@ -1295,7 +1306,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $new_path_tokens = self::transformCssSegments($segments);
 
-        return implode('', $new_path_tokens);
+        // result tokens to xpath
+
+        $xpath_result = implode('', $new_path_tokens);
+
+        self::$xpath_cache[$path] = $xpath_result;
+
+        return $xpath_result;
     }
 
     /**
