@@ -137,7 +137,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 
 ## XML support
 
-- XML content will automatically be loaded '[as XML](http://php.net/manual/en/domdocument.loadxml.php)' if a XML declaration is found
+- XML content will automatically be loaded '[as XML](http://php.net/manual/en/domdocument.loadxml.php)' if a [XML declaration](http://xmlwriter.net/xml_guide/xml_declaration.shtml) is found
 - Namespaces should be automatically registered (no need to do it [manually](http://php.net/manual/en/domxpath.registernamespace.php))
 
 Escaping meta chars in selector to find elements with namespace:
@@ -157,6 +157,6 @@ $dom->find('namespace\\:h1')->text();
 
 - https://github.com/wasinger/htmlpagedom
 - https://github.com/symfony/dom-crawler
-- https://github.com/zendframework/zend-dom
 - https://github.com/ARTACK/DOMQuery
+- https://github.com/zendframework/zend-dom
 - http://simplehtmldom.sourceforge.net
