@@ -163,8 +163,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function loadDomNodeList(\DOMNodeList $dom_node_list)
     {
-        if (!isset($this->document)) {
+        if (!isset($this->document) && $dom_node_list->length == 0) {
             throw new \Exception('DOMDocument is missing!');
+        } elseif ($dom_node_list->length > 0) {
+            $this->setDomDocument($dom_node_list->item(0)->ownerDocument);
         }
 
         foreach ($dom_node_list as $node) {
