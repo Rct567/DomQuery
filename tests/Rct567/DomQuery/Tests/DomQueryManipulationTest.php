@@ -56,13 +56,13 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test wrap on element with sibling
+     * Test wrap inner
      */
-    public function testWrapOnElementWithSibling()
+    public function testInnerWrap()
     {
-        $dom = DomQuery::create('<p> <span>Hi</span> <a>Hello</a> </p>');
-        $dom->find('a')->wrap('<x></x>');
-        $this->assertEquals("<p> <span>Hi</span> <x><a>Hello</a></x> </p>", (string) $dom);
+        $dom = DomQuery::create('<p><a>Hello</a></p>');
+        $dom->find('a')->wrapInner('<div></div>');
+        $this->assertEquals("<p><a><div>Hello</div></a></p>", (string) $dom);
     }
 
     /*
@@ -73,6 +73,16 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
         $dom = DomQuery::create('<p><a>Hello</a></p>');
         $dom->find('a')->wrap('<div></div>');
         $this->assertEquals("<p><div><a>Hello</a></div></p>", (string) $dom);
+    }
+
+    /*
+     * Test wrap on element with sibling
+     */
+    public function testWrapOnElementWithSibling()
+    {
+        $dom = DomQuery::create('<p> <span>Hi</span> <a>Hello</a> </p>');
+        $dom->find('a')->wrap('<x></x>');
+        $this->assertEquals("<p> <span>Hi</span> <x><a>Hello</a></x> </p>", (string) $dom);
     }
 
     /*

@@ -1064,6 +1064,24 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         return $this;
     }
 
+
+    /**
+     * Wrap an HTML structure around the content of each element in the set of matched elements
+     *
+     * @param string|self $content,...
+     *
+     * @return $this
+     */
+    public function wrapInner() {
+
+        foreach($this->nodes as $node) {
+            DomQuery::create($node->childNodes)->wrapAll(func_get_args());
+        }
+
+        return $this;
+
+    }
+
     /**
      * Return array with nodes
      *
