@@ -152,3 +152,11 @@ $dom->find('namespace\\:h1')->text();
 
 - Works with PHP 7.0 or above 
 - Requires libxml PHP extension (enabled by default)
+
+### Inspiration/acknowledgements 
+
+- https://github.com/wasinger/htmlpagedom
+- https://github.com/symfony/dom-crawler
+- https://github.com/zendframework/zend-dom
+- https://github.com/ARTACK/DOMQuery
+- http://simplehtmldom.sourceforge.net
