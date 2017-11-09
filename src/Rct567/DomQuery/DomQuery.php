@@ -135,7 +135,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public static function create()
     {
-        return new self(...func_get_args());
+        if (func_get_arg(0) instanceof self) {
+            return func_get_arg(0);
+        } else {
+            return new self(...func_get_args());
+        }
     }
 
     /**
@@ -306,19 +310,45 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Use css expression and return new DomQuery with results
+     * Get the descendants of each element in the current set of matched elements, filtered by a selector
      *
-     * @param string $css_expression
+     * @param string|self|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
+     *  or DomQuery|DOMNodeList|DOMNode instance to match against
      *
      * @return self
      */
-    public function find(string $css_expression)
+    public function find($selector)
     {
+        if (is_string($selector)) {
+            $css_expression = $selector;
+        } else {
+            $selector_tag_names = array();
+            $selector_result = self::create($selector);
+            foreach ($selector_result as $node) {
+                $selector_tag_names[] = $node->tagName;
+            }
+            $css_expression = implode(',', $selector_tag_names);
+        }
+
         $xpath_expression = self::cssToXpath($css_expression);
         $result = $this->xpath($xpath_expression);
 
-        $result->css_query = $css_expression;
-        $result->selector = $css_expression; // jquery style
+        if (is_string($selector)) {
+            $result->css_query = $css_expression;
+            $result->selector = $css_expression; // jquery style
+        }
+
+        if (isset($selector_result)) {
+            $new_result_nodes = array();
+            foreach ($result->nodes as $result_node) {
+                foreach ($selector_result->nodes as $selector_result_node) {
+                    if ($result_node->isSameNode($selector_result_node)) {
+                        $new_result_nodes[] = $result_node;
+                    }
+                }
+            }
+            $result->nodes = $new_result_nodes;
+        }
 
         return $result;
     }
@@ -578,11 +608,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Get the siblings of each element in the set of matched elements, optionally filtered by a selector.
      *
-     * @param string|null $selector expression that filters the set of matched elements
+     * @param string|self|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
-    public function siblings(string $selector=null)
+    public function siblings($selector=null)
     {
         $result = $this->createChildInstance();
 
@@ -608,11 +638,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Get the parent of each element in the current set of matched elements, optionally filtered by a selector
      *
-     * @param string|null $selector expression that filters the set of matched elements
+     * @param string|self|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
-    public function parent(string $selector=null)
+    public function parent($selector=null)
     {
         $result = $this->createChildInstance();
 
@@ -635,11 +665,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * For each element in the set, get the first element that matches the selector
      * by testing the element itself and traversing up through its ancestors in the DOM tree.
      *
-     * @param string $selector selector expression to match elements against
+     * @param string|self|\DOMNodeList|\DOMNode $selector selector expression to match elements against
      *
      * @return self
      */
-    public function closest(string $selector)
+    public function closest($selector)
     {
         $result = $this->createChildInstance();
 
@@ -663,24 +693,21 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Remove elements from the set of matched elements.
      *
-     * @param string $selector
+     * @param string|self|\DOMNodeList|\DOMNode $selector
      *
      * @return self
      */
-    public function not(string $selector)
+    public function not($selector)
     {
         $result = $this->createChildInstance();
 
         if ($this->length > 0) {
-            $xpath_query = self::cssToXpath($selector);
-            $selector_result_node_list = $this->xpathQuery($xpath_query);
+            $selection = self::create($this->document)->find($selector);
 
-            $result->xpath_query = $xpath_query;
-
-            if ($selector_result_node_list->length > 0) {
+            if ($selection->length > 0) {
                 foreach ($this->nodes as $node) {
                     $matched = false;
-                    foreach ($selector_result_node_list as $result_node) {
+                    foreach ($selection as $result_node) {
                         if ($result_node->isSameNode($node)) {
                             $matched = true;
                             break 1;
@@ -699,23 +726,21 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Reduce the set of matched elements to those that match the selector
      *
-     * @param string $selector
+     * @param string|self|\DOMNodeList|\DOMNode $selector
      *
      * @return self
      */
-    public function filter(string $selector)
+    public function filter($selector)
     {
         $result = $this->createChildInstance();
 
         if ($this->length > 0) {
-            $xpath_query = self::cssToXpath($selector);
-            $selector_result_node_list = $this->xpathQuery($xpath_query);
+            $selection = self::create($this->document)->find($selector);
+            $result->xpath_query = $selection->xpath_query;
 
-            $result->xpath_query = $xpath_query;
-
-            if ($selector_result_node_list->length > 0) {
+            if ($selection->length > 0) {
                 foreach ($this->nodes as $node) {
-                    foreach ($selector_result_node_list as $result_node) {
+                    foreach ($selection as $result_node) {
                         if ($result_node->isSameNode($node)) {
                             $result->addDomNode($node);
                             break 1;
@@ -731,19 +756,18 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Check if any node matches the selector
      *
-     * @param string $selector
+     * @param string|self|\DOMNodeList|\DOMNode $selector
      *
      * @return boolean
      */
-    public function is(string $selector)
+    public function is($selector)
     {
         if ($this->length > 0) {
-            $xpath_query = self::cssToXpath($selector);
-            $result_node_list = $this->xpathQuery($xpath_query);
+            $selection = self::create($this->document)->find($selector);
 
-            if ($result_node_list->length > 0) {
+            if ($selection->length > 0) {
                 foreach ($this->nodes as $node) {
-                    foreach ($result_node_list as $result_node) {
+                    foreach ($selection->nodes as $result_node) {
                         if ($result_node->isSameNode($node)) {
                             return true;
                         }

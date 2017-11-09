@@ -6,6 +6,15 @@ use Rct567\DomQuery\DomQuery;
 
 class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
 {
+
+    public function testFindWithSelection()
+    {
+        $dom = new DomQuery('<a>1</a><a>2</a><a id="last">3</a>');
+        $this->assertEquals('<a>1</a><a>2</a><a id="last">3</a>', (string) $dom->find($dom->find('a')));
+        $this->assertEquals('<a id="last">3</a>', (string) $dom->find($dom->getDocument()->getElementById('last')));
+        $this->assertEquals('<a id="last">3</a>', (string) $dom->find($dom->find('a:contains(3)')));
+    }
+
     /*
      * Test first last, with and without filter selector
      */
@@ -115,12 +124,15 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery($html);
         $this->assertEquals('main', $dom->id);
         $this->assertEquals('root', $dom->class);
+        $this->assertTrue($dom->is($dom->getDocument()->getElementById('main')));
 
         // main selection
         $main_selection = $dom->find('.level-a');
         $this->assertEquals(3, count($main_selection));
+        $this->assertTrue($main_selection->is($dom->getDocument()->getElementsByTagName('div')));
+        $this->assertFalse($main_selection->is($dom->getDocument()->getElementById('main')));
 
-        // make subselection
+        // make sub selection
         $sub_selection = $main_selection->find('> div'); // child divs from main selection
         $this->assertEquals(3, count($sub_selection));
         $this->assertEquals('level-b', $sub_selection->class);
@@ -163,9 +175,11 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(5, $selection->length);
         $this->assertEquals(5, $selection->filter('a')->length);
         $this->assertEquals(1, $selection->filter('#mmm')->length);
+        $this->assertEquals(1, $selection->filter($dom->getDocument()->getElementById('mmm'))->length);
         $this->assertEquals(1, $selection->filter('a')->filter('.xpp')->length);
         $this->assertEquals(3, $selection->filter('a[class], #mmm')->length);
         $this->assertEquals(3, $selection->filter(':even')->length);
+        $this->assertEquals('<a class="xpp"></a>', (string) $selection->filter($dom->find('a.xpp')));
     }
 
     /*
@@ -181,5 +195,7 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(3, $selection->not('#mmm')->not('.xpp')->length);
         $this->assertEquals(2, $selection->not('a[class], #mmm')->length);
         $this->assertEquals(2, $selection->not(':even')->length);
+        $this->assertEquals(4, $selection->not($dom->getDocument()->getElementById('mmm'))->length);
+        $this->assertEquals('<a></a><a id="mmm"></a><a class="x"></a>', (string) $selection->not($dom->find('a:first-child, a:last-child')));
     }
 }
