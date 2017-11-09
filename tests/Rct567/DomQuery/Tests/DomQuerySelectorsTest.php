@@ -36,6 +36,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             ':disabled' => '//*[@disabled]',
             'div :header' => '//div//*[self::h1 or self::h2 or self::h3 or self::h5 or self::h5 or self::h6]',
             ':odd' => '//*[position() mod 2 = 0]',
+            '.h' => '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' h \')]',
             '.hidden' => '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden \')]',
             '.hidden-something' => '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden-something \')]',
             'a.hidden[href]' => '//a[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden \')][@href]',

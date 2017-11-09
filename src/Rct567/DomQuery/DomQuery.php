@@ -1456,12 +1456,12 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             $segment->attribute_filters[] = $matches[2];
         }
 
-        while (preg_match('/(.*)\.([a-z][a-z0-9\-\_]+)$/i', $segment->selector, $matches)) { // class selector
+        while (preg_match('/(.*)\.([a-z]+[a-z0-9\-\_]*)$/i', $segment->selector, $matches)) { // class selector
             $segment->selector = $matches[1];
             $segment->attribute_filters[] = 'class~="'.$matches[2].'"';
         }
 
-        while (preg_match('/(.*)\#([a-z][a-z0-9\-\_]+)$/i', $segment->selector, $matches)) { // id selector
+        while (preg_match('/(.*)\#([a-z]+[a-z0-9\-\_]*)$/i', $segment->selector, $matches)) { // id selector
             $segment->selector = $matches[1];
             $segment->attribute_filters[] = 'id="'.$matches[2].'"';
         }
