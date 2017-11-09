@@ -199,4 +199,18 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
         $inner = (string) $selection->not($dom->find('a:first-child, a:last-child'));
         $this->assertEquals('<a></a><a id="mmm"></a><a class="x"></a>', $inner);
     }
+
+    /*
+     * Test is
+     */
+    public function testIs()
+    {
+        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
+        $this->assertTrue($dom[2]->is('#mmm'));
+        $this->assertTrue($dom[2]->next()->is('.x'));
+        $this->assertTrue($dom[0]->is($dom->xpathQuery('//a')));
+        $this->assertTrue($dom[0]->is($dom[0]));
+        $this->assertFalse($dom[0]->is($dom[1]));
+        $this->assertFalse($dom[0]->is($dom->find('a:last-child')));
+    }
 }
