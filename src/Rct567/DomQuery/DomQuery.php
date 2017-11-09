@@ -661,7 +661,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Reduce the set of matched elements to those that match the selector
+     * Remove elements from the set of matched elements.
      *
      * @param string $selector
      *
