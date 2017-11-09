@@ -293,7 +293,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         if (isset($this->document)) {
             $result->xpath_query = $xpath_query;
 
-            if ($this->length > 0 && isset($this->xpath_query)) {  // all nodes as context
+            if (isset($this->root_instance) || isset($this->xpath_query)) {  // all nodes as context
                 foreach ($this->nodes as $node) {
                     if ($result_node_list = $this->xpathQuery('.'.$xpath_query, $node)) {
                         $result->loadDomNodeList($result_node_list);
@@ -583,26 +583,31 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Get the children of each element in the set of matched elements, optionally filtered by a selector.
      *
-     * @param string $selector
+     * @param string|self|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
-    public function children(string $selector='*')
+    public function children($selector=null)
     {
-        if (strpos($selector, ',') !== false) {
-            $selectors = explode(',', $selector);
-        } else {
-            $selectors = array($selector);
+        $result = $this->createChildInstance();
+
+        if (isset($this->document) && $this->length > 0) {
+            if (isset($this->root_instance) || isset($this->xpath_query)) {
+                foreach ($this->nodes as $node) {
+                    if ($node->hasChildNodes()) {
+                        $result->loadDomNodeList($node->childNodes);
+                    }
+                }
+            } else {
+                $result->loadDomNodeList($this->document->childNodes);
+            }
+
+            if ($selector) {
+                $result = $result->filter($selector);
+            }
         }
 
-        // make all selectors for direct children
-        foreach ($selectors as &$single_selector) {
-            $single_selector = '> '.ltrim($single_selector, ' >');
-        }
-
-        $direct_children_selector = implode(', ', $selectors);
-
-        return $this->find($direct_children_selector);
+        return $result;
     }
 
     /**
