@@ -632,6 +632,35 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * For each element in the set, get the first element that matches the selector
+     * by testing the element itself and traversing up through its ancestors in the DOM tree.
+     *
+     * @param string $selector selector expression to match elements against
+     *
+     * @return self
+     */
+    public function closest(string $selector)
+    {
+        $result = $this->createChildInstance();
+
+        if (isset($this->document) && $this->length > 0) {
+            foreach ($this->nodes as $node) {
+                $current = $node;
+
+                while ($current instanceof \DOMElement) {
+                    if (self::create($current)->is($selector)) {
+                        $result->addDomNode($current);
+                        break;
+                    }
+                    $current = $current->parentNode;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Reduce the set of matched elements to those that match the selector
      *
      * @param string $selector

@@ -63,6 +63,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.find( selector )`
 - `.children( [selector] )`
 - `.parent( [selector] )`
+- `.closest( [selector] )`
 - `.next( [selector] )`
 - `.prev( [selector] )`
 - `.siblings( [selector] )`

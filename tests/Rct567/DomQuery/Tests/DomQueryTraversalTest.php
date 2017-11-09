@@ -57,6 +57,20 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     *  Test get closest
+     */
+    public function testClosest()
+    {
+        $dom = new DomQuery('<a></a><a></a><a class="link">
+            <b><span></span></b>
+        </a>');
+
+        $this->assertEquals('a', $dom->find('span')->closest('.link')->tagName);
+        $this->assertEquals('<b><span></span></b>', $dom->find('span')->closest('b')->getOuterHtml());
+        $this->assertEquals(0, $dom->find('span')->closest('nope')->length);
+    }
+
+    /*
      * Test traversing nodes from readme
      */
     public function testTraversingNodesReadmeExamples()
