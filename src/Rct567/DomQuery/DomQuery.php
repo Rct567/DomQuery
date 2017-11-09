@@ -1101,14 +1101,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return $this
      */
-    public function wrapInner() {
-
-        foreach($this->nodes as $node) {
-            DomQuery::create($node->childNodes)->wrapAll(func_get_args());
+    public function wrapInner()
+    {
+        foreach ($this->nodes as $node) {
+            self::create($node->childNodes)->wrapAll(func_get_args());
         }
 
         return $this;
-
     }
 
     /**
