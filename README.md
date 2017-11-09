@@ -77,7 +77,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.last( [selector] )`
 - `.slice( [offset] [, length])` like array_slice in php, not js/jquery
 
-\* selector can be a css selector or DomQuery|DOMNodeList|DOMNode instance
+\* [selector] can be a css selector or an instance of DomQuery|DOMNodeList|DOMNode 
 
  #### Manipulation > DOM Insertion & removal
 
@@ -91,6 +91,8 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.wrapAll( [content] )`
 - `.wrapInner( [content] )`
 - `.remove( [selector] )`
+
+\* [content] can be html or an instance of DomQuery|DOMNodeList|DOMNode
 
  #### Attributes | Manipulation 
 
