@@ -77,8 +77,8 @@
 
  <rule ref="Generic.Metrics.CyclomaticComplexity">
   <properties>
-   <property name="complexity" value="20"/>
-   <property name="absoluteComplexity" value="60"/>
+   <property name="complexity" value="15"/>
+   <property name="absoluteComplexity" value="30"/>
   </properties>
  </rule>
 
@@ -91,7 +91,7 @@
 
  <rule ref="Generic.Files.LineLength">
   <properties>
-   <property name="lineLimit" value="150"/>
+   <property name="lineLimit" value="130"/>
    <property name="absoluteLineLimit" value="0"/>
   </properties>
  </rule>
