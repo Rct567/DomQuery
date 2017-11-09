@@ -211,8 +211,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $this->xml_print_pi = (stripos($content, '<?xml') === 0);
 
         $xml_pi_node_added = false;
-        if (!$this->xml_mode && $encoding && stripos($content, '<?xml') === false) { // add pi node to make libxml use the correct encoding
-            $content = '<?xml encoding="'.$encoding.'">'.$content;
+        if (!$this->xml_mode && $encoding && stripos($content, '<?xml') === false) {
+            $content = '<?xml encoding="'.$encoding.'">'.$content; // add pi node to make libxml use the correct encoding
             $xml_pi_node_added = true;
         }
 
@@ -1325,7 +1325,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         for ($i = 0; $i < strlen($str); $i++) {
             if ($str[$i] === $search_char && $i > 0) {
-                if (substr_count($str, $enclosure_open, 0, $i) != substr_count($str, $enclosure_close, 0, $i)) { // count char before position
+                // check if enclosure is open by counting char before position
+                $enclosure_is_open = substr_count($str, $enclosure_open, 0, $i) != substr_count($str, $enclosure_close, 0, $i);
+                if ($enclosure_is_open) {
                     $str[$i] = "\0";
                 }
             }

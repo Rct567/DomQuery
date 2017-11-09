@@ -196,6 +196,7 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, $selection->not('a[class], #mmm')->length);
         $this->assertEquals(2, $selection->not(':even')->length);
         $this->assertEquals(4, $selection->not($dom->getDocument()->getElementById('mmm'))->length);
-        $this->assertEquals('<a></a><a id="mmm"></a><a class="x"></a>', (string) $selection->not($dom->find('a:first-child, a:last-child')));
+        $inner = (string) $selection->not($dom->find('a:first-child, a:last-child'));
+        $this->assertEquals('<a></a><a id="mmm"></a><a class="x"></a>', $inner);
     }
 }
