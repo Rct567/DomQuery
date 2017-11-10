@@ -142,8 +142,10 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 
 ## XML support
 
-- XML content will automatically be loaded '[as XML](http://php.net/manual/en/domdocument.loadxml.php)' if a [XML declaration](http://xmlwriter.net/xml_guide/xml_declaration.shtml) is found
-- Namespaces should be automatically registered (no need to do it [manually](http://php.net/manual/en/domxpath.registernamespace.php))
+- XML content will automatically be loaded '[as XML](http://php.net/manual/en/domdocument.loadxml.php)' if a [XML declaration](http://xmlwriter.net/xml_guide/xml_declaration.shtml) is found (property `xml_mode` will be set to true)
+- This in turn will also make saving (rendering) happen '[as XML](http://php.net/manual/en/domdocument.savexml.php)'. You can set property `xml_mode` to false to prevent this.
+- To prevent content with a XML declaration loading 'as XML' you can set property `xml_mode` to false and then use the `loadContent($content)` method.
+- Namespaces are automatically registered (no need to do it [manually](http://php.net/manual/en/domxpath.registernamespace.php))
 
 Escaping meta chars in selector to find elements with namespace:
 
