@@ -444,7 +444,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Remove an attribute from each element in the set of matched elements
+     * Remove an attribute from each element in the set of matched elements.
+     * Name can be a space-separated list of attributes.
      *
      * @param string $name
      *
@@ -452,9 +453,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function removeAttr($name)
     {
+        $remove_names = explode(' ', $name);
+
         foreach ($this->nodes as $node) {
             if ($node instanceof \DOMElement) {
-                $node->removeAttribute($name);
+                foreach($remove_names as $remove_name) {
+                    $node->removeAttribute($remove_name);
+                }
             }
         }
 

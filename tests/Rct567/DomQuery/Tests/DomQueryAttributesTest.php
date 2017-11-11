@@ -33,6 +33,16 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test remove multiple attribute
+     */
+    public function testRemoveMultipleAttribute()
+    {
+        $dom = DomQuery::create('<a title="hello" alt="x">Some text</a>');
+        $dom->removeAttr('title alt');
+        $this->assertEquals('<a>Some text</a>', (string) $dom);
+    }
+
+    /*
      * Test add class name
      */
     public function testAddClass()
