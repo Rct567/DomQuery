@@ -457,7 +457,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         foreach ($this->nodes as $node) {
             if ($node instanceof \DOMElement) {
-                foreach($remove_names as $remove_name) {
+                foreach ($remove_names as $remove_name) {
                     $node->removeAttribute($remove_name);
                 }
             }
@@ -1516,7 +1516,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
             if ($segment->selector != '') {
                 $new_path_tokens[] = $segment->selector; // specific tagname
-            } elseif (substr(array_slice($new_path_tokens, -1)[0], -2) != '::') {
+            } elseif (substr(array_slice($new_path_tokens, -1)[0], -2) !== '::') {
                 $new_path_tokens[] = '*'; // any tagname
             }
 
@@ -1586,13 +1586,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             'root' => '[not(parent::*)]'
         );
 
-        if (isset($pseudo_class_selectors[$expression])) {
-            return $pseudo_class_selectors[$expression];
-        } else {
+        if (!isset($pseudo_class_selectors[$expression])) {
             throw new \Exception('Pseudo class '.$expression.' unknown');
         }
 
-        return $expression;
+        return $pseudo_class_selectors[$expression];
     }
 
     /**
