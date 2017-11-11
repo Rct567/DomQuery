@@ -973,7 +973,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 }
             }
 
-            if (!($content instanceof DomQuery)) {
+            if (!($content instanceof self)) {
                 $content = new self($content);
             }
 
