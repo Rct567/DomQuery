@@ -7,20 +7,18 @@ use Rct567\DomQuery\DomQuery;
 class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
 {
     /*
-     * Test create single node and get attribute value
+     * Test get attribute value
      */
-    public function testSingleNodeAttr()
+    public function testGetAttributeValue()
     {
         $this->assertEquals('hello', DomQuery::create('<a title="hello"></a>')->attr('title'));
     }
 
     /*
-     * Test create single node and change attribute
+     * Test change attribute
      */
-    public function testSingleNodeAttrChange()
+    public function testSetAttributeValue()
     {
-        $this->assertEquals('oke', DomQuery::create('<a title="hello"></a>')->attr('title', 'oke')->attr('title'));
-
         $this->assertEquals('<a title="oke"></a>', (string) DomQuery::create('<a title="hello"></a>')->attr('title', 'oke'));
     }
 
@@ -39,9 +37,19 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
      */
     public function testAddClass()
     {
-        $dom = DomQuery::create('<a href="hello" class=""></a><a class="before"></a>');
+        $dom = DomQuery::create('<a></a><a href="hello" class=""></a><a class="before"></a>');
         $dom->find('a')->addClass('after');
-        $this->assertEquals('<a href="hello" class="after"></a><a class="before after"></a>', (string) $dom);
+        $this->assertEquals('<a class="after"></a><a href="hello" class="after"></a><a class="before after"></a>', (string) $dom);
+    }
+
+    /*
+     * Test add multiple class names
+     */
+    public function testAddMultipleClasses()
+    {
+        $dom = DomQuery::create('<a href="hello" class=""></a><a class="before"></a>');
+        $dom->find('a')->addClass('after after2');
+        $this->assertEquals('<a href="hello" class="after after2"></a><a class="before after after2"></a>', (string) $dom);
     }
 
     /*
@@ -65,7 +73,7 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test remove multiple class name
+     * Test remove multiple class names
      */
     public function testRemoveMultipleClass()
     {
@@ -75,7 +83,7 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test remove multiple class name
+     * Test remove all class names
      */
     public function testRemoveAllClass()
     {
@@ -85,13 +93,22 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test set text
+     */
+    public function testSetText()
+    {
+        $dom = DomQuery::create('<a></a>')->text('HI');
+        $this->assertEquals('<a>HI</a>', (string) $dom);
+    }
+
+    /*
      * Test change text
      */
-    public function testSingleNodeTextChange()
+    public function testTextChange()
     {
-        $dom = DomQuery::create('<a title="hello">Some text</a>');
+        $dom = DomQuery::create('<a>Some text</a>');
         $dom->text('Changed text');
-        $this->assertEquals('<a title="hello">Changed text</a>', (string) $dom);
+        $this->assertEquals('<a>Changed text</a>', (string) $dom);
         $this->assertEquals('Changed text', $dom->text());
     }
 }
