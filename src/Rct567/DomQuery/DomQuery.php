@@ -590,9 +590,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return self
      */
-    public function contents() 
+    public function contents()
     {
-        return $this->children(null); 
+        return $this->children(null);
     }
 
     /**
