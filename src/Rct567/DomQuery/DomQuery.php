@@ -592,17 +592,17 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function contents()
     {
-        return $this->children(null);
+        return $this->children(false);
     }
 
     /**
      * Get the children of each element in the set of matched elements, optionally filtered by a selector.
      *
-     * @param string|self|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
+     * @param string|self|\DOMNodeList|\DOMNode|false|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
-    public function children($selector='*')
+    public function children($selector=null)
     {
         $result = $this->createChildInstance();
 
@@ -615,6 +615,17 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 }
             } else {
                 $result->loadDomNodeList($this->document->childNodes);
+            }
+
+            if ($selector !== false) { // filter out text nodes
+                $filtered_nodes = array();
+                foreach ($result->nodes as $result_node) {
+                    if ($result_node instanceof \DOMElement) {
+                        $filtered_nodes[] = $result_node;
+                    }
+                }
+                $result->nodes = $filtered_nodes;
+                $result->length = count($result->nodes);
             }
 
             if ($selector) {
@@ -877,7 +888,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $get_next_elm = function ($node) {
             while ($node && ($node = $node->nextSibling)) {
-                if ($node instanceof \DOMElement || ($node instanceof DOMCharacterData && trim($this->$node->data) !== '')) {
+                if ($node instanceof \DOMElement || ($node instanceof \DOMCharacterData && trim($node->data) !== '')) {
                     break;
                 }
             }
@@ -912,7 +923,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $get_prev_elm = function ($node) {
             while ($node && ($node = $node->previousSibling)) {
-                if ($node instanceof \DOMElement || ($node instanceof DOMCharacterData && trim($this->$node->data) !== '')) {
+                if ($node instanceof \DOMElement || ($node instanceof \DOMCharacterData && trim($node->data) !== '')) {
                     break;
                 }
             }
