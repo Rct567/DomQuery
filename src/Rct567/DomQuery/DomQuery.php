@@ -586,13 +586,23 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Get the children of each element in the set of matched elements, including text and comment nodes.
+     *
+     * @return self
+     */
+    public function contents() 
+    {
+        return $this->children(null); 
+    }
+
+    /**
      * Get the children of each element in the set of matched elements, optionally filtered by a selector.
      *
      * @param string|self|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
-    public function children($selector=null)
+    public function children($selector='*')
     {
         $result = $this->createChildInstance();
 
@@ -867,7 +877,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $get_next_elm = function ($node) {
             while ($node && ($node = $node->nextSibling)) {
-                if ($node instanceof \DOMElement) {
+                if ($node instanceof \DOMElement || ($node instanceof DOMCharacterData && trim($this->$node->data) !== '')) {
                     break;
                 }
             }
@@ -902,7 +912,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $get_prev_elm = function ($node) {
             while ($node && ($node = $node->previousSibling)) {
-                if ($node instanceof \DOMElement) {
+                if ($node instanceof \DOMElement || ($node instanceof DOMCharacterData && trim($this->$node->data) !== '')) {
                     break;
                 }
             }

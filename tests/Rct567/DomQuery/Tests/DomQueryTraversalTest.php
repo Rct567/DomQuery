@@ -72,6 +72,32 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test children (spaces should be ignored by default)
+     */
+    public function testChildren()
+    {
+        $dom = new DomQuery('<div><a>1</a> <a>2</a> <a>3</a></div>');
+        $children = $dom->find('div')->children();
+
+        $this->assertEquals(3, $children->length);
+        $this->assertEquals('<a>1</a>', (string) $children->first());
+        $this->assertEquals('<a>3</a>', (string) $children->last());
+    }
+
+    /*
+     * Test contents
+     */
+    public function testContents()
+    {
+        $dom = new DomQuery('<div> <a>1</a> <a>2</a> <a>3</a> </div>');
+        $children = $dom->find('div')->contents();
+
+        $this->assertEquals(7, $children->length); // 3 elements plus 4 spaces
+        $this->assertEquals(' ', (string) $children[0]);
+        $this->assertEquals('<a>1</a>', (string) $children[1]);
+    }
+
+    /*
      *  Test get parent
      */
     public function testParent()

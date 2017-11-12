@@ -62,6 +62,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 
 - `.find( selector )`
 - `.children( [selector] )`
+- `.contents()` get children including text nodes
 - `.parent( [selector] )`
 - `.closest( [selector] )`
 - `.next( [selector] )`
