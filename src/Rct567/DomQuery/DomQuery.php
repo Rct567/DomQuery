@@ -865,10 +865,19 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         $result = $this->createChildInstance();
 
+        $get_next_elm = function ($node) {
+            while ($node && ($node = $node->nextSibling)) {
+                if ($node instanceof \DOMElement) {
+                    break;
+                }
+            }
+            return $node;
+        };
+
         if (isset($this->document) && $this->length > 0) {
             foreach ($this->nodes as $node) {
-                if (!is_null($node->nextSibling)) {
-                    $result->addDomNode($node->nextSibling);
+                if ($next = $get_next_elm($node)) {
+                    $result->addDomNode($next);
                 }
             }
 
@@ -891,10 +900,19 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         $result = $this->createChildInstance();
 
+        $get_prev_elm = function ($node) {
+            while ($node && ($node = $node->previousSibling)) {
+                if ($node instanceof \DOMElement) {
+                    break;
+                }
+            }
+            return $node;
+        };
+
         if (isset($this->document) && $this->length > 0) {
             foreach ($this->nodes as $node) { // get all previous sibling of all nodes
-                if (!is_null($node->previousSibling)) {
-                    $result->addDomNode($node->previousSibling);
+                if ($prev = $get_prev_elm($node)) {
+                    $result->addDomNode($prev);
                 }
             }
 

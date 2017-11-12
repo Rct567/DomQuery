@@ -39,6 +39,26 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test next
+     */
+    public function testNext()
+    {
+        $dom = new DomQuery('<ul> <li id="a">1</li> <li id="b">2</li> </ul>');
+
+        $this->assertEquals('<li id="b">2</li>', (string) $dom->find('#a')->next());
+    }
+
+    /*
+     * Test next
+     */
+    public function testPrev()
+    {
+        $dom = new DomQuery('<ul> <li id="a">1</li> <li id="b">2</li> </ul>');
+
+        $this->assertEquals('<li id="a">1</li>', (string) $dom->find('#b')->prev());
+    }
+
+    /*
      * Test first last, with and without filter selector
      */
     public function testSiblings()
