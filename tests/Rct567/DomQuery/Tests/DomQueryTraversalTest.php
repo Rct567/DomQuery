@@ -220,6 +220,9 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
         $selection = $dom->find('a');
         $this->assertEquals(5, $selection->length);
         $this->assertEquals(5, $selection->filter('a')->length);
+        $this->assertEquals(5, $selection->filter(function ($node) {
+            return $node->tagName == 'a';
+        })->length);
         $this->assertEquals(1, $selection->filter('#mmm')->length);
         $this->assertEquals(1, $selection->filter($dom->getDocument()->getElementById('mmm'))->length);
         $this->assertEquals(1, $selection->filter('a')->filter('.xpp')->length);
@@ -241,6 +244,9 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(3, $selection->not('#mmm')->not('.xpp')->length);
         $this->assertEquals(2, $selection->not('a[class], #mmm')->length);
         $this->assertEquals(2, $selection->not(':even')->length);
+        $this->assertEquals(2, $selection->not(function ($node) {
+            return $node->hasAttributes();
+        })->length);
         $this->assertEquals(4, $selection->not($dom->getDocument()->getElementById('mmm'))->length);
         $inner = (string) $selection->not($dom->find('a:first-child, a:last-child'));
         $this->assertEquals('<a></a><a id="mmm"></a><a class="x"></a>', $inner);
@@ -256,6 +262,9 @@ class DomQueryTraversalTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($dom[2]->next()->is('.x'));
         $this->assertTrue($dom[0]->is($dom->xpathQuery('//a')));
         $this->assertTrue($dom[0]->is($dom[0]));
+        $this->assertTrue($dom[0]->is(function ($node) {
+            return $node->tagName == 'a';
+        }));
         $this->assertFalse($dom[0]->is($dom[1]));
         $this->assertFalse($dom[0]->is($dom->find('a:last-child')));
     }

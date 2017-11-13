@@ -598,7 +598,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Get the children of each element in the set of matched elements, optionally filtered by a selector.
      *
-     * @param string|self|\DOMNodeList|\DOMNode|false|null $selector expression that filters the set of matched elements
+     * @param string|self|callable|\DOMNodeList|\DOMNode|false|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
@@ -639,7 +639,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Get the siblings of each element in the set of matched elements, optionally filtered by a selector.
      *
-     * @param string|self|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
@@ -669,7 +669,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Get the parent of each element in the current set of matched elements, optionally filtered by a selector
      *
-     * @param string|self|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
@@ -696,7 +696,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * For each element in the set, get the first element that matches the selector
      * by testing the element itself and traversing up through its ancestors in the DOM tree.
      *
-     * @param string|self|\DOMNodeList|\DOMNode $selector selector expression to match elements against
+     * @param string|self|callable|\DOMNodeList|\DOMNode $selector selector expression to match elements against
      *
      * @return self
      */
@@ -724,7 +724,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Remove elements from the set of matched elements.
      *
-     * @param string|self|\DOMNodeList|\DOMNode $selector
+     * @param string|self|callable|\DOMNodeList|\DOMNode $selector
      *
      * @return self
      */
@@ -733,19 +733,27 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $result = $this->createChildInstance();
 
         if ($this->length > 0) {
-            $selection = self::create($this->document)->find($selector);
-
-            if ($selection->length > 0) {
-                foreach ($this->nodes as $node) {
-                    $matched = false;
-                    foreach ($selection as $result_node) {
-                        if ($result_node->isSameNode($node)) {
-                            $matched = true;
-                            break 1;
-                        }
-                    }
-                    if (!$matched) {
+            if (is_callable($selector)) {
+                foreach ($this->nodes as $index => $node) {
+                    if (!$selector($node, $index)) {
                         $result->addDomNode($node);
+                    }
+                }
+            } else {
+                $selection = self::create($this->document)->find($selector);
+
+                if ($selection->length > 0) {
+                    foreach ($this->nodes as $node) {
+                        $matched = false;
+                        foreach ($selection as $result_node) {
+                            if ($result_node->isSameNode($node)) {
+                                $matched = true;
+                                break 1;
+                            }
+                        }
+                        if (!$matched) {
+                            $result->addDomNode($node);
+                        }
                     }
                 }
             }
@@ -757,7 +765,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Reduce the set of matched elements to those that match the selector
      *
-     * @param string|self|\DOMNodeList|\DOMNode $selector
+     * @param string|self|callable|\DOMNodeList|\DOMNode $selector
      *
      * @return self
      */
@@ -766,12 +774,18 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $result = $this->createChildInstance();
 
         if ($this->length > 0) {
-            $selection = self::create($this->document)->find($selector);
-            $result->xpath_query = $selection->xpath_query;
+            if (is_callable($selector)) {
+                foreach ($this->nodes as $index => $node) {
+                    if ($selector($node, $index)) {
+                        $result->addDomNode($node);
+                    }
+                }
+            } else {
+                $selection = self::create($this->document)->find($selector);
+                $result->xpath_query = $selection->xpath_query;
 
-            if ($selection->length > 0) {
-                foreach ($this->nodes as $node) {
-                    foreach ($selection as $result_node) {
+                foreach ($selection as $result_node) {
+                    foreach ($this->nodes as $node) {
                         if ($result_node->isSameNode($node)) {
                             $result->addDomNode($node);
                             break 1;
@@ -787,18 +801,24 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Check if any node matches the selector
      *
-     * @param string|self|\DOMNodeList|\DOMNode $selector
+     * @param string|self|callable|\DOMNodeList|\DOMNode $selector
      *
      * @return boolean
      */
     public function is($selector)
     {
         if ($this->length > 0) {
-            $selection = self::create($this->document)->find($selector);
+            if (is_callable($selector)) {
+                foreach ($this->nodes as $index => $node) {
+                    if ($selector($node, $index)) {
+                        return true;
+                    }
+                }
+            } else {
+                $selection = self::create($this->document)->find($selector);
 
-            if ($selection->length > 0) {
-                foreach ($this->nodes as $node) {
-                    foreach ($selection->nodes as $result_node) {
+                foreach ($selection->nodes as $result_node) {
+                    foreach ($this->nodes as $node) {
                         if ($result_node->isSameNode($node)) {
                             return true;
                         }
@@ -846,11 +866,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Returns DomQuery with first node
      *
-     * @param string|null $selector expression that filters the set of matched elements
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
-    public function first(string $selector=null)
+    public function first($selector=null)
     {
         $result = $this[0];
         if ($selector) {
@@ -862,11 +882,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Returns DomQuery with last node
      *
-     * @param string|null $selector expression that filters the set of matched elements
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
-    public function last(string $selector=null)
+    public function last($selector=null)
     {
         $result = $this[$this->length-1];
         if ($selector) {
@@ -878,11 +898,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Returns DomQuery with immediately following sibling of all nodes
      *
-     * @param string|null $selector expression that filters the set of matched elements
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
-    public function next(string $selector=null)
+    public function next($selector=null)
     {
         $result = $this->createChildInstance();
 
@@ -913,11 +933,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Returns DomQuery with immediately preceding sibling of all nodes
      *
-     * @param string|null $selector expression that filters the set of matched elements
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
      * @return self
      */
-    public function prev(string $selector=null)
+    public function prev($selector=null)
     {
         $result = $this->createChildInstance();
 
@@ -968,11 +988,12 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Remove the set of matched elements
      *
-     * @param string|null $selector expression that filters the set of matched elements to be removed
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that
+     * filters the set of matched elements to be removed
      *
      * @return self
      */
-    public function remove(string $selector=null)
+    public function remove($selector=null)
     {
         $result = $this;
         if ($selector) {

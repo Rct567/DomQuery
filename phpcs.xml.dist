@@ -84,7 +84,7 @@
 
  <rule ref="Generic.Metrics.NestingLevel">
   <properties>
-   <property name="nestingLevel" value="5"/>
+   <property name="nestingLevel" value="6"/>
    <property name="absoluteNestingLevel" value="10"/>
   </properties>
  </rule>
