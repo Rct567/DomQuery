@@ -19,5 +19,7 @@
     "require": {
         "php": "^7.0.0",
         "ext-xml": "*"
+    },
+    "require-dev": {
     }
 }
