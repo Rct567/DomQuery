@@ -72,9 +72,9 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
  #### Traversing > Filtering
 
 - `.is( selector )`
-- `.filter ( selector )`
-- `.not( selector )`
-- `.has( selector )`
+- `.filter ( selector )` reduce to those that match the selector
+- `.not( selector )` remove elements from the set of matched elements
+- `.has( selector )` reduce to those that have a descendant that matches the selector
 - `.first( [selector] )`
 - `.last( [selector] )`
 - `.slice( [offset] [, length])` like [array_slice in php](http://php.net/manual/en/function.array-slice.php), not js/jquery
