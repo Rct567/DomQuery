@@ -831,6 +831,28 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Reduce the set of matched elements to those that have a descendant that matches the selector
+     *
+     * @param string|self|callable|\DOMNodeList|\DOMNode $selector
+     *
+     * @return self
+     */
+    public function has($selector)
+    {
+        $result = $this->createChildInstance();
+        
+        if ($this->length > 0) {
+            foreach ($this as $node) {
+                if ($node->find($selector)->length > 0) {
+                    $result->addDomNode($node->get(0));
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Reduce the set of matched elements to a subset specified by the offset and length (php like)
      *
      * @param integer $offset

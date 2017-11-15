@@ -74,6 +74,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.is( selector )`
 - `.filter ( selector )`
 - `.not( selector )`
+- `.has( selector )`
 - `.first( [selector] )`
 - `.last( [selector] )`
 - `.slice( [offset] [, length])` like [array_slice in php](http://php.net/manual/en/function.array-slice.php), not js/jquery
