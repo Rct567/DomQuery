@@ -31,6 +31,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"><span id="here"></span></a> <a class="xpp"></a>');
         
         $this->assertEquals('<a class="x"><span id="here"></span></a>', (string) $dom->find('a')->has('#here'));
+        $this->assertEquals('<a class="x"><span id="here"></span></a>', (string) $dom->find('a')->has($dom->find('#here')));
     }
 
     /*
