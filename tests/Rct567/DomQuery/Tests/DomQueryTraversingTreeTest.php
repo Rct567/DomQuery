@@ -7,6 +7,9 @@ use Rct567\DomQuery\DomQuery;
 class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
 {
 
+    /*
+     * Test find
+     */
     public function testFindWithSelection()
     {
         $dom = new DomQuery('<a>1</a><a>2</a><a id="last">3</a>');
