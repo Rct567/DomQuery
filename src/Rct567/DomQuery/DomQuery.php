@@ -354,6 +354,28 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Get the descendants of each element in the current set of matched elements, filtered by a selector.
+     * If no result are found a exception is thrown.
+     *
+     * @param string|self|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
+     *  or DomQuery|DOMNodeList|DOMNode instance to match against
+     *
+     * @return self
+     */
+    public function findOrFail($selector)
+    {
+        $result = $this->find($selector);
+        if ($result->length == 0) {
+            if (is_string($selector)) {
+                throw new \Exception('Find with selector "'.$selector.'" failed!');
+            } else {
+                throw new \Exception('Find with node (collection) as selector failed!');
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Get the combined text contents of each element in the set of matched elements, including their descendants,
      * or set the text contents of the matched elements.
      *

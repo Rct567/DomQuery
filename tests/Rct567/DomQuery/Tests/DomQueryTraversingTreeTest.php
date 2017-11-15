@@ -18,6 +18,25 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test findOrFail exception
+     */
+    public function testFindOrFailExceptionException()
+    {
+        $this->expectException(\Exception::class);
+        $dom = new DomQuery('<a>1</a><a>2</a><a id="last">3</a>');
+        $dom->findOrFail('span');
+    }
+
+    /*
+     * Test findOrFail
+     */
+    public function testFindOrFailException()
+    {
+        $dom = new DomQuery('<a>1</a><a>2</a><a id="last">3</a>');
+        $this->assertEquals(1, $dom->findOrFail('a#last')->length);
+    }
+
+    /*
      * Test next
      */
     public function testNext()

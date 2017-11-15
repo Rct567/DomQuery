@@ -142,6 +142,13 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `:contains(foo)` elements that contain text foo
 - `:root` element that is the root of the document
 
+## Other (non jQuery) methods
+
+- `findOrFail( selector )` find descendants of each element in the current set of matched elements, or throw an exception
+- `loadContent(content, encoding='UTF-8')` load html/xml content
+- `xpath(xpath_query)` Use xpath to find descendants of each element in the current set of matched elements
+- `getOuterHtml()` get resulting html describing all the elements (same as (string) $dom, or ->prop('outerHTML'))
+
 ## XML support
 
 - XML content will automatically be loaded '[as XML](http://php.net/manual/en/domdocument.loadxml.php)' if a [XML declaration](http://xmlwriter.net/xml_guide/xml_declaration.shtml) is found (property `xml_mode` will be set to true)
