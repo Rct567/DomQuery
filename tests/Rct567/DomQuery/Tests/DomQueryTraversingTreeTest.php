@@ -6,7 +6,6 @@ use Rct567\DomQuery\DomQuery;
 
 class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
 {
-
     /*
      * Test find
      */
