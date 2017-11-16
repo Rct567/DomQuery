@@ -159,7 +159,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * Load nodes from dom list
+     * Add nodes from dom node list to result set
      *
      * @param \DOMNodeList $dom_node_list
      *
