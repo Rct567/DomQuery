@@ -29,7 +29,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
     public function testHas()
     {
         $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"><span id="here"></span></a> <a class="xpp"></a>');
-        
+
         $this->assertEquals('<a class="x"><span id="here"></span></a>', (string) $dom->find('a')->has('#here'));
         $this->assertEquals('<a class="x"><span id="here"></span></a>', (string) $dom->find('a')->has($dom->find('#here')));
     }
@@ -55,7 +55,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test not filter on selection result 
+     * Test not filter on selection result
      */
     public function testNot()
     {

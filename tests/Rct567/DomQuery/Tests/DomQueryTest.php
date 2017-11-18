@@ -67,7 +67,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     {
         $dom = new DomQuery;
 
-        $dom->loadContent('<!DOCTYPE html> <html> <head></head> <body> <p><a href="test.html"></a></p> 
+        $dom->loadContent('<!DOCTYPE html> <html> <head></head> <body> <p><a href="test.html"></a></p>
         <a href="test2.html">X</a> </body> </html>');
 
         $this->assertEquals('html', $dom->nodeName);
@@ -188,7 +188,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test constructor exception 
+     * Test constructor exception
      */
     public function testConstructorException()
     {

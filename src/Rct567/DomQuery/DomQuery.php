@@ -203,7 +203,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function loadContent(string $content, $encoding='UTF-8')
     {
         $this->preserve_no_newlines = (strpos($content, '<') !== false && strpos($content, "\n") === false);
-        
+
         if (!is_bool($this->xml_mode)) {
             $this->xml_mode = (stripos($content, '<?xml') === 0);
         }
@@ -552,12 +552,12 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function removeClass($class_name='')
     {
         $remove_names = preg_split('#\s+#s', $class_name);
-        
+
         foreach ($this->nodes as $node) {
             if ($node instanceof \DOMElement && $node->hasAttribute('class')) {
                 $node_classes = preg_split('#\s+#s', $node->getAttribute('class'));
                 $class_removed = false;
-            
+
                 if ($class_name === '') { // remove all
                     $node_classes = array();
                     $class_removed = true;
@@ -862,7 +862,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function has($selector)
     {
         $result = $this->createChildInstance();
-        
+
         if ($this->length > 0) {
             foreach ($this as $node) {
                 if ($node->find($selector)->length > 0) {
@@ -1484,7 +1484,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         foreach ($tokens as $key => $token) {
             $token = str_replace("\0", ' ', $token); // restore spaces
-                
+
             if ($segment = self::getSegmentFromToken($token, $key, $tokens)) {
                 $segments[] = $segment;
             }
@@ -1606,7 +1606,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     private static function transformCssSegments(array $segments)
     {
         $new_path_tokens = array();
-        
+
         foreach ($segments as $segment) {
             if ($segment->relation_token === '>') {
                 $new_path_tokens[] = '/';
