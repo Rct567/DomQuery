@@ -1,8 +1,7 @@
 # DomQuery
 
-
 DomQuery is a PHP library that allows you to easily traverse and modify the DOM (HTML/XML). As a library it aims to
-provide 'jQuery like' access to the PHP DOMDocument class (http://php.net/manual/en/book.dom.php).  
+provide 'jQuery like' access to the PHP DOMDocument class (http://php.net/manual/en/book.dom.php).
 
 ## Installation
 
@@ -12,7 +11,7 @@ Install the latest version with
 $ composer require rct567/dom-query
 ```
 
-Note: DomQuery can also be used as a standalone class (no external dependencies). The class itself can be found in `src\Rct567\DomQuery\DomQuery.php`. 
+Note: DomQuery can also be used as a standalone class (no external dependencies). The class itself can be found in `src\Rct567\DomQuery\DomQuery.php`.
 
 ## Basic Usage
 
@@ -96,7 +95,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 
 <sub>\* __[content]__ can be html or an instance of DomQuery|DOMNodeList|DOMNode</sub>
 
- #### Attributes | Manipulation 
+ #### Attributes | Manipulation
 
 - `.attr( name [, val] )`
 - `.prop( name [, val] )`
@@ -117,7 +116,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `parent > child`
 - `foo, bar` multiple selectors
 - `prev + next` elements matching "next" that are immediately preceded by a sibling "prev"
-- `prev ~ siblings` elements matching "siblings" that are preceded by "prev" 
+- `prev ~ siblings` elements matching "siblings" that are preceded by "prev"
 - `*` all selector
 - `[name="foo"]` attribute value equal foo
 - `[name*="foo"]` attribute value contains foo
@@ -166,10 +165,10 @@ $dom->find('namespace\\:h1')->text();
 
 ### Requirements
 
-- Works with PHP 7.0 or above 
+- Works with PHP 7.0 or above
 - Requires libxml PHP extension (enabled by default)
 
-### Inspiration/acknowledgements 
+### Inspiration/acknowledgements
 
 - https://github.com/wasinger/htmlpagedom
 - https://github.com/symfony/dom-crawler
