@@ -108,7 +108,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function __construct()
     {
-        foreach (func_get_args() as $arg) {
+        foreach (\func_get_args() as $arg) {
             if ($arg instanceof \DOMDocument) {
                 $this->setDomDocument($arg);
             } elseif ($arg instanceof \DOMNodeList) {
@@ -117,12 +117,12 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $this->addDomNode($arg);
             } elseif ($arg instanceof \DOMXPath) {
                 $this->dom_xpath = $arg;
-            } elseif (is_string($arg) && strpos($arg, '>') !== false) {
+            } elseif (\is_string($arg) && strpos($arg, '>') !== false) {
                 $this->loadContent($arg);
-            } elseif (is_object($arg)) {
-                throw new \InvalidArgumentException('Unknown object '.get_class($arg).' given as argument');
+            } elseif (\is_object($arg)) {
+                throw new \InvalidArgumentException('Unknown object '. \get_class($arg).' given as argument');
             } else {
-                throw new \InvalidArgumentException('Unknown argument '.gettype($arg));
+                throw new \InvalidArgumentException('Unknown argument '. \gettype($arg));
             }
         }
     }
@@ -138,7 +138,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         if (func_get_arg(0) instanceof self) {
             return func_get_arg(0);
         } else {
-            return new self(...func_get_args());
+            return new self(...\func_get_args());
         }
     }
 
@@ -188,7 +188,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function addDomNode(\DOMNode $dom_node)
     {
         $this->nodes[] = $dom_node;
-        $this->length = count($this->nodes);
+        $this->length = \count($this->nodes);
         $this->setDomDocument($dom_node->ownerDocument);
     }
 
@@ -204,7 +204,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         $this->preserve_no_newlines = (strpos($content, '<') !== false && strpos($content, "\n") === false);
 
-        if (!is_bool($this->xml_mode)) {
+        if (!\is_bool($this->xml_mode)) {
             $this->xml_mode = (stripos($content, '<?xml') === 0);
         }
 
@@ -245,7 +245,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             $this->nodes[] = $node;
         }
 
-        $this->length = count($this->nodes);
+        $this->length = \count($this->nodes);
     }
 
 
@@ -256,7 +256,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     private function createChildInstance()
     {
-        $instance = new self(...func_get_args());
+        $instance = new self(...\func_get_args());
 
         if (isset($this->document)) {
             $instance->setDomDocument($this->document);
@@ -268,7 +268,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             $instance->root_instance = $this;
         }
 
-        if (is_bool($this->xml_mode)) {
+        if (\is_bool($this->xml_mode)) {
             $instance->xml_mode = $this->xml_mode;
         }
 
@@ -319,7 +319,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function find($selector)
     {
-        if (is_string($selector)) {
+        if (\is_string($selector)) {
             $css_expression = $selector;
         } else {
             $selector_tag_names = array();
@@ -333,7 +333,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $xpath_expression = self::cssToXpath($css_expression);
         $result = $this->xpath($xpath_expression);
 
-        if (is_string($selector)) {
+        if (\is_string($selector)) {
             $result->css_query = $css_expression;
             $result->selector = $css_expression; // jquery style
         }
@@ -366,7 +366,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         $result = $this->find($selector);
         if ($result->length == 0) {
-            if (is_string($selector)) {
+            if (\is_string($selector)) {
                 throw new \Exception('Find with selector "'.$selector.'" failed!');
             } else {
                 throw new \Exception('Find with node (collection) as selector failed!');
@@ -385,7 +385,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function text($val=null)
     {
-        if (!is_null($val)) { // set node value for all nodes
+        if ($val !== null) { // set node value for all nodes
             foreach ($this->nodes as $node) {
                 $node->nodeValue = $val;
             }
@@ -407,7 +407,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function html($html_string=null)
     {
-        if (!is_null($html_string)) { // set html for all nodes
+        if ($html_string !== null) { // set html for all nodes
             foreach ($this as $node) {
                 $node->get(0)->nodeValue = '';
                 $node->append($html_string);
@@ -451,7 +451,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function attr(string $name, $val=null)
     {
-        if (!is_null($val)) { // set attribute for all nodes
+        if ($val !== null) { // set attribute for all nodes
             foreach ($this->nodes as $node) {
                 if ($node instanceof \DOMElement) {
                     $node->setAttribute($name, $val);
@@ -506,11 +506,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                     $node_classes = preg_split('#\s+#s', $node_class_attr);
                 }
                 foreach ($add_names as $add_name) {
-                    if (!in_array($add_name, $node_classes)) {
+                    if (!\in_array($add_name, $node_classes)) {
                         $node_classes[] = $add_name;
                     }
                 }
-                if (count($node_classes) > 0) {
+                if (\count($node_classes) > 0) {
                     $node->setAttribute('class', implode(' ', $node_classes));
                 }
             }
@@ -532,7 +532,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             if ($node instanceof \DOMElement) {
                 if ($node_class_attr = $node->getAttribute('class')) {
                     $node_classes = preg_split('#\s+#s', $node_class_attr);
-                    if (in_array($class_name, $node_classes)) {
+                    if (\in_array($class_name, $node_classes)) {
                         return true;
                     }
                 }
@@ -590,14 +590,14 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function prop(string $name, $val=null)
     {
-        if (!is_null($val)) { // set attribute for all nodes
+        if ($val !== null) { // set attribute for all nodes
             foreach ($this->nodes as $node) {
                 $node->$name = $val;
             }
 
             return $this;
         } else { // get property value for first element
-            if ($name == 'outerHTML') {
+            if ($name === 'outerHTML') {
                 return $this->getOuterHtml();
             } elseif ($node = $this->getFirstElmNode()) {
                 if (isset($node->$name)) {
@@ -647,7 +647,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                     }
                 }
                 $result->nodes = $filtered_nodes;
-                $result->length = count($result->nodes);
+                $result->length = \count($result->nodes);
             }
 
             if ($selector) {
@@ -671,7 +671,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         if (isset($this->document) && $this->length > 0) {
             foreach ($this->nodes as $node) {
-                if (!is_null($node->parentNode)) {
+                if ($node->parentNode) {
                     foreach ($node->parentNode->childNodes as $sibling) {
                         if (!$sibling->isSameNode($node) && $sibling instanceof \DOMElement) {
                             $result->addDomNode($sibling);
@@ -701,7 +701,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         if (isset($this->document) && $this->length > 0) {
             foreach ($this->nodes as $node) {
-                if (!is_null($node->parentNode)) {
+                if ($node->parentNode) {
                     $result->addDomNode($node->parentNode);
                 }
             }
@@ -755,7 +755,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $result = $this->createChildInstance();
 
         if ($this->length > 0) {
-            if (is_callable($selector)) {
+            if (\is_callable($selector)) {
                 foreach ($this->nodes as $index => $node) {
                     if (!$selector($node, $index)) {
                         $result->addDomNode($node);
@@ -796,7 +796,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $result = $this->createChildInstance();
 
         if ($this->length > 0) {
-            if (is_callable($selector)) {
+            if (\is_callable($selector)) {
                 foreach ($this->nodes as $index => $node) {
                     if ($selector($node, $index)) {
                         $result->addDomNode($node);
@@ -830,7 +830,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function is($selector)
     {
         if ($this->length > 0) {
-            if (is_callable($selector)) {
+            if (\is_callable($selector)) {
                 foreach ($this->nodes as $index => $node) {
                     if ($selector($node, $index)) {
                         return true;
@@ -885,8 +885,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function slice($offset=0, $length=null)
     {
         $result = $this->createChildInstance();
-        $result->nodes = array_slice($this->nodes, $offset, $length);
-        $result->length = count($result->nodes);
+        $result->nodes = \array_slice($this->nodes, $offset, $length);
+        $result->length = \count($result->nodes);
         return $result;
     }
 
@@ -899,8 +899,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function get($index)
     {
-        $result = array_slice($this->nodes, $index, 1); // note: index can be negative
-        if (count($result) > 0) {
+        $result = \array_slice($this->nodes, $index, 1); // note: index can be negative
+        if (\count($result) > 0) {
             return $result[0];
         } else {
             return null; // return null if no result for key
@@ -1019,7 +1019,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function each(callable $callback)
     {
         foreach ($this->nodes as $index => $node) {
-            $return_value = call_user_func($callback, $node, $index);
+            $return_value = \call_user_func($callback, $node, $index);
 
             if ($return_value === false) {
                 break;
@@ -1065,12 +1065,12 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     private function importNodes($content, callable $import_function)
     {
-        if (is_array($content)) {
+        if (\is_array($content)) {
             foreach ($content as $item) {
                 $this->importNodes($item, $import_function);
             }
         } else {
-            if (is_string($content) && strpos($content, "\n") !== false) {
+            if (\is_string($content) && strpos($content, "\n") !== false) {
                 $this->preserve_no_newlines = false;
                 if (isset($this->root_instance)) {
                     $this->root_instance->preserve_no_newlines = false;
@@ -1103,7 +1103,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function append()
     {
-        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+        $this->importNodes(\func_get_args(), function ($node, $imported_node) {
             $node->appendChild($imported_node);
         });
 
@@ -1119,7 +1119,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function prepend()
     {
-        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+        $this->importNodes(\func_get_args(), function ($node, $imported_node) {
             $node->insertBefore($imported_node, $node->childNodes->item(0));
         });
 
@@ -1135,7 +1135,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function before()
     {
-        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+        $this->importNodes(\func_get_args(), function ($node, $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not set before root element '.$node->tagName.' of document');
             } else {
@@ -1155,7 +1155,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function after()
     {
-        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+        $this->importNodes(\func_get_args(), function ($node, $imported_node) {
             if ($node->nextSibling) {
                 $node->parentNode->insertBefore($imported_node, $node->nextSibling);
             } else { // node is last, so there is no next sibling to insert before
@@ -1175,7 +1175,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function wrap()
     {
-        $this->importNodes(func_get_args(), function ($node, $imported_node) {
+        $this->importNodes(\func_get_args(), function ($node, $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
             } else {
@@ -1205,7 +1205,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         $wrapper_node = null; // node given as wrapper
         $wrap_target_node = null; // node that wil be parent of content to be wrapped
 
-        $this->importNodes(func_get_args(), function ($node, $imported_node) use (&$wrapper_node, &$wrap_target_node) {
+        $this->importNodes(\func_get_args(), function ($node, $imported_node) use (&$wrapper_node, &$wrap_target_node) {
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
             } else {
@@ -1242,7 +1242,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function wrapInner()
     {
         foreach ($this->nodes as $node) {
-            self::create($node->childNodes)->wrapAll(func_get_args());
+            self::create($node->childNodes)->wrapAll(\func_get_args());
         }
 
         return $this;
@@ -1284,7 +1284,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function __call($name, $arguments)
     {
         if (method_exists($this->getFirstElmNode(), $name)) {
-            return call_user_func_array(array($this->getFirstElmNode(), $name), $arguments);
+            return \call_user_func_array(array($this->getFirstElmNode(), $name), $arguments);
         } else {
             throw new \Exception('Unknown call '.$name);
         }
@@ -1306,7 +1306,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
             if ($node_list instanceof \DOMNodeList) {
                 return $node_list;
-            } elseif ($node_list === false && !is_null($context_node)) {
+            } elseif ($node_list === false && $context_node) {
                 throw new \Exception('Expression '.$expression.' is malformed or contextnode is invalid.');
             } elseif ($node_list === false) {
                 throw new \Exception('Expression '.$expression.' is malformed.');
@@ -1432,7 +1432,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             return $str;
         }
 
-        for ($i = 0; $i < strlen($str); $i++) {
+        for ($i = 0; $i < \strlen($str); $i++) {
             if ($str[$i] === $search_char && $i > 0) {
                 // check if enclosure is open by counting char before position
                 $enclosure_is_open = substr_count($str, $enclosure_open, 0, $i) != substr_count($str, $enclosure_close, 0, $i);
@@ -1516,7 +1516,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         $relation_tokens = array('>', '~', '+');
 
-        if (in_array($token, $relation_tokens)) { // not a segment
+        if (\in_array($token, $relation_tokens)) { // not a segment
             return false;
         }
 
@@ -1527,7 +1527,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             'pseudo_filters' => array()
         );
 
-        if (isset($tokens[$key-1]) && in_array($tokens[$key-1], $relation_tokens)) { // get relationship token
+        if (isset($tokens[$key-1]) && \in_array($tokens[$key-1], $relation_tokens)) { // get relationship token
             $segment->relation_token = $tokens[$key-1];
         }
 
@@ -1541,7 +1541,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             $token = preg_replace_callback( // temporary replace escaped characters
                 '#(\\\\)(.{1})#',
                 function ($matches) {
-                    return 'ESCAPED'.ord($matches[2]);
+                    return 'ESCAPED'. \ord($matches[2]);
                 },
                 $token
             );
@@ -1580,7 +1580,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 return preg_replace_callback(
                     '#(ESCAPED)([0-9]{1,3})#',
                     function ($matches) {
-                        return chr($matches[2]);
+                        return \chr($matches[2]);
                     },
                     $str
                 );
@@ -1620,7 +1620,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
             if ($segment->selector != '') {
                 $new_path_tokens[] = $segment->selector; // specific tagname
-            } elseif (substr(array_slice($new_path_tokens, -1)[0], -2) !== '::') {
+            } elseif (substr(\array_slice($new_path_tokens, -1)[0], -2) !== '::') {
                 $new_path_tokens[] = '*'; // any tagname
             }
 
@@ -1719,7 +1719,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 return "[starts-with(@" . strtolower($matches[1]) . ", '" . $matches[4] . "')]";
             } elseif ($matches[3] === '$') { // attribute value ends with specified content
                 return "[@".$matches[1]." and substring(@".$matches[1].", string-length(@".$matches[1].")-".
-                (strlen($matches[4])-1).") = '".$matches[4]."']";
+                (\strlen($matches[4])-1).") = '".$matches[4]."']";
             }
         }
 
@@ -1769,7 +1769,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function getIterator()
     {
         $iteration_result = array();
-        if (is_array($this->nodes)) {
+        if (\is_array($this->nodes)) {
             foreach ($this->nodes as $node) {
                 $iteration_result[] = $this->createChildInstance($node);
             }
@@ -1785,8 +1785,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function count()
     {
-        if (isset($this->nodes) && is_array($this->nodes)) {
-            return count($this->nodes);
+        if (isset($this->nodes) && \is_array($this->nodes)) {
+            return \count($this->nodes);
         } else {
             return 0;
         }
@@ -1801,7 +1801,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function offsetExists($key)
     {
-        if (in_array($key, range(0, $this->length - 1)) && $this->length > 0) {
+        if (\in_array($key, range(0, $this->length - 1)) && $this->length > 0) {
             return true;
         }
 
