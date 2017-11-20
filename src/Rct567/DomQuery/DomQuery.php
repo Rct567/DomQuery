@@ -1463,9 +1463,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             $paths = explode(',', $tmp_path);
             $expressions = array();
 
-            foreach ($paths as $path) {
-                $path = str_replace("\0", ',', $path); // restore commas
-                $xpath = static::cssToXpath(trim($path));
+            foreach ($paths as $single_path) {
+                $single_path = str_replace("\0", ',', $single_path); // restore commas
+                $xpath = static::cssToXpath(trim($single_path));
                 $expressions[] = $xpath;
             }
 
