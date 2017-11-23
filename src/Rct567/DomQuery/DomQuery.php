@@ -381,7 +381,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|null $val
      *
-     * @return $this|string|void
+     * @return $this|string|null
      */
     public function text($val=null)
     {
@@ -403,7 +403,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string|null $html_string
      *
-     * @return $this|string|void
+     * @return $this|string|null
      */
     public function html($html_string=null)
     {
@@ -586,7 +586,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * @param string $name
      * @param string $val
      *
-     * @return $this|mixed
+     * @return $this|mixed|null
      */
     public function prop(string $name, $val=null)
     {
@@ -1261,7 +1261,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Return first DOMElement
      *
-     * @return \DOMElement|void
+     * @return \DOMElement|null
      */
     private function getFirstElmNode()
     {
