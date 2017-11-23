@@ -676,7 +676,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
             foreach ($this->nodes as $node) {
                 if ($node->parentNode) {
                     foreach ($node->parentNode->childNodes as $sibling) {
-                        if (!$sibling->isSameNode($node) && $sibling instanceof \DOMElement) {
+                        if ($sibling instanceof \DOMElement && !$sibling->isSameNode($node)) {
                             $result->addDomNode($sibling);
                         }
                     }
@@ -1436,7 +1436,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         }
 
         for ($i = 0; $i < \strlen($str); $i++) {
-            if ($str[$i] === $search_char && $i > 0) {
+            if ($i > 0 && $str[$i] === $search_char) {
                 // check if enclosure is open by counting char before position
                 $enclosure_is_open = substr_count($str, $enclosure_open, 0, $i) != substr_count($str, $enclosure_close, 0, $i);
                 if ($enclosure_is_open) {
@@ -1804,7 +1804,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function offsetExists($key)
     {
-        if (\in_array($key, range(0, $this->length - 1)) && $this->length > 0) {
+        if ($this->length > 0 && \in_array($key, range(0, $this->length - 1))) {
             return true;
         }
 
