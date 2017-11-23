@@ -148,6 +148,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * @param \DOMDocument $document
      *
      * @return void
+     * @throws \Exception if other document is already setcd c
      */
     public function setDomDocument(\DOMDocument $document)
     {
@@ -164,6 +165,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * @param \DOMNodeList $dom_node_list
      *
      * @return void
+     * @throws \Exception if no document is set and list is empty
      */
     public function loadDomNodeList(\DOMNodeList $dom_node_list)
     {
@@ -360,7 +362,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * @param string|self|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
      *  or DomQuery|DOMNodeList|DOMNode instance to match against
      *
-     * @return self
+     * @return DomQuery
+     * @throws \Exception if no result are found
      */
     public function findOrFail($selector)
     {
