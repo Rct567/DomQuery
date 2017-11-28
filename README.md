@@ -146,7 +146,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `findOrFail( selector )` find descendants of each element in the current set of matched elements, or throw an exception
 - `loadContent(content, encoding='UTF-8')` load html/xml content
 - `xpath(xpath_query)` Use xpath to find descendants of each element in the current set of matched elements
-- `getOuterHtml()` get resulting html describing all the elements (same as (string) $dom, or ->prop('outerHTML'))
+- `getOuterHtml()` get resulting html describing all the elements (same as `(string) $dom`, or `$elm->prop('outerHTML')`)
 
 ## XML support
 
