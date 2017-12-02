@@ -109,4 +109,20 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('<a>6</a>', $dom->find('a')->slice(-1)->outerHTML);
         $this->assertEquals('<a>5</a>', $dom->find('a')->slice(-2, -1)->outerHTML);
     }
+
+    /*
+     * Test map
+     */
+    public function testMap()
+    {
+        $dom = new DomQuery('<p> <a>1</a> <a>2,3</a> <span></span> </p>');
+
+        $map = $dom->find('p > *')->map(function ($elm) {
+            if ($elm->textContent !== '') {
+                return explode(',', $elm->textContent);
+            }
+        });
+
+        $this->assertEquals(['1', '2', '3'], $map);
+    }
 }

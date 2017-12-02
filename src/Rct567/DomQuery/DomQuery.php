@@ -1033,6 +1033,33 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
+     * Pass each element in the current matched set through a function,
+     * producing an array containing the return values
+     *
+     * @param callable $callback
+     *
+     * @return $this
+     */
+    public function map(callable $callback)
+    {
+        $result = array();
+        
+        foreach ($this->nodes as $index => $node) {
+            $return_value = \call_user_func($callback, $node, $index);
+
+            if ($return_value === null) {
+                continue;
+            } elseif (is_array($return_value)) {
+                $result = array_merge($result, $return_value);
+            } else {
+                $result[] = $return_value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Remove the set of matched elements
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that
