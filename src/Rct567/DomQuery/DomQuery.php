@@ -357,13 +357,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
     /**
      * Get the descendants of each element in the current set of matched elements, filtered by a selector.
-     * If no result are found a exception is thrown.
+     * If no results are found a exception is thrown.
      *
      * @param string|self|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
-     *  or DomQuery|DOMNodeList|DOMNode instance to match against
+     * or DomQuery|DOMNodeList|DOMNode instance to match against
      *
      * @return DomQuery
-     * @throws \Exception if no result are found
+     * @throws \Exception if no results are found
      */
     public function findOrFail($selector)
     {
@@ -422,11 +422,11 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
             return $this;
         } else { // get html for first node
-            if ($node = $this->getFirstElmNode()) {
+            if ($content_node = $this->getFirstElmNode()) {
                 $html = '';
-                $document = $node->ownerDocument;
+                $document = $content_node->ownerDocument;
 
-                foreach ($node->childNodes as $node) {
+                foreach ($content_node->childNodes as $node) {
                     if ($this->xml_mode) {
                         $html .= $document->saveXML($node);
                     } else {
