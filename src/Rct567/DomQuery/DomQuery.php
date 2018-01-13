@@ -1637,12 +1637,10 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     {
         $new_path_tokens = array();
 
-        foreach ($segments as $segment) {
+        foreach ($segments as $num => $segment) {
             if ($segment->relation_token === '>') {
                 $new_path_tokens[] = '/';
-            } elseif ($segment->relation_token === '~') {
-                $new_path_tokens[] = '/following-sibling::';
-            } elseif ($segment->relation_token === '+') {
+            } elseif ($segment->relation_token === '~' || $segment->relation_token === '+') {
                 $new_path_tokens[] = '/following-sibling::';
             } else {
                 $new_path_tokens[] = '//';
@@ -1654,8 +1652,9 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $new_path_tokens[] = '*'; // any tagname
             }
 
-            if ($segment->relation_token === '+') {
-                $new_path_tokens[] = '[1]';
+            if ($segment->relation_token === '+' && isset($segments[$num-1])) { // add adjacent filter
+                $prev_selector = implode('', self::transformCssSegments([$segments[$num-1]]));
+                $new_path_tokens[] = '[preceding-sibling::*[1][self::'.ltrim($prev_selector, '/').']]';
             }
 
             foreach (array_reverse($segment->attribute_filters) as $attr) {

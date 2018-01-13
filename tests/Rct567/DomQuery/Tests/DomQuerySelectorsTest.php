@@ -46,7 +46,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             'a:not(.cool)' => '//a[not(self::*[contains(concat(\' \', normalize-space(@class), \' \'), \' cool \')])]',
             'a:contains(txt)' => '//a[text()[contains(.,\'txt\')]]',
             'h1 ~ ul' => '//h1/following-sibling::ul',
-            'h1 + ul' => '//h1/following-sibling::ul[1]',
+            'h1 + ul' => '//h1/following-sibling::ul[preceding-sibling::*[1][self::h1]]',
             'h1 ~ #id' => '//h1/following-sibling::[@id=\'id\']',
             'p > a:has(> a)' => '//p/a[child::a]',
             'p > a:has(b > a)' => '//p/a[descendant::b/a]',
@@ -151,10 +151,12 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
      */
     public function testNextAdjacentSelector()
     {
-        $dom = new DomQuery('<b>a</b><a>1</a><a>2</a><a>3</a>');
+        $dom = new DomQuery('<a>x</a><b>a</b><a>1</a><a>2</a><a>3</a>');
         $this->assertEquals(1, $dom->find('b + a')->length);
         $this->assertEquals('1', $dom->find('b + a')->text());
-        $this->assertEquals(0, $dom->find('a + b')->length);
+        $this->assertEquals(1, $dom->find('a + b')->length);
+        $this->assertEquals('2', $dom->find('a + a')->text());
+        $this->assertEquals(2, $dom->find('a + a')->length);
     }
 
     /*
@@ -166,6 +168,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(3, $dom->find('b ~ a')->length);
         $this->assertEquals('3', $dom->find('b ~ a')->last()->text());
         $this->assertEquals(0, $dom->find('a ~ b')->length);
+        $this->assertEquals(2, $dom->find('a ~ a')->length);
     }
 
     /*
