@@ -47,7 +47,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             'a:contains(txt)' => '//a[text()[contains(.,\'txt\')]]',
             'h1 ~ ul' => '//h1/following-sibling::ul',
             'h1 + ul' => '//h1/following-sibling::ul[preceding-sibling::*[1][self::h1]]',
-            'h1 ~ #id' => '//h1/following-sibling::[@id=\'id\']',
+            'h1 ~ #id' => '//h1/following-sibling::*[@id=\'id\']',
             'p > a:has(> a)' => '//p/a[child::a]',
             'p > a:has(b > a)' => '//p/a[descendant::b/a]',
             'p > a:has(a)' => '//p/a[descendant::a]',
@@ -157,6 +157,19 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $dom->find('a + b')->length);
         $this->assertEquals('2', $dom->find('a + a')->text());
         $this->assertEquals(2, $dom->find('a + a')->length);
+    }
+
+    /*
+     * Test next adjacent selector using class
+     */
+    public function testNextAdjacentSelectorUsingClass()
+    {
+        $dom = new DomQuery('<a class="app">x</a><b>a</b><a class="app">1</a><a class="app">2</a><a class="app">3</a>');
+        $this->assertEquals('2', $dom->find('.app + a.app')->text());
+        $this->assertEquals('2', $dom->find('a + .app')->text());
+        $this->assertEquals('3', $dom->find('a + .app')->last()->text());
+        $this->assertEquals(2, $dom->find('.app + .app')->length);
+        $this->assertEquals(2, $dom->find('a.app + a.app')->length);
     }
 
     /*

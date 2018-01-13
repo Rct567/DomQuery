@@ -1648,7 +1648,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
             if ($segment->selector != '') {
                 $new_path_tokens[] = $segment->selector; // specific tagname
-            } elseif (substr(\array_slice($new_path_tokens, -1)[0], -2) !== '::') {
+            } else {
                 $new_path_tokens[] = '*'; // any tagname
             }
 
