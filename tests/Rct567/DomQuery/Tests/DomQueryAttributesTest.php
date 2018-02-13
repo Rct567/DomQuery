@@ -43,6 +43,16 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test remove multiple attribute using array
+     */
+    public function testRemoveMultipleAttributeArray()
+    {
+        $dom = DomQuery::create('<a title="hello" alt="x">Some text</a>');
+        $dom->removeAttr(['title', 'alt']);
+        $this->assertEquals('<a>Some text</a>', (string) $dom);
+    }
+
+    /*
      * Test add class name
      */
     public function testAddClass()
@@ -59,6 +69,16 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
     {
         $dom = DomQuery::create('<a href="hello" class=""></a><a class="before"></a>');
         $dom->find('a')->addClass('after after2');
+        $this->assertEquals('<a href="hello" class="after after2"></a><a class="before after after2"></a>', (string) $dom);
+    }
+
+    /*
+     * Test add multiple class names using array
+     */
+    public function testAddMultipleClassesArray()
+    {
+        $dom = DomQuery::create('<a href="hello" class=""></a><a class="before"></a>');
+        $dom->find('a')->addClass(['after', 'after2']);
         $this->assertEquals('<a href="hello" class="after after2"></a><a class="before after after2"></a>', (string) $dom);
     }
 
@@ -89,6 +109,16 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
     {
         $dom = DomQuery::create('<a class="before go stay"></a><a class="go before"></a>');
         $dom->find('a')->removeClass('before go');
+        $this->assertEquals('<a class="stay"></a><a class=""></a>', (string) $dom);
+    }
+
+    /*
+     * Test remove multiple class names using array
+     */
+    public function testRemoveMultipleClassArray()
+    {
+        $dom = DomQuery::create('<a class="before go stay"></a><a class="go before"></a>');
+        $dom->find('a')->removeClass(['before', 'go']);
         $this->assertEquals('<a class="stay"></a><a class=""></a>', (string) $dom);
     }
 

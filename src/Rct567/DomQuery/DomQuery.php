@@ -472,13 +472,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * Remove an attribute from each element in the set of matched elements.
      * Name can be a space-separated list of attributes.
      *
-     * @param string $name
+     * @param string|string[] $name
      *
      * @return $this
      */
     public function removeAttr($name)
     {
-        $remove_names = explode(' ', $name);
+        $remove_names = \is_array($name) ? $name : explode(' ', $name);
 
         foreach ($this->nodes as $node) {
             if ($node instanceof \DOMElement) {
@@ -494,19 +494,19 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Adds the specified class(es) to each element in the set of matched elements.
      *
-     * @param string $class_name class name(s)
+     * @param string|string[] $class_name class name(s)
      *
      * @return $this
      */
     public function addClass($class_name)
     {
-        $add_names = preg_split('#\s+#s', $class_name);
+        $add_names = \is_array($class_name) ? $class_name : explode(' ', $class_name);
 
         foreach ($this->nodes as $node) {
             if ($node instanceof \DOMElement) {
                 $node_classes = array();
                 if ($node_class_attr = $node->getAttribute('class')) {
-                    $node_classes = preg_split('#\s+#s', $node_class_attr);
+                    $node_classes = explode(' ', $node_class_attr);
                 }
                 foreach ($add_names as $add_name) {
                     if (!\in_array($add_name, $node_classes)) {
@@ -548,13 +548,13 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * Remove a single class, multiple classes, or all classes from each element in the set of matched elements.
      *
-     * @param string $class_name
+     * @param string|string[] $class_name
      *
      * @return $this
      */
     public function removeClass($class_name='')
     {
-        $remove_names = preg_split('#\s+#s', $class_name);
+        $remove_names = \is_array($class_name) ? $class_name : explode(' ', $class_name);
 
         foreach ($this->nodes as $node) {
             if ($node instanceof \DOMElement && $node->hasAttribute('class')) {
