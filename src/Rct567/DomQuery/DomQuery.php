@@ -169,7 +169,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function loadDomNodeList(\DOMNodeList $dom_node_list)
     {
-        if (!isset($this->document) && $dom_node_list->length == 0) {
+        if (!isset($this->document) && $dom_node_list->length === 0) {
             throw new \Exception('DOMDocument is missing!');
         } elseif ($dom_node_list->length > 0) {
             $this->setDomDocument($dom_node_list->item(0)->ownerDocument);
@@ -236,7 +236,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
         if ($xml_pi_node_added) { // pi node added, now remove it
             foreach ($dom_document->childNodes as $node) {
-                if ($node->nodeType == XML_PI_NODE) {
+                if ($node->nodeType === XML_PI_NODE) {
                     $dom_document->removeChild($node);
                     break;
                 }
@@ -368,7 +368,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
     public function findOrFail($selector)
     {
         $result = $this->find($selector);
-        if ($result->length == 0) {
+        if ($result->length === 0) {
             if (\is_string($selector)) {
                 throw new \Exception('Find with selector "'.$selector.'" failed!');
             } else {
@@ -1038,7 +1038,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param callable $callback
      *
-     * @return $this
+     * @return array
      */
     public function map(callable $callback)
     {
@@ -1049,8 +1049,8 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
 
             if ($return_value === null) {
                 continue;
-            } elseif (is_array($return_value)) {
-                $result = array_merge($result, $return_value);
+            } elseif (\is_array($return_value)) {
+                $result = \array_merge($result, $return_value);
             } else {
                 $result[] = $return_value;
             }
@@ -1402,7 +1402,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function __isset($name)
     {
-        return $this->__get($name) != null;
+        return $this->__get($name) !== null;
     }
 
     /**
@@ -1458,14 +1458,14 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     private static function replaceCharInsideEnclosure($str, $search_char, $enclosure_open='(', $enclosure_close=')')
     {
-        if ($str == '' || strpos($str, $search_char) === false || strpos($str, $enclosure_open) === false) {
+        if ($str === '' || strpos($str, $search_char) === false || strpos($str, $enclosure_open) === false) {
             return $str;
         }
 
         for ($i = 0; $i < \strlen($str); $i++) {
             if ($i > 0 && $str[$i] === $search_char) {
                 // check if enclosure is open by counting char before position
-                $enclosure_is_open = substr_count($str, $enclosure_open, 0, $i) != substr_count($str, $enclosure_close, 0, $i);
+                $enclosure_is_open = substr_count($str, $enclosure_open, 0, $i) !== substr_count($str, $enclosure_close, 0, $i);
                 if ($enclosure_is_open) {
                     $str[$i] = "\0";
                 }
@@ -1646,7 +1646,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
                 $new_path_tokens[] = '//';
             }
 
-            if ($segment->selector != '') {
+            if ($segment->selector !== '') {
                 $new_path_tokens[] = $segment->selector; // specific tagname
             } else {
                 $new_path_tokens[] = '*'; // any tagname
@@ -1691,7 +1691,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
         } elseif (preg_match('|contains\((.+)\)|i', $expression, $matches)) {
             return '[text()[contains(.,\''.$matches[1].'\')]]'; // contain the specified text
         } elseif (preg_match('|has\((.+)\)|i', $expression, $matches)) {
-            if (substr($matches[1], 0, 2) === '> ') {
+            if (strpos($matches[1], '> ') === 0) {
                 return '[child::' . ltrim(self::cssToXpath($matches[1]), '/') .']';
             } else {
                 return '[descendant::' . ltrim(self::cssToXpath($matches[1]), '/') .']';
