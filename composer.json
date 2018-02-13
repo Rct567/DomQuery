@@ -9,7 +9,10 @@
 	},
 	"autoload-dev": {
         "psr-4": {"Rct567\\": "tests/Rct567"}
-	},
+    },
+    "scripts": {
+        "test": "phpunit && phpstan analyze src -l 5 && phpcs"
+    },
     "authors": [
         {
             "name": "Rct567",
