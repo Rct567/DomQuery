@@ -148,7 +148,7 @@ class DomQuery implements \IteratorAggregate, \Countable, \ArrayAccess
      * @param \DOMDocument $document
      *
      * @return void
-     * @throws \Exception if other document is already setcd c
+     * @throws \Exception if other document is already set
      */
     public function setDomDocument(\DOMDocument $document)
     {

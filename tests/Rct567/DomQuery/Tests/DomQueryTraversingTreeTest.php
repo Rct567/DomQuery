@@ -83,7 +83,7 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test contents
+     * Test contents (children including text nodes)
      */
     public function testContents()
     {
