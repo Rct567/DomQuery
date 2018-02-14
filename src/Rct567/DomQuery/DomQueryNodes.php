@@ -215,7 +215,7 @@ class DomQueryNodes implements \Countable
         } else {
             return null; // return null if no result for key
         }
-    }  
+    }
 
     /**
      * Iterate over result set and executing a callback for each node
