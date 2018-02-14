@@ -17,6 +17,7 @@ namespace Rct567\DomQuery;
  */
 class DomQueryNodes implements \Countable
 {
+
     /**
      * Instance of DOMDocument
      *
@@ -248,7 +249,7 @@ class DomQueryNodes implements \Countable
     public function map(callable $callback)
     {
         $result = array();
-        
+
         foreach ($this->nodes as $index => $node) {
             $return_value = \call_user_func($callback, $node, $index);
 
