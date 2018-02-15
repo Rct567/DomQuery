@@ -57,7 +57,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('h1', $dom->find('div')->children('h1')->prop('tagName'));
         $this->assertEquals('<h1 class="title">Hello</h1>', (string) $dom->find('div > h1'));
         $this->assertEquals('h1', $dom->find('div')->children('h1')->prop('tagName'));
-        $this->assertEquals(2, count($dom->find('div, h1')));
+        $this->assertCount(2, $dom->find('div, h1'));
     }
 
     /*
@@ -73,7 +73,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('html', $dom->nodeName);
 
         $link_found = $dom->find('p > a[href^="test"]');
-        $this->assertEquals(1, count($link_found), 'finding link'); // 1 link is inside p
+        $this->assertCount(1, $link_found, 'finding link'); // 1 link is inside p
         $this->assertEquals(1, $link_found->length, 'finding link');
         $this->assertTrue(isset($link_found->href), 'finding link');
         $this->assertEquals('test.html', $link_found->href, 'finding link');
@@ -84,7 +84,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(DomQuery::class, $link_found[0]);
 
         $link_found = $dom->find('body > a');
-        $this->assertEquals(1, count($link_found), 'finding link');
+        $this->assertCount(1, $link_found, 'finding link');
         $this->assertEquals('X', $link_found->text());
     }
 
@@ -152,7 +152,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
             $result[$i] = $elm;
         });
 
-        $this->assertEquals(2, count($result));
+        $this->assertCount(2, $result);
         $this->assertInstanceOf(\DOMNode::class, $result[0]);
     }
 
@@ -162,10 +162,10 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     public function testDomQueryNoDocument()
     {
         $dom = new DomQuery;
-        $this->assertEquals(0, count($dom));
+        $this->assertCount(0, $dom);
         $this->assertFalse(isset($dom[0]));
-        $this->assertEquals(0, count($dom->find('*')));
-        $this->assertEquals(0, count($dom->children()));
+        $this->assertCount(0, $dom->find('*'));
+        $this->assertCount(0, $dom->children());
 
         $this->assertNull($dom->get(0));
 

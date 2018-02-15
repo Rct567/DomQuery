@@ -172,13 +172,13 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
 
         // main selection
         $main_selection = $dom->find('.level-a');
-        $this->assertEquals(3, count($main_selection));
+        $this->assertCount(3, $main_selection);
         $this->assertTrue($main_selection->is($dom->getDocument()->getElementsByTagName('div')));
         $this->assertFalse($main_selection->is($dom->getDocument()->getElementById('main')));
 
         // make sub selection
         $sub_selection = $main_selection->find('> div'); // child divs from main selection
-        $this->assertEquals(3, count($sub_selection));
+        $this->assertCount(3, $sub_selection);
         $this->assertEquals('level-b', $sub_selection->class);
 
         // check what it is
@@ -193,12 +193,12 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
 
         // same thing again
         $sub_selection = $main_selection->children('div, span');
-        $this->assertEquals(3, count($sub_selection));
+        $this->assertCount(3, $sub_selection);
         $this->assertEquals('level-b', $sub_selection->class);
 
         // dual selection
         $dual_selection = $dom->find('p:first-child, div.level-b:last-child');
-        $this->assertEquals(2, count($dual_selection));
+        $this->assertCount(2, $dual_selection);
 
         $this->assertTrue($dual_selection[0]->is('p'));
         $this->assertTrue($dual_selection[0]->is(':first-child'));
