@@ -89,7 +89,7 @@ class CssToXpath
             return $str;
         }
 
-        for ($i = 0; $i < \strlen($str); $i++) {
+        for ($i = 0, $str_length = \strlen($str); $i < $str_length; $i++) {
             if ($i > 0 && $str[$i] === $search_char) {
                 // check if enclosure is open by counting char before position
                 $enclosure_is_open = substr_count($str, $enclosure_open, 0, $i) !== substr_count($str, $enclosure_close, 0, $i);
@@ -115,7 +115,7 @@ class CssToXpath
     {
         $relation_tokens = array('>', '~', '+');
 
-        if (\in_array($token, $relation_tokens)) { // not a segment
+        if (in_array($token, $relation_tokens, true)) { // not a segment
             return false;
         }
 
@@ -126,7 +126,7 @@ class CssToXpath
             'pseudo_filters' => array()
         );
 
-        if (isset($tokens[$key-1]) && \in_array($tokens[$key-1], $relation_tokens)) { // get relationship token
+        if (isset($tokens[$key-1]) && in_array($tokens[$key - 1], $relation_tokens, true)) { // get relationship token
             $segment->relation_token = $tokens[$key-1];
         }
 

@@ -7,7 +7,7 @@ namespace Rct567\DomQuery;
  *
  * @package Rct567\DomQuery
  */
-class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess, \Countable
+class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
 {
 
     /**
@@ -311,7 +311,7 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
                     $node_classes = explode(' ', $node_class_attr);
                 }
                 foreach ($add_names as $add_name) {
-                    if (!\in_array($add_name, $node_classes)) {
+                    if (!in_array($add_name, $node_classes, true)) {
                         $node_classes[] = $add_name;
                     }
                 }
@@ -334,12 +334,10 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
     public function hasClass($class_name)
     {
         foreach ($this->nodes as $node) {
-            if ($node instanceof \DOMElement) {
-                if ($node_class_attr = $node->getAttribute('class')) {
-                    $node_classes = preg_split('#\s+#s', $node_class_attr);
-                    if (\in_array($class_name, $node_classes)) {
-                        return true;
-                    }
+            if ($node instanceof \DOMElement && $node_class_attr = $node->getAttribute('class')) {
+                $node_classes = explode(' ', $node_class_attr);
+                if (in_array($class_name, $node_classes, true)) {
+                    return true;
                 }
             }
         }
@@ -368,7 +366,7 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
                     $class_removed = true;
                 } else {
                     foreach ($remove_names as $remove_name) {
-                        $key = array_search($remove_name, $node_classes);
+                        $key = array_search($remove_name, $node_classes, true);
                         if ($key !== false) {
                             unset($node_classes[$key]);
                             $class_removed = true;
@@ -906,9 +904,9 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
         $this->importNodes(\func_get_args(), function ($node, $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not set before root element '.$node->tagName.' of document');
-            } else {
-                $node->parentNode->insertBefore($imported_node, $node);
             }
+
+            $node->parentNode->insertBefore($imported_node, $node);
         });
 
         return $this;
@@ -946,16 +944,16 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
         $this->importNodes(\func_get_args(), function ($node, $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
-            } else {
-                // replace node with imported wrapper
-                $old = $node->parentNode->replaceChild($imported_node, $node);
-                // old node goes inside the most inner child of wrapper
-                $target = $imported_node;
-                while ($target->hasChildNodes()) {
-                    $target = $target->childNodes[0];
-                }
-                $target->appendChild($old);
             }
+
+            // replace node with imported wrapper
+            $old = $node->parentNode->replaceChild($imported_node, $node);
+            // old node goes inside the most inner child of wrapper
+            $target = $imported_node;
+            while ($target->hasChildNodes()) {
+                $target = $target->childNodes[0];
+            }
+            $target->appendChild($old);
         });
 
         return $this;
@@ -976,23 +974,22 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
         $this->importNodes(\func_get_args(), function ($node, $imported_node) use (&$wrapper_node, &$wrap_target_node) {
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
+            }
+            if ($wrapper_node && $wrap_target_node) { // already wrapped before
+                $old = $node->parentNode->removeChild($node);
+                $wrap_target_node->appendChild($old);
             } else {
-                if ($wrapper_node && $wrap_target_node) { // already wrapped before
-                    $old = $node->parentNode->removeChild($node);
-                    $wrap_target_node->appendChild($old);
-                } else {
-                    $wrapper_node = $imported_node;
-                    // replace node with (imported) wrapper
-                    $old = $node->parentNode->replaceChild($imported_node, $node);
-                    // old node goes inside the most inner child of wrapper
-                    $target = $imported_node;
+                $wrapper_node = $imported_node;
+                // replace node with (imported) wrapper
+                $old = $node->parentNode->replaceChild($imported_node, $node);
+                // old node goes inside the most inner child of wrapper
+                $target = $imported_node;
 
-                    while ($target->hasChildNodes()) {
-                        $target = $target->childNodes[0];
-                    }
-                    $target->appendChild($old);
-                    $wrap_target_node = $target; // save for next round
+                while ($target->hasChildNodes()) {
+                    $target = $target->childNodes[0];
                 }
+                $target->appendChild($old);
+                $wrap_target_node = $target; // save for next round
             }
         });
 
@@ -1096,11 +1093,7 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
      */
     public function offsetExists($key)
     {
-        if ($this->length > 0 && \in_array($key, range(0, $this->length - 1))) {
-            return true;
-        }
-
-        return false;
+        return ($this->length > 0 && in_array($key, range(0, $this->length - 1), true));
     }
 
     /**
@@ -1114,9 +1107,9 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
     {
         if (isset($this->nodes[$key])) {
             return $this->createChildInstance($this->nodes[$key]);
-        } else {
-            return $this->createChildInstance();
         }
+
+        return $this->createChildInstance();
     }
 
     /**

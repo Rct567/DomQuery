@@ -55,6 +55,8 @@ class DomQueryNodes implements \Countable
 
     /**
      * Preserve no newlines (prevent creating newlines in html result)
+     *
+     * @var boolean
      */
     public $preserve_no_newlines;
 
@@ -122,7 +124,9 @@ class DomQueryNodes implements \Countable
     {
         if (!isset($this->document) && $dom_node_list->length === 0) {
             throw new \Exception('DOMDocument is missing!');
-        } elseif ($dom_node_list->length > 0) {
+        }
+
+        if ($dom_node_list->length > 0) {
             $this->setDomDocument($dom_node_list->item(0)->ownerDocument);
         }
 
@@ -328,9 +332,9 @@ class DomQueryNodes implements \Countable
     {
         if (method_exists($this->getFirstElmNode(), $name)) {
             return \call_user_func_array(array($this->getFirstElmNode(), $name), $arguments);
-        } else {
-            throw new \Exception('Unknown call '.$name);
         }
+
+        throw new \Exception('Unknown call '.$name);
     }
 
     /**
@@ -388,9 +392,9 @@ class DomQueryNodes implements \Countable
     {
         if (isset($this->nodes) && \is_array($this->nodes)) {
             return \count($this->nodes);
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     /**
