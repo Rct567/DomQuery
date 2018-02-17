@@ -437,4 +437,31 @@ class DomQueryNodes implements \Countable
 
         return $outer_html;
     }
+
+    /**
+     * Get the HTML contents of the first element in the set of matched elements.
+     *
+     * @return string
+     */
+    public function getInnerHtml()
+    {
+        $html = '';
+        if ($content_node = $this->getFirstElmNode()) {
+            $document = $content_node->ownerDocument;
+
+            foreach ($content_node->childNodes as $node) {
+                if ($this->xml_mode) {
+                    $html .= $document->saveXML($node);
+                } else {
+                    $html .= $document->saveHTML($node);
+                }
+            }
+
+            if ($this->preserve_no_newlines) {
+                $html = str_replace("\n", '', $html);
+            }
+        }
+
+        return $html;
+    }
 }

@@ -208,7 +208,7 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
      *
      * @param string|null $html_string
      *
-     * @return $this|string|null
+     * @return $this|string
      */
     public function html($html_string=null)
     {
@@ -224,24 +224,7 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
 
             return $this;
         } else { // get html for first node
-            if ($content_node = $this->getFirstElmNode()) {
-                $html = '';
-                $document = $content_node->ownerDocument;
-
-                foreach ($content_node->childNodes as $node) {
-                    if ($this->xml_mode) {
-                        $html .= $document->saveXML($node);
-                    } else {
-                        $html .= $document->saveHTML($node);
-                    }
-                }
-
-                if ($this->preserve_no_newlines) {
-                    $html = str_replace("\n", '', $html);
-                }
-
-                return $html;
-            }
+            return $this->getInnerHtml();
         }
     }
 
