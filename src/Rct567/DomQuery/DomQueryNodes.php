@@ -69,6 +69,35 @@ class DomQueryNodes implements \Countable
         LIBXML_HTML_NOIMPLIED // turns off the automatic adding of implied html/body
       | LIBXML_HTML_NODEFDTD; // prevents a default doctype being added when one is not found
 
+
+    /**
+     * Root instance who began the chain
+     *
+     * @var static
+     */
+    protected $root_instance;
+
+    /**
+     * Xpath expression used to create the result of this instance
+     *
+     * @var string
+     */
+    private $xpath_query;
+
+    /**
+     * Css selector given to create result of this instance
+     *
+     * @var string
+     */
+    private $css_query;
+
+    /**
+     * Jquery style property; css selector given to create result of this instance
+     *
+     * @var string
+     */
+    public $selector;
+
     /**
      * Constructor
      *
@@ -92,6 +121,91 @@ class DomQueryNodes implements \Countable
             } else {
                 throw new \InvalidArgumentException('Unknown argument '. \gettype($arg));
             }
+        }
+    }
+
+     /**
+     * Create new instance of self with some properties of its parents
+     *
+     * @return static
+     */
+    protected function createChildInstance()
+    {
+        $instance = new static(...\func_get_args());
+
+        if (isset($this->document)) {
+            $instance->setDomDocument($this->document);
+        }
+
+        if (isset($this->root_instance)) {
+            $instance->root_instance = $this->root_instance;
+        } else {
+            $instance->root_instance = $this;
+        }
+
+        if (\is_bool($this->xml_mode)) {
+            $instance->xml_mode = $this->xml_mode;
+        }
+
+        if (isset($this->document) && $this->dom_xpath instanceof \DOMXPath) {
+            $instance->dom_xpath = $this->dom_xpath;
+        }
+
+        return $instance;
+    }
+
+    /**
+     * Use xpath and return new DomQuery with resulting nodes
+     *
+     * @param string $xpath_query
+     *
+     * @return static
+     */
+    public function xpath(string $xpath_query)
+    {
+        $result = $this->createChildInstance();
+
+        if (isset($this->document)) {
+            $result->xpath_query = $xpath_query;
+
+            if (isset($this->root_instance) || isset($this->xpath_query)) {  // all nodes as context
+                foreach ($this->nodes as $node) {
+                    if ($result_node_list = $this->xpathQuery('.'.$xpath_query, $node)) {
+                        $result->loadDomNodeList($result_node_list);
+                    }
+                }
+            } else { // whole document
+                if ($result_node_list = $this->xpathQuery($xpath_query)) {
+                    $result->loadDomNodeList($result_node_list);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Retrieve last created XPath query
+     *
+     * @return string
+     */
+    public function getXpathQuery()
+    {
+        return $this->xpath_query;
+    }
+
+    /**
+     * Create new instance
+     *
+     * @return static
+     * @throws \InvalidArgumentException
+     */
+    public static function create()
+    {
+        if (func_get_arg(0) instanceof static) {
+            return func_get_arg(0);
+        } else {
+            return new static(...\func_get_args());
         }
     }
 
@@ -220,6 +334,83 @@ class DomQueryNodes implements \Countable
         } else {
             return null; // return null if no result for key
         }
+    }
+
+    /**
+     * Get the descendants of each element in the current set of matched elements, filtered by a selector
+     *
+     * @param string|self|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
+     *  or DomQuery|DOMNodeList|DOMNode instance to match against
+     *
+     * @return static
+     */
+    public function find($selector)
+    {
+        if (\is_string($selector)) {
+            $css_expression = $selector;
+        } else {
+            $selector_tag_names = array();
+            $selector_result = self::create($selector);
+            foreach ($selector_result as $node) {
+                $selector_tag_names[] = $node->tagName;
+            }
+            $css_expression = implode(',', $selector_tag_names);
+        }
+
+        $xpath_expression = CssToXpath::transform($css_expression);
+        $result = $this->xpath($xpath_expression);
+
+        if (\is_string($selector)) {
+            $result->css_query = $css_expression;
+            $result->selector = $css_expression; // jquery style
+        }
+
+        if (isset($selector_result)) {
+            $new_result_nodes = array();
+            foreach ($result->nodes as $result_node) {
+                foreach ($selector_result->nodes as $selector_result_node) {
+                    if ($result_node->isSameNode($selector_result_node)) {
+                        $new_result_nodes[] = $result_node;
+                    }
+                }
+            }
+            $result->nodes = $new_result_nodes;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Retrieve last used CSS Query
+     *
+     * @return string
+     */
+    public function getCssQuery()
+    {
+        return $this->css_query;
+    }
+
+    /**
+     * Get the descendants of each element in the current set of matched elements, filtered by a selector.
+     * If no results are found a exception is thrown.
+     *
+     * @param string|self|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
+     * or DomQuery|DOMNodeList|DOMNode instance to match against
+     *
+     * @return static
+     * @throws \Exception if no results are found
+     */
+    public function findOrFail($selector)
+    {
+        $result = $this->find($selector);
+        if ($result->length === 0) {
+            if (\is_string($selector)) {
+                throw new \Exception('Find with selector "'.$selector.'" failed!');
+            } else {
+                throw new \Exception('Find with node (collection) as selector failed!');
+            }
+        }
+        return $result;
     }
 
     /**
