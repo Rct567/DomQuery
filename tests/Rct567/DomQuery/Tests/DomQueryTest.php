@@ -12,7 +12,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     public function testFirstAndLastFilters()
     {
         $html = '<div id="main" class="root">
-            <div class="level-a" id="first-child-a"></div>
+            <div class="level-a" id="first-child-a">first-child-a</div>
             <div class="level-a" id="second-child-a">
                 <p>Hai</p>
                 <div class="level-b"></div>
@@ -21,7 +21,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
                     <div class="level-c"></div>
                 </div>
             </div>
-            <div class="level-a" id="last-child-a"></div>
+            <div class="level-a" id="last-child-a">last-child-a</div>
         </div>';
 
         $dom = new DomQuery($html);
@@ -37,8 +37,8 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('last-child-a', $dom->find('.root div:last')->attr('id')); // id of last div inside .root
 
         // first and last via get method, check id
-        $this->assertEquals('first-child-a', $dom->find('.root div')->get(0)->getAttribute('id'));
-        $this->assertEquals('last-child-a', $dom->find('.root div')->get(-1)->getAttribute('id'));
+        $this->assertEquals('first-child-a', $dom->find('.root div')->get(0)->textContent);
+        $this->assertEquals('last-child-a', $dom->find('.root div')->get(-1)->textContent);
     }
 
     /*
