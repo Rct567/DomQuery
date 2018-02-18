@@ -15,7 +15,7 @@ namespace Rct567\DomQuery;
  *
  * @package Rct567\DomQuery
  */
-class DomQueryNodes implements \Countable
+class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
 {
 
     /**
@@ -339,7 +339,7 @@ class DomQueryNodes implements \Countable
     /**
      * Get the descendants of each element in the current set of matched elements, filtered by a selector
      *
-     * @param string|self|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
+     * @param string|static|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
      *  or DomQuery|DOMNodeList|DOMNode instance to match against
      *
      * @return static
@@ -394,7 +394,7 @@ class DomQueryNodes implements \Countable
      * Get the descendants of each element in the current set of matched elements, filtered by a selector.
      * If no results are found a exception is thrown.
      *
-     * @param string|self|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
+     * @param string|static|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
      * or DomQuery|DOMNodeList|DOMNode instance to match against
      *
      * @return static
@@ -664,5 +664,75 @@ class DomQueryNodes implements \Countable
     public function __toString()
     {
         return $this->getOuterHtml();
+    }
+
+    /**
+     * IteratorAggregate (note: using Iterator conflicts with next method in jquery)
+     *
+     * @return \ArrayIterator containing nodes as instances of DomQuery
+     */
+    public function getIterator()
+    {
+        $iteration_result = array();
+        if (\is_array($this->nodes)) {
+            foreach ($this->nodes as $node) {
+                $iteration_result[] = $this->createChildInstance($node);
+            }
+        }
+
+        return new \ArrayIterator($iteration_result);
+    }
+
+    /**
+     * ArrayAccess: offset exists
+     *
+     * @param int $key
+     *
+     * @return bool
+     */
+    public function offsetExists($key)
+    {
+        return ($this->length > 0 && in_array($key, range(0, $this->length - 1), true));
+    }
+
+    /**
+     * ArrayAccess: get offset
+     *
+     * @param int $key
+     *
+     * @return self
+     */
+    public function offsetGet($key)
+    {
+        if (isset($this->nodes[$key])) {
+            return $this->createChildInstance($this->nodes[$key]);
+        }
+
+        return $this->createChildInstance();
+    }
+
+    /**
+     * ArrayAccess: set offset
+     *
+     * @param mixed $key
+     * @param mixed $value
+     *
+     * @throws \BadMethodCallException when attempting to write to a read-only item
+     */
+    public function offsetSet($key, $value)
+    {
+        throw new \BadMethodCallException('Attempting to write to a read-only list');
+    }
+
+    /**
+     * ArrayAccess: unset offset
+     *
+     * @param mixed $key
+     *
+     * @throws \BadMethodCallException when attempting to unset a read-only item
+     */
+    public function offsetUnset($key)
+    {
+        throw new \BadMethodCallException('Attempting to unset on a read-only list');
     }
 }

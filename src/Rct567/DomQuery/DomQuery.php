@@ -7,7 +7,7 @@ namespace Rct567\DomQuery;
  *
  * @package Rct567\DomQuery
  */
-class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
+class DomQuery extends DomQueryNodes
 {
 
     /**
@@ -834,75 +834,5 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
     public function __isset($name)
     {
         return $this->__get($name) !== null;
-    }
-
-    /**
-     * IteratorAggregate (note: using Iterator conflicts with next method in jquery)
-     *
-     * @return \ArrayIterator containing nodes as instances of DomQuery
-     */
-    public function getIterator()
-    {
-        $iteration_result = array();
-        if (\is_array($this->nodes)) {
-            foreach ($this->nodes as $node) {
-                $iteration_result[] = $this->createChildInstance($node);
-            }
-        }
-
-        return new \ArrayIterator($iteration_result);
-    }
-
-    /**
-     * ArrayAccess: offset exists
-     *
-     * @param int $key
-     *
-     * @return bool
-     */
-    public function offsetExists($key)
-    {
-        return ($this->length > 0 && in_array($key, range(0, $this->length - 1), true));
-    }
-
-    /**
-     * ArrayAccess: get offset
-     *
-     * @param int $key
-     *
-     * @return self
-     */
-    public function offsetGet($key)
-    {
-        if (isset($this->nodes[$key])) {
-            return $this->createChildInstance($this->nodes[$key]);
-        }
-
-        return $this->createChildInstance();
-    }
-
-    /**
-     * ArrayAccess: set offset
-     *
-     * @param mixed $key
-     * @param mixed $value
-     *
-     * @throws \BadMethodCallException when attempting to write to a read-only item
-     */
-    public function offsetSet($key, $value)
-    {
-        throw new \BadMethodCallException('Attempting to write to a read-only list');
-    }
-
-    /**
-     * ArrayAccess: unset offset
-     *
-     * @param mixed $key
-     *
-     * @throws \BadMethodCallException when attempting to unset a read-only item
-     */
-    public function offsetUnset($key)
-    {
-        throw new \BadMethodCallException('Attempting to unset on a read-only list');
     }
 }
