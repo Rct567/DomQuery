@@ -559,7 +559,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @return \DOMXPath
      */
-    protected function createDomXpath()
+    private function createDomXpath()
     {
         $xpath = new \DOMXPath($this->document);
 
@@ -686,24 +686,28 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * ArrayAccess: offset exists
      *
-     * @param int $key
+     * @param mixed $key
      *
      * @return bool
      */
     public function offsetExists($key)
     {
-        return ($this->length > 0 && in_array($key, range(0, $this->length - 1), true));
+        return isset($this->nodes[$key]);
     }
 
     /**
      * ArrayAccess: get offset
      *
-     * @param int $key
+     * @param mixed $key
      *
-     * @return self
+     * @return static
      */
     public function offsetGet($key)
     {
+        if (!is_int($key)) {
+            throw new \BadMethodCallException('Attempting to access node list with non-integer');
+        }
+
         if (isset($this->nodes[$key])) {
             return $this->createChildInstance($this->nodes[$key]);
         }
@@ -721,7 +725,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public function offsetSet($key, $value)
     {
-        throw new \BadMethodCallException('Attempting to write to a read-only list');
+        throw new \BadMethodCallException('Attempting to write to a read-only node list');
     }
 
     /**
@@ -733,6 +737,6 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public function offsetUnset($key)
     {
-        throw new \BadMethodCallException('Attempting to unset on a read-only list');
+        throw new \BadMethodCallException('Attempting to unset on a read-only node list');
     }
 }
