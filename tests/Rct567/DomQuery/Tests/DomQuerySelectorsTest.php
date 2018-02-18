@@ -3,6 +3,7 @@
 namespace Rct567\DomQuery\Tests;
 
 use Rct567\DomQuery\DomQuery;
+use Rct567\DomQuery\CssToXpath;
 
 class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
 {
@@ -58,7 +59,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         );
 
         foreach ($css_to_xpath as $css => $expected_xpath) {
-            $this->assertEquals($expected_xpath, DomQuery::cssToXpath($css), $css);
+            $this->assertEquals($expected_xpath, CssToXpath::transform($css), $css);
         }
     }
 
@@ -486,6 +487,6 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     public function testInvalidPseudoSelector()
     {
         $this->expectException(\Exception::class);
-        DomQuery::cssToXpath('a:not-a-selector');
+        CssToXpath::transform('a:not-a-selector');
     }
 }

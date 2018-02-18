@@ -464,4 +464,14 @@ class DomQueryNodes implements \Countable
 
         return $html;
     }
+
+    /**
+     * Return html of all nodes
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getOuterHtml();
+    }
 }

@@ -134,7 +134,7 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
             $css_expression = implode(',', $selector_tag_names);
         }
 
-        $xpath_expression = self::cssToXpath($css_expression);
+        $xpath_expression = CssToXpath::transform($css_expression);
         $result = $this->xpath($xpath_expression);
 
         if (\is_string($selector)) {
@@ -1008,28 +1008,6 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Return html of first domnode
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getOuterHtml();
-    }
-
-    /**
-     * Transform CSS selector expression to XPath
-     *
-     * @param string $path css selector expression
-     *
-     * @return string xpath expression
-     */
-    public static function cssToXpath(string $path)
-    {
-        return CssToXpath::transform($path);
-    }
-
-    /**
      * Retrieve last used CSS Query
      *
      * @return string
@@ -1048,7 +1026,6 @@ class DomQuery extends DomQueryNodes implements \IteratorAggregate, \ArrayAccess
     {
         return $this->xpath_query;
     }
-
 
     /**
      * IteratorAggregate (note: using Iterator conflicts with next method in jquery)
