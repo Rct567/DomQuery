@@ -84,6 +84,75 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
+     * Convert css string to array
+     *
+     * @param string constaining style properties
+     *
+     * @return array with name-value as style properties
+     */
+    private static function parseStyle(string $css)
+    {
+        $statements = explode(';', preg_replace('/\s+/s', ' ', $css));
+        $styles = array();
+
+        foreach ($statements as $statement) {
+            if ($p = strpos($statement, ':')) {
+                $key = trim(substr($statement, 0, $p));
+                $value = trim(substr($statement, $p + 1));
+                $styles[$key] = $value;
+            }
+        }
+
+        return $styles;
+    }
+
+    /**
+     * Convert css name-value array to string
+     *
+     * @param array with style properties
+     *
+     * @return string constaining style properties
+     */
+    private static function getStyle(array $array)
+    {
+        $styles = '';
+        foreach ($array as $key => $value) {
+            $styles .= $key.': '.$value.';';
+        }
+        return $styles;
+    }
+
+    /**
+     * Get the value of a computed style property for the first element in the set of matched elements
+     * or set one or more CSS properties for every matched element.
+     *
+     * @param string $name
+     * @param string $val
+     *
+     * @return $this|string
+     */
+    public function css(string $name, $val=null)
+    {
+        if ($val !== null) { // set css for all nodes
+            foreach ($this->nodes as $node) {
+                if ($node instanceof \DOMElement) {
+                    $style = self::parseStyle($node->getAttribute('style'));
+                    $style[$name] = $val;
+                    $node->setAttribute('style', self::getStyle($style));
+                }
+            }
+            return $this;
+        } else { // get css value for first element
+            if ($node = $this->getFirstElmNode()) {
+                $style = self::parseStyle($node->getAttribute('style'));
+                if (isset($style[$name])) {
+                    return $style[$name];
+                }
+            }
+        }
+    }
+
+    /**
      * Remove an attribute from each element in the set of matched elements.
      * Name can be a space-separated list of attributes.
      *

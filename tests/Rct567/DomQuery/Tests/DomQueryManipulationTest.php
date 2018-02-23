@@ -231,4 +231,55 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
         $dom->find('a')->html('<i>x</i>');
         $this->assertEquals('<p> <a><i>x</i></a> <span></span> </p>', (string) $dom);
     }
+
+    /*
+     * Test get css
+     */
+    public function testGetCss()
+    {
+        $dom = new DomQuery('<p><a style="color: green;"></a></p>');
+        $this->assertEquals('green', $dom->find('a')->css('color'));
+        $this->assertEquals(null, $dom->find('a')->css('margin-top'));
+    }
+
+    /*
+     * Test get css from element with multiple css values
+     */
+    public function testGetCssFromMulti()
+    {
+        $dom = new DomQuery('<p><a style="color: green;margin-top:2px"></a></p>');
+        $this->assertEquals('green', $dom->find('a')->css('color'));
+        $this->assertEquals('2px', $dom->find('a')->css('margin-top'));
+        $this->assertEquals(null, $dom->find('p')->css('margin-top'));
+    }
+
+    /*
+     * Test test css
+     */
+    public function testSetNewCss()
+    {
+        $dom = new DomQuery('<p><a></a></p>');
+        $dom->find('a')->css('color', 'green');
+        $this->assertEquals('<p><a style="color: green;"></a></p>', (string) $dom);
+    }
+
+    /*
+     * Test add css to existing inline css
+     */
+    public function testSetExistingCss()
+    {
+        $dom = new DomQuery('<p><a style="margin-top: 5px;"></a></p>');
+        $dom->find('a')->css('color', 'green');
+        $this->assertEquals('<p><a style="margin-top: 5px;color: green;"></a></p>', (string) $dom);
+    }
+
+    /*
+     * Test overwrite existing inline css property
+     */
+    public function testOverwriteCss()
+    {
+        $dom = new DomQuery('<p><a style="color: red;"></a></p>');
+        $dom->find('a')->css('color', 'green');
+        $this->assertEquals('<p><a style="color: green;"></a></p>', (string) $dom);
+    }
 }

@@ -100,6 +100,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 
 - `.attr( name [, val] )`
 - `.prop( name [, val] )`
+- `.css( name [, val] )`
 - `.removeAttr( name )`
 - `.addClass( name )`
 - `.hasClass( name )`
