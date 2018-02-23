@@ -704,7 +704,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public function offsetGet($key)
     {
-        if (!is_int($key)) {
+        if (!\is_int($key)) {
             throw new \BadMethodCallException('Attempting to access node list with non-integer');
         }
 

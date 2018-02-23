@@ -86,7 +86,7 @@ class DomQuery extends DomQueryNodes
     /**
      * Convert css string to array
      *
-     * @param string constaining style properties
+     * @param string containing style properties
      *
      * @return array with name-value as style properties
      */
@@ -111,7 +111,7 @@ class DomQuery extends DomQueryNodes
      *
      * @param array with style properties
      *
-     * @return string constaining style properties
+     * @return string containing style properties
      */
     private static function getStyle(array $array)
     {
@@ -193,7 +193,7 @@ class DomQuery extends DomQueryNodes
                     $node_classes = explode(' ', $node_class_attr);
                 }
                 foreach ($add_names as $add_name) {
-                    if (!in_array($add_name, $node_classes, true)) {
+                    if (!\in_array($add_name, $node_classes, true)) {
                         $node_classes[] = $add_name;
                     }
                 }
@@ -218,7 +218,7 @@ class DomQuery extends DomQueryNodes
         foreach ($this->nodes as $node) {
             if ($node instanceof \DOMElement && $node_class_attr = $node->getAttribute('class')) {
                 $node_classes = explode(' ', $node_class_attr);
-                if (in_array($class_name, $node_classes, true)) {
+                if (\in_array($class_name, $node_classes, true)) {
                     return true;
                 }
             }
@@ -314,7 +314,7 @@ class DomQuery extends DomQueryNodes
         $result = $this->createChildInstance();
 
         if (isset($this->document) && $this->length > 0) {
-            if (isset($this->root_instance) || isset($this->xpath_query)) {
+            if (isset($this->root_instance) || $this->getXpathQuery()) {
                 foreach ($this->nodes as $node) {
                     if ($node->hasChildNodes()) {
                         $result->loadDomNodeList($node->childNodes);

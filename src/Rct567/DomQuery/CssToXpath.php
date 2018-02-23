@@ -115,7 +115,7 @@ class CssToXpath
     {
         $relation_tokens = array('>', '~', '+');
 
-        if (in_array($token, $relation_tokens, true)) { // not a segment
+        if (\in_array($token, $relation_tokens, true)) { // not a segment
             return false;
         }
 
@@ -126,7 +126,7 @@ class CssToXpath
             'pseudo_filters' => array()
         );
 
-        if (isset($tokens[$key-1]) && in_array($tokens[$key - 1], $relation_tokens, true)) { // get relationship token
+        if (isset($tokens[$key-1]) && \in_array($tokens[$key - 1], $relation_tokens, true)) { // get relationship token
             $segment->relation_token = $tokens[$key-1];
         }
 
