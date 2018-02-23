@@ -135,9 +135,9 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("<div><a title=\"hello\">Changed text</a><a>Changed text</a><span>C</span></div>", (string) $dom);
     }
 
-     /*
-      * Test append html string
-      */
+    /*
+     * Test append html string
+     */
     public function testAppend()
     {
         $dom = new DomQuery('<a></a><p></p><b></b><a></a>');
