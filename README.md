@@ -107,9 +107,10 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.removeAttr( name )`
 - `.addClass( name )`
 - `.hasClass( name )`
+- `.toggleClass ( name )`
 - `.removeClass( [name] )`
 
-<sub>\* addClass, removeClass and removeAttr also accepts an array or space-separated __names__</sub>
+<sub>\* addClass, removeClass, toggleClass and removeAttr also accepts an array or space-separated __names__</sub>
 
  #### Miscellaneous > DOM Element Methods | Traversing
 

@@ -133,6 +133,26 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test toggle class name
+     */
+    public function testToggleClass()
+    {
+        $dom = DomQuery::create('<a></a><a class="b"></a>');
+        $dom->find('a')->toggleClass('b');
+        $this->assertEquals('<a class="b"></a><a class=""></a>', (string) $dom);
+    }
+
+    /*
+     * Test toggle multiple class names
+     */
+    public function testToggleMultipleClassArray()
+    {
+        $dom = DomQuery::create('<a></a><a class="b"></a><a class="a b"></a>');
+        $dom->find('a')->toggleClass(['a', 'b']);
+        $this->assertEquals('<a class="a b"></a><a class="a"></a><a class=""></a>', (string) $dom);
+    }
+
+    /*
      * Test set text
      */
     public function testSetText()

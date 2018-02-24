@@ -265,6 +265,30 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
+     * Remove a single class, multiple classes, or all classes from each element in the set of matched elements.
+     *
+     * @param string|string[] $class_name
+     *
+     * @return $this
+     */
+    public function toggleClass($class_name='')
+    {
+        $toggle_names = \is_array($class_name) ? $class_name : explode(' ', $class_name);
+
+        foreach ($this as $node) {
+            foreach ($toggle_names as $toggle_class) {
+                if (!$node->hasClass($toggle_class)) {
+                    $node->addClass($toggle_class);
+                } else {
+                    $node->removeClass($toggle_class);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Get the value of a property for the first element in the set of matched elements
      * or set one or more properties for every matched element.
      *
