@@ -89,6 +89,8 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.prepend( [content],... )`
 - `.after( [content],... )`
 - `.before( [content],... )`
+- `.appendTo( [target] )`
+- `.prependTo( [target] )`
 - `.wrap( [content] )`
 - `.wrapAll( [content] )`
 - `.wrapInner( [content] )`

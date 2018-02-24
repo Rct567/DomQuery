@@ -742,6 +742,22 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
+     * Get target result using selector or instance of self
+     *
+     * @param string|self $target
+     *
+     * @return self
+     */
+    private function getTargetResult($target)
+    {
+        if (is_string($target) && strpos('<', $target) === false) {
+            return self::create($this->document)->find($target);
+        }
+
+        return self::create($target);
+    }
+
+    /**
      * Insert content to the end of each element in the set of matched elements.
      *
      * @param string|self $content,...
@@ -758,6 +774,23 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
+     * Insert every element in the set of matched elements to the end of the target.
+     *
+     * @param string|self $target
+     *
+     * @return self
+     */
+    public function appendTo($target)
+    {
+        $target_result = $this->getTargetResult($target);
+
+        $target_result->append($this);
+        $this->remove();
+
+        return $target_result;
+    }
+
+    /**
      * Insert content to the beginning of each element in the set of matched elements
      *
      * @param string|self $content,...
@@ -771,6 +804,23 @@ class DomQuery extends DomQueryNodes
         });
 
         return $this;
+    }
+
+    /**
+     * Insert every element in the set of matched elements to the beginning of the target.
+     *
+     * @param string|self $target
+     *
+     * @return self
+     */
+    public function prependTo($target)
+    {
+        $target_result = $this->getTargetResult($target);
+
+        $target_result->prepend($this);
+        $this->remove();
+
+        return $target_result;
     }
 
     /**

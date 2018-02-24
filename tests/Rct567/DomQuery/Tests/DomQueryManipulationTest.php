@@ -167,6 +167,25 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test append to
+     */
+    public function testAppendTo()
+    {
+        $dom = new DomQuery('<div> <span>X</span> <div id="target"></div> </div>');
+        $dom->find('span')->appendTo('#target');
+        $this->assertEquals('<div>  <div id="target"><span>X</span></div> </div>', (string) $dom);
+    }
+
+    /*
+     * Test append to (other domquery)
+     */
+    public function testAppendToOther()
+    {
+        $dom = DomQuery::create('<span>Hello</span>')->appendTo(DomQuery::create('<div>P</div>'));
+        $this->assertEquals('<div>P<span>Hello</span></div>', (string) $dom);
+    }
+
+    /*
      * Test prepend html
      */
     public function testPrepend()
@@ -175,6 +194,25 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
         $dom->find('a')->prepend('<span></span>', '<i></i>');
         $this->assertEquals('<a><i></i><span></span>X</a>', (string) $dom);
         $this->assertEquals(1, $dom->find('span')->length);
+    }
+
+    /*
+     * Test prepend to
+     */
+    public function testPrependTo()
+    {
+        $dom = new DomQuery('<div> <span>X</span> <div id="target"></div> </div>');
+        $dom->find('span')->prependTo('#target');
+        $this->assertEquals('<div>  <div id="target"><span>X</span></div> </div>', (string) $dom);
+    }
+
+    /*
+     * Test prepend to (other domquery)
+     */
+    public function testPrependToOther()
+    {
+        $dom = DomQuery::create('<span>Hello</span>')->prependTo(DomQuery::create('<div>P</div>'));
+        $this->assertEquals('<div><span>Hello</span>P</div>', (string) $dom);
     }
 
     /*
