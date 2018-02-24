@@ -320,4 +320,26 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
         $dom->find('a')->css('color', 'green');
         $this->assertEquals('<p><a style="color: green;"></a></p>', (string) $dom);
     }
+
+    /*
+     * Test
+     */
+    public function testReplaceWith()
+    {
+        $dom = new DomQuery('<div> <a class="a"></a> <a class="b"></a> <a class="c"></a> </div>');
+        $removed = $dom->find('.b')->replaceWith('<h2>Hello</h2>');
+        $this->assertEquals('<a class="b"></a>', (string) $removed);
+        $this->assertEquals('<div> <a class="a"></a> <h2>Hello</h2> <a class="c"></a> </div>', (string) $dom);
+    }
+
+    /*
+     * Test
+     */
+    public function testReplaceWithSelection()
+    {
+        $dom = new DomQuery('<div> <a class="a"></a> <a class="b"></a> <a class="c"></a> </div>');
+        $removed = $dom->find('.c')->replaceWith($dom->find('.a'));
+        $this->assertEquals('<a class="c"></a>', (string) $removed);
+        $this->assertEquals('<div>  <a class="b"></a> <a class="a"></a> </div>', (string) $dom);
+    }
 }

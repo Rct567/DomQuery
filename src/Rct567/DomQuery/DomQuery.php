@@ -864,6 +864,37 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
+     * Replace each element in the set of matched elements with the provided
+     * new content and return the set of elements that was removed.
+     *
+     * @param string|self $new_content,...
+     *
+     * @return self
+     */
+    public function replaceWith()
+    {
+        $removed_nodes = new self();
+
+        $this->importNodes(\func_get_args(), function ($node, $imported_node) use (&$removed_nodes) {
+            if ($node->nextSibling) {
+                $node->parentNode->insertBefore($imported_node, $node->nextSibling);
+            } else { // node is last, so there is no next sibling to insert before
+                $node->parentNode->appendChild($imported_node);
+            }
+            $removed_nodes->addDomNode($node);
+            $node->parentNode->removeChild($node);
+        });
+
+        foreach (\func_get_args() as $new_content) {
+            if (!is_string($new_content)) {
+                self::create($new_content)->remove();
+            }
+        }
+
+        return $removed_nodes;
+    }
+
+    /**
      * Wrap an HTML structure around each element in the set of matched elements
      *
      * @param string|self $content,...
