@@ -774,7 +774,7 @@ class DomQuery extends DomQueryNodes
      */
     private function getTargetResult($target)
     {
-        if (is_string($target) && strpos('<', $target) === false) {
+        if (\is_string($target) && strpos('<', $target) === false) {
             return self::create($this->document)->find($target);
         }
 
@@ -910,7 +910,7 @@ class DomQuery extends DomQueryNodes
         });
 
         foreach (\func_get_args() as $new_content) {
-            if (!is_string($new_content)) {
+            if (!\is_string($new_content)) {
                 self::create($new_content)->remove();
             }
         }
