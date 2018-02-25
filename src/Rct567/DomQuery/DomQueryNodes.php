@@ -112,6 +112,8 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
                 $this->loadDomNodeList($arg);
             } elseif ($arg instanceof \DOMNode) {
                 $this->addDomNode($arg);
+            } elseif (\is_array($arg) && $arg[0] instanceof \DOMNode) {
+                $this->addNodes($arg);
             } elseif ($arg instanceof \DOMXPath) {
                 $this->dom_xpath = $arg;
             } elseif (\is_string($arg) && strpos($arg, '>') !== false) {
@@ -468,6 +470,20 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     protected function getNodes()
     {
         return $this->nodes;
+    }
+
+    /**
+     * Add nodes to result set
+     *
+     * @param \DOMNode[] $node_list
+     *
+     * @return void
+     */
+    public function addNodes(array $node_list)
+    {
+        foreach ($node_list as $node) {
+            $this->addDomNode($node);
+        }
     }
 
     /**
