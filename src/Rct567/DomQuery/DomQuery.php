@@ -9,6 +9,12 @@ namespace Rct567\DomQuery;
  */
 class DomQuery extends DomQueryNodes
 {
+    /**
+     * Node data
+     *
+     * @var array
+     */
+    private static $node_data = array();
 
     /**
      * Get the combined text contents of each element in the set of matched elements, including their descendants,
@@ -79,6 +85,57 @@ class DomQuery extends DomQueryNodes
         } else { // get attribute value for first element
             if ($node = $this->getFirstElmNode()) {
                 return $node->getAttribute($name);
+            }
+        }
+    }
+
+    /**
+     * Store arbitrary data associated with the matched elements or return the value at
+     * the named data store for the first element in the set of matched elements.
+     *
+     * @param string $key
+     * @param $val
+     *
+     * @return $this|string|object
+     */
+    public function data(string $key=null, $val=null)
+    {
+        $doc_hash = spl_object_hash($this->document);
+
+        if ($val !== null) { // set data for all nodes
+            if (!isset(self::$node_data[$doc_hash])) {
+                self::$node_data[$doc_hash] = array();
+            }
+            foreach ($this->nodes as $node) {
+                if (!isset(self::$node_data[$doc_hash][$node->getNodePath()])) {
+                    self::$node_data[$doc_hash][$node->getNodePath()] = (object) array();
+                }
+                self::$node_data[$doc_hash][$node->getNodePath()]->$key = $val;
+            }
+            return $this;
+        } else { // get data for first element
+            if ($node = $this->getFirstElmNode()) {
+                if (isset(self::$node_data[$doc_hash]) && isset(self::$node_data[$doc_hash][$node->getNodePath()])) {
+                    if ($key === null) {
+                        return self::$node_data[$doc_hash][$node->getNodePath()];
+                    } elseif (isset(self::$node_data[$doc_hash][$node->getNodePath()]->$key)) {
+                        return self::$node_data[$doc_hash][$node->getNodePath()]->$key;
+                    }
+                }
+                if ($key === null) { // object with all data
+                    $data = array();
+                    foreach ($node->attributes as $attr) {
+                        if (strpos($attr->nodeName, 'data-') === 0) {
+                            $val = $attr->nodeValue[0] === '{' ? json_decode($attr->nodeValue) : $attr->nodeValue;
+                            $data[substr($attr->nodeName, 5)] = $val;
+                        }
+                    }
+                    return (object) $data;
+                }
+                if ($data = $node->getAttribute('data-'.$key)) {
+                    $val = $data[0] === '{' ? json_decode($data) : $data;
+                    return $val;
+                }
             }
         }
     }

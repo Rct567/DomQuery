@@ -121,6 +121,37 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test get data
+     */
+    public function testGetData()
+    {
+        $dom = new DomQuery('<div data-role="page"></div>');
+        $this->assertEquals('page', (string) $dom->data('role'));
+        $this->assertEquals((object) array('role' => 'page'), $dom->data());
+    }
+
+    /*
+     * Test get object data
+     */
+    public function testGetObjectData()
+    {
+        $dom = new DomQuery('<div data-options=\'{"name":"John"}\'></div>');
+        $this->assertEquals((object) array('name' => 'John'), $dom->data('options'));
+        $this->assertEquals((object) array('options' => (object) array('name' => 'John')), $dom->data());
+    }
+
+    /*
+     * Test set data
+     */
+    public function testSetData()
+    {
+        $dom = new DomQuery('<div> <a data-role="page"></a> </div>');
+        $dom->find('a')->data('role', 'page');
+        $this->assertEquals('page', (string) $dom->find('a')->data('role'));
+        $this->assertEquals((object) array('role' => 'page'), $dom->find('a')->data());
+    }
+
+    /*
      * Test change attribute without value in xml write mode
      */
     public function testChangeAttributeWithoutValueInXmlWriteMode()
