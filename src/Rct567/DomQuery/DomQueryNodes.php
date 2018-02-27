@@ -206,9 +206,9 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         if (func_get_arg(0) instanceof static) {
             return func_get_arg(0);
-        } else {
-            return new static(...\func_get_args());
         }
+
+        return new static(...\func_get_args());
     }
 
     /**
@@ -333,9 +333,9 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
         $result = \array_slice($this->nodes, $index, 1); // note: index can be negative
         if (\count($result) > 0) {
             return $result[0];
-        } else {
-            return null; // return null if no result for key
         }
+
+        return null; // return null if no result for key
     }
 
     /**
@@ -408,9 +408,8 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
         if ($result->length === 0) {
             if (\is_string($selector)) {
                 throw new \Exception('Find with selector "'.$selector.'" failed!');
-            } else {
-                throw new \Exception('Find with node (collection) as selector failed!');
             }
+            throw new \Exception('Find with node (collection) as selector failed!');
         }
         return $result;
     }
@@ -511,14 +510,16 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         if ($name === 'dom_xpath') {
             return $this->createDomXpath();
-        } elseif ($name === 'outerHTML') {
+        }
+        if ($name === 'outerHTML') {
             return $this->getOuterHtml();
         }
 
         if ($node = $this->getFirstElmNode()) {
             if (isset($node->$name)) {
                 return $node->{$name};
-            } elseif ($node instanceof \DOMElement && $node->hasAttribute($name)) {
+            }
+            if ($node instanceof \DOMElement && $node->hasAttribute($name)) {
                 return $node->getAttribute($name);
             }
         }

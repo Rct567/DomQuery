@@ -32,10 +32,9 @@ class DomQuery extends DomQueryNodes
             }
 
             return $this;
-        } else { // get value for first node
-            if ($node = $this->getFirstElmNode()) {
-                return $node->nodeValue;
-            }
+        }
+        if ($node = $this->getFirstElmNode()) { // get value for first node
+            return $node->nodeValue;
         }
     }
 
@@ -59,9 +58,9 @@ class DomQuery extends DomQueryNodes
             }
 
             return $this;
-        } else { // get html for first node
-            return $this->getInnerHtml();
         }
+        // get html for first node
+        return $this->getInnerHtml();
     }
 
     /**
@@ -82,10 +81,9 @@ class DomQuery extends DomQueryNodes
                 }
             }
             return $this;
-        } else { // get attribute value for first element
-            if ($node = $this->getFirstElmNode()) {
-                return $node->getAttribute($name);
-            }
+        }
+        if ($node = $this->getFirstElmNode()) { // get attribute value for first element
+            return $node->getAttribute($name);
         }
     }
 
@@ -113,29 +111,29 @@ class DomQuery extends DomQueryNodes
                 self::$node_data[$doc_hash][$node->getNodePath()]->$key = $val;
             }
             return $this;
-        } else { // get data for first element
-            if ($node = $this->getFirstElmNode()) {
-                if (isset(self::$node_data[$doc_hash]) && isset(self::$node_data[$doc_hash][$node->getNodePath()])) {
-                    if ($key === null) {
-                        return self::$node_data[$doc_hash][$node->getNodePath()];
-                    } elseif (isset(self::$node_data[$doc_hash][$node->getNodePath()]->$key)) {
-                        return self::$node_data[$doc_hash][$node->getNodePath()]->$key;
+        }
+
+        if ($node = $this->getFirstElmNode()) { // get data for first element
+            if (isset(self::$node_data[$doc_hash]) && isset(self::$node_data[$doc_hash][$node->getNodePath()])) {
+                if ($key === null) {
+                    return self::$node_data[$doc_hash][$node->getNodePath()];
+                } elseif (isset(self::$node_data[$doc_hash][$node->getNodePath()]->$key)) {
+                    return self::$node_data[$doc_hash][$node->getNodePath()]->$key;
+                }
+            }
+            if ($key === null) { // object with all data
+                $data = array();
+                foreach ($node->attributes as $attr) {
+                    if (strpos($attr->nodeName, 'data-') === 0) {
+                        $val = $attr->nodeValue[0] === '{' ? json_decode($attr->nodeValue) : $attr->nodeValue;
+                        $data[substr($attr->nodeName, 5)] = $val;
                     }
                 }
-                if ($key === null) { // object with all data
-                    $data = array();
-                    foreach ($node->attributes as $attr) {
-                        if (strpos($attr->nodeName, 'data-') === 0) {
-                            $val = $attr->nodeValue[0] === '{' ? json_decode($attr->nodeValue) : $attr->nodeValue;
-                            $data[substr($attr->nodeName, 5)] = $val;
-                        }
-                    }
-                    return (object) $data;
-                }
-                if ($data = $node->getAttribute('data-'.$key)) {
-                    $val = $data[0] === '{' ? json_decode($data) : $data;
-                    return $val;
-                }
+                return (object) $data;
+            }
+            if ($data = $node->getAttribute('data-'.$key)) {
+                $val = $data[0] === '{' ? json_decode($data) : $data;
+                return $val;
             }
         }
     }
@@ -199,12 +197,11 @@ class DomQuery extends DomQueryNodes
                 }
             }
             return $this;
-        } else { // get css value for first element
-            if ($node = $this->getFirstElmNode()) {
-                $style = self::parseStyle($node->getAttribute('style'));
-                if (isset($style[$name])) {
-                    return $style[$name];
-                }
+        }
+        if ($node = $this->getFirstElmNode()) { // get css value for first element
+            $style = self::parseStyle($node->getAttribute('style'));
+            if (isset($style[$name])) {
+                return $style[$name];
             }
         }
     }
@@ -362,13 +359,14 @@ class DomQuery extends DomQueryNodes
             }
 
             return $this;
-        } else { // get property value for first element
-            if ($name === 'outerHTML') {
-                return $this->getOuterHtml();
-            } elseif ($node = $this->getFirstElmNode()) {
-                if (isset($node->$name)) {
-                    return $node->$name;
-                }
+        }
+        // get property value for first element
+        if ($name === 'outerHTML') {
+            return $this->getOuterHtml();
+        }
+        if ($node = $this->getFirstElmNode()) {
+            if (isset($node->$name)) {
+                return $node->$name;
             }
         }
     }
