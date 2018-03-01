@@ -639,7 +639,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
             }
         }
 
-        $outer_html = $this->handleHtmlOut($outer_html);
+        $outer_html = $this->handleHtmlResult($outer_html);
 
         return $outer_html;
     }
@@ -672,7 +672,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @return string
      */
-    private function handleHtmlOut($html)
+    private function handleHtmlResult($html)
     {
         if ($this->preserve_no_newlines) {
             $html = str_replace("\n", '', $html);
@@ -703,7 +703,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
                 }
             }
 
-            $html = $this->handleHtmlOut($html);
+            $html = $this->handleHtmlResult($html);
         }
 
         return $html;
