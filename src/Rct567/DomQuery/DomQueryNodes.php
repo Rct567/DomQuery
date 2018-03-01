@@ -639,11 +639,49 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
             }
         }
 
-        if ($this->preserve_no_newlines) {
-            $outer_html = str_replace("\n", '', $outer_html);
-        }
+        $outer_html = $this->handleHtmlOut($outer_html);
 
         return $outer_html;
+    }
+
+    /**
+     * Get id for node
+     *
+     * @param \DOMNode $node
+     *
+     * @return string $node_id
+     */
+    public static function getNodeId(\DOMNode $node)
+    {
+        if (!$node instanceof \DOMElement) {
+            return $node->getNodePath();
+        }
+        if ($node->hasAttribute('dqn_tmp_id')) {
+            return $node->getAttribute('dqn_tmp_id');
+        }
+
+        $node_id = uniqid();
+        $node->setAttribute('dqn_tmp_id', $node_id);
+        return $node_id;
+    }
+
+    /**
+     * Handle html when resulting html is requested
+     *
+     * @param string $html
+     *
+     * @return string
+     */
+    private function handleHtmlOut($html)
+    {
+        if ($this->preserve_no_newlines) {
+            $html = str_replace("\n", '', $html);
+        }
+        if (stripos($html, 'dqn_tmp_id=') !== false) {
+            $html = preg_replace('/ dqn_tmp_id="([a-z0-9]+)"/', '', $html);
+        }
+
+        return $html;
     }
 
     /**
@@ -665,9 +703,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
                 }
             }
 
-            if ($this->preserve_no_newlines) {
-                $html = str_replace("\n", '', $html);
-            }
+            $html = $this->handleHtmlOut($html);
         }
 
         return $html;

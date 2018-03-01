@@ -105,20 +105,20 @@ class DomQuery extends DomQueryNodes
                 self::$node_data[$doc_hash] = array();
             }
             foreach ($this->nodes as $node) {
-                if (!isset(self::$node_data[$doc_hash][$node->getNodePath()])) {
-                    self::$node_data[$doc_hash][$node->getNodePath()] = (object) array();
+                if (!isset(self::$node_data[$doc_hash][self::getNodeId($node)])) {
+                    self::$node_data[$doc_hash][self::getNodeId($node)] = (object) array();
                 }
-                self::$node_data[$doc_hash][$node->getNodePath()]->$key = $val;
+                self::$node_data[$doc_hash][self::getNodeId($node)]->$key = $val;
             }
             return $this;
         }
 
         if ($node = $this->getFirstElmNode()) { // get data for first element
-            if (isset(self::$node_data[$doc_hash]) && isset(self::$node_data[$doc_hash][$node->getNodePath()])) {
+            if (isset(self::$node_data[$doc_hash]) && isset(self::$node_data[$doc_hash][self::getNodeId($node)])) {
                 if ($key === null) {
-                    return self::$node_data[$doc_hash][$node->getNodePath()];
-                } elseif (isset(self::$node_data[$doc_hash][$node->getNodePath()]->$key)) {
-                    return self::$node_data[$doc_hash][$node->getNodePath()]->$key;
+                    return self::$node_data[$doc_hash][self::getNodeId($node)];
+                } elseif (isset(self::$node_data[$doc_hash][self::getNodeId($node)]->$key)) {
+                    return self::$node_data[$doc_hash][self::getNodeId($node)]->$key;
                 }
             }
             if ($key === null) { // object with all data

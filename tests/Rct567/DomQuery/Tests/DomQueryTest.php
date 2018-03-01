@@ -148,6 +148,8 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<div> <a data-role="page"></a> </div>');
         $dom->find('a')->data('role', 'page');
         $this->assertEquals('page', (string) $dom->find('a')->data('role'));
+        $dom->find('a')->wrap('<div>');
+        $this->assertEquals('<div> <div><a data-role="page"></a></div> </div>', (string) $dom);
         $this->assertEquals((object) array('role' => 'page'), $dom->find('a')->data());
     }
 
