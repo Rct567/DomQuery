@@ -107,9 +107,9 @@ class CssToXpath
      *
      * @param string $token
      * @param integer $key
-     * @param array $tokens
+     * @param string[] $tokens
      *
-     * @return object|boolean $segment
+     * @return object|false $segment
      */
     private static function getSegmentFromToken($token, $key, array $tokens)
     {
@@ -126,7 +126,7 @@ class CssToXpath
             'pseudo_filters' => array()
         );
 
-        if (isset($tokens[$key-1]) && \in_array($tokens[$key - 1], $relation_tokens, true)) { // get relationship token
+        if (isset($tokens[$key-1]) && \in_array($tokens[$key-1], $relation_tokens, true)) { // get relationship token
             $segment->relation_token = $tokens[$key-1];
         }
 
@@ -198,9 +198,9 @@ class CssToXpath
     /**
      * Transform css segments to xpath
      *
-     * @param array $segments
+     * @param object[] $segments
      *
-     * @return array $new_path_tokens
+     * @return string[] $new_path_tokens
      */
     private static function transformCssSegments(array $segments)
     {
@@ -242,7 +242,7 @@ class CssToXpath
      * Transform 'css pseudo selector' expression to xpath expression
      *
      * @param string $expression
-     * @param array $new_path_tokens
+     * @param string[] $new_path_tokens
      *
      * @return string transformed expression (xpath)
      * @throws \Exception
