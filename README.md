@@ -117,7 +117,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.get( index )`
 - `.each ( callable(elm,i) )`
 - `.data ( key [, val] )`
-- `.removeData ( name )`
+- `.removeData ( [name] )`
 - `.index ( [selector] )`
 
 ## Supported selectors
