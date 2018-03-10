@@ -621,6 +621,28 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
+     * Create a deep copy of the set of matched elements (does not clone attached data).
+     *
+     * @return self
+     */
+    public function clone()
+    {
+        $result = $this->createChildInstance();
+
+        foreach ($this->nodes as $node) {
+            $cloned_node = $node->cloneNode(true);
+
+            if ($cloned_node instanceof \DOMElement && $cloned_node->hasAttribute('dqn_tmp_id')) {
+                $cloned_node->removeAttribute('dqn_tmp_id');
+            }
+
+            $result->addDomNode($node->cloneNode(true));
+        }
+
+        return $result;
+    }
+
+    /**
      *  Get the position of the first element within the DOM, relative to its sibling elements.
      *  Or get the position of the first node in the result that matches the selector.
      *

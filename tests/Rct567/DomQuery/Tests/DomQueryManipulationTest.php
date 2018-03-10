@@ -186,6 +186,16 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test append to with clones
+     */
+    public function testCloneAppendTo()
+    {
+        $dom = new DomQuery('<div> <span>X</span> <div id="target"></div> </div>');
+        $dom->find('span')->clone()->appendTo('#target');
+        $this->assertEquals('<div> <span>X</span> <div id="target"><span>X</span></div> </div>', (string) $dom);
+    }
+
+    /*
      * Test prepend html
      */
     public function testPrepend()

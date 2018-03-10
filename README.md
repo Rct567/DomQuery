@@ -120,6 +120,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.removeData ( [name] )`
 - `.index ( [selector] )`
 - `.toArray()`
+- `.clone()`
 
 ## Supported selectors
 
