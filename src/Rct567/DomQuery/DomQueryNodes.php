@@ -472,6 +472,16 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
+     * Return array with nodes
+     *
+     * @return \DOMNode[]
+     */
+    public function toArray()
+    {
+        return $this->nodes;
+    }
+
+    /**
      * Add nodes to result set
      *
      * @param \DOMNode[] $node_list
