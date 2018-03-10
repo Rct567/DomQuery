@@ -139,6 +139,43 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
+     * Remove a previously-stored piece of data.
+     *
+     * @param string|string[] $name
+     *
+     * @return void
+     */
+    public function removeData($name=null)
+    {
+        $remove_names = \is_array($name) ? $name : explode(' ', $name);
+        $doc_hash = spl_object_hash($this->document);
+
+        if (!isset(self::$node_data[$doc_hash])) {
+            return;
+        }
+
+        foreach ($this->nodes as $node) {
+            if ($node instanceof \DOMElement && !$node->hasAttribute('dqn_tmp_id')) {
+                continue;
+            }
+
+            $node_id = self::getNodeId($node);
+
+            if (isset(self::$node_data[$doc_hash][$node_id])) {
+                if ($name === null) {
+                    self::$node_data[$doc_hash][$node_id] = null;
+                } else {
+                    foreach ($remove_names as $remove_name) {
+                        if (isset(self::$node_data[$doc_hash][$node_id]->$remove_name)) {
+                            self::$node_data[$doc_hash][$node_id]->$remove_name = null;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Convert css string to array
      *
      * @param string containing style properties

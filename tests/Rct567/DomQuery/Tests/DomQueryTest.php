@@ -126,7 +126,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     public function testGetData()
     {
         $dom = new DomQuery('<div data-role="page"></div>');
-        $this->assertEquals('page', (string) $dom->data('role'));
+        $this->assertEquals('page', $dom->data('role'));
         $this->assertEquals((object) array('role' => 'page'), $dom->data());
     }
 
@@ -147,10 +147,40 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     {
         $dom = new DomQuery('<div> <a data-role="page"></a> </div>');
         $dom->find('a')->data('role', 'page');
-        $this->assertEquals('page', (string) $dom->find('a')->data('role'));
+        $this->assertEquals('page', $dom->find('a')->data('role'));
         $dom->find('a')->wrap('<div>');
         $this->assertEquals('<div> <div><a data-role="page"></a></div> </div>', (string) $dom);
         $this->assertEquals((object) array('role' => 'page'), $dom->find('a')->data());
+    }
+
+    /*
+     * Test remove data
+     */
+    public function testRemoveData()
+    {
+        $dom = new DomQuery('<div> <a></a> </div>');
+        $dom->find('a')->data('role', 'page');
+        $dom->find('a')->data('other', 'still-there');
+        $this->assertEquals('page', $dom->find('a')->data('role'));
+        $this->assertEquals('still-there', $dom->find('a')->data('other'));
+        $dom->find('a')->removeData('role');
+        $this->assertEquals(null, $dom->find('a')->data('role'));
+        $this->assertEquals('still-there', $dom->find('a')->data('other'));
+    }
+
+    /*
+     * Test remove all data
+     */
+    public function testRemoveAllData()
+    {
+        $dom = new DomQuery('<div> <a data-stay="x"></a> </div>');
+        $dom->find('a')->data('role', 'page');
+        $dom->find('a')->data('other', 'also-gone');
+        $this->assertEquals('page', $dom->find('a')->data('role'));
+        $dom->find('a')->removeData();
+        $this->assertEquals(null, $dom->find('a')->data('role'));
+        $this->assertEquals(null, $dom->find('a')->data('other'));
+        $this->assertEquals('<div> <a data-stay="x"></a> </div>', (string) $dom);
     }
 
     /*
