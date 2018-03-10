@@ -642,11 +642,11 @@ class DomQuery extends DomQueryNodes
                 }
                 return $position;
             }
-        }
-
-        foreach ($this as $key => $node) {
-            if ($node->is($selector)) {
-                return $key;
+        } else {
+            foreach ($this as $key => $node) {
+                if ($node->is($selector)) {
+                    return $key;
+                }
             }
         }
 
