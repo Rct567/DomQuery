@@ -621,6 +621,39 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
+     *  Get the position of the first element within the DOM, relative to its sibling elements.
+     *  Or get the position of the first node in the result that matches the selector.
+     *
+     * @param string|self|callable|\DOMNodeList|\DOMNode $selector
+     *
+     * @return int $position
+     */
+    public function index($selector=null)
+    {
+        if ($selector === null) {
+            if ($node = $this->getFirstElmNode()) {
+                $position = 0;
+                while ($node && ($node = $node->previousSibling)) {
+                    if ($node instanceof \DOMElement) {
+                        $position++;
+                    } else {
+                        break;
+                    }
+                }
+                return $position;
+            }
+        }
+
+        foreach ($this as $key => $node) {
+            if ($node->is($selector)) {
+                return $key;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
      * Check if any node matches the selector
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode $selector

@@ -184,6 +184,31 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test get index of position in result that matches selector
+     */
+    public function testIndexWithSelector()
+    {
+        $dom = new DomQuery('<div> <a class="a">1</a><a class="b">2</a><a class="c">3</a><a class="d">4</a> </div>');
+        $this->assertEquals(-1, $dom->find('a')->index('.nope'));
+        $this->assertEquals(0, $dom->find('a')->index('.a'));
+        $this->assertEquals(1, $dom->find('a')->index($dom->find('.b')));
+        $this->assertEquals(2, $dom->find('a')->index($dom->find('a')->get(2)));
+        $this->assertEquals(3, $dom->find('a')->index('.d'));
+    }
+
+    /*
+     * Test get index of position in dom
+     */
+    public function testIndex()
+    {
+        $dom = new DomQuery('<div> <a class="a">1</a><a class="b">2</a><a class="c">3</a><a class="d">4</a> </div>');
+        $this->assertEquals(-1, $dom->find('nope')->index());
+        $this->assertEquals(0, $dom->find('div')->index());
+        $this->assertEquals(0, $dom->find('.a')->index());
+        $this->assertEquals(3, $dom->find('.d')->index());
+    }
+
+    /*
      * Test change attribute without value in xml write mode
      */
     public function testChangeAttributeWithoutValueInXmlWriteMode()
