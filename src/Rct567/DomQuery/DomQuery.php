@@ -589,6 +589,36 @@ class DomQuery extends DomQueryNodes
      * Reduce the set of matched elements to those that match the selector
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode $selector
+     * @param string|self|\DOMNodeList|\DOMNode|\DOMDocument $context
+     *
+     * @return self
+     */
+    public function add($selector, $context=null)
+    {
+        $result = $this->createChildInstance();
+        $result->nodes = $this->nodes;
+
+        $selection = $this->getTargetResult($selector, $context);
+
+        foreach ($selection as $selection_node) {
+            if (!$result->is($selection_node)) {
+                if ($result->document === $selection_node->document) {
+                    $new_node = $selection_node->get(0);
+                } else {
+                    $new_node = $this->document->importNode($selection_node->get(0), true);
+                }
+
+                $result->addDomNode($new_node);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Reduce the set of matched elements to those that match the selector
+     *
+     * @param string|self|callable|\DOMNodeList|\DOMNode $selector
      *
      * @return self
      */
@@ -916,16 +946,17 @@ class DomQuery extends DomQueryNodes
      * Get target result using selector or instance of self
      *
      * @param string|self $target
+     * @param string|self|\DOMNodeList|\DOMNode|\DOMDocument $context
      *
      * @return self
      */
-    private function getTargetResult($target)
+    private function getTargetResult($target, $context=null)
     {
-        if (\is_string($target) && strpos('<', $target) === false) {
-            return self::create($this->document)->find($target);
+        if ($context===null && \is_string($target) && strpos($target, '<') === false) {
+            $context = $this->document;
         }
 
-        return self::create($target);
+        return $context === null ? self::create($target) : self::create($target, $context);
     }
 
     /**

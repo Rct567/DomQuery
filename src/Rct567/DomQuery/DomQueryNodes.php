@@ -105,7 +105,13 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public function __construct()
     {
-        foreach (\func_get_args() as $arg) {
+        if (\func_num_args() === 2 && \is_string(\func_get_arg(0)) && strpos(func_get_arg(0), '<') === false) {
+            $result = self::create(func_get_arg(1))->find(func_get_arg(0));
+            $this->addNodes($result->nodes);
+            return;
+        }
+
+        foreach (\func_get_args() as $num => $arg) {
             if ($arg instanceof \DOMDocument) {
                 $this->setDomDocument($arg);
             } elseif ($arg instanceof \DOMNodeList) {
@@ -116,7 +122,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
                 $this->addNodes($arg);
             } elseif ($arg instanceof \DOMXPath) {
                 $this->dom_xpath = $arg;
-            } elseif (\is_string($arg) && strpos($arg, '>') !== false) {
+            } elseif (\is_string($arg) && strpos($arg, '<') !== false) {
                 $this->loadContent($arg);
             } elseif (\is_object($arg)) {
                 throw new \InvalidArgumentException('Unknown object '. \get_class($arg).' given as argument');

@@ -61,12 +61,16 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 
 - `.find( selector )`
 - `.children( [selector] )`
-- `.contents()` get children including text nodes
 - `.parent( [selector] )`
 - `.closest( [selector] )`
 - `.next( [selector] )`
 - `.prev( [selector] )`
 - `.siblings( [selector] )`
+
+#### Traversing > Miscellaneous Traversing
+
+- `.contents()` get children including text nodes
+- `.add( selector, [context] )` new result with added elements that match selector
 
  #### Traversing > Filtering
 

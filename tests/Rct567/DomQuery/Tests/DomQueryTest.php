@@ -276,6 +276,24 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test constructor with selector and html context
+     */
+    public function testConstuctorWithSelectorAndHtmlContext()
+    {
+        $dom = new DomQuery('div', '<div>X</div><p>Nope</p>');
+        $this->assertEquals('<div>X</div>', (string) $dom);
+    }
+
+    /*
+     * Test constructor with selector and self as context
+     */
+    public function testConstuctorWithSelectorAndSelfContext()
+    {
+        $dom = new DomQuery('div', new DomQuery('<div>X</div><p>Nope</p>'));
+        $this->assertEquals('<div>X</div>', (string) $dom);
+    }
+
+    /*
      * Test constructor exception
      */
     public function testConstructorException()
