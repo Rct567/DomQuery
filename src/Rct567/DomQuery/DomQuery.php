@@ -818,19 +818,38 @@ class DomQuery extends DomQueryNodes
     {
         $result = $this->createChildInstance();
 
-        $get_next_elm = function ($node) {
-            while ($node && ($node = $node->nextSibling)) {
-                if ($node instanceof \DOMElement || ($node instanceof \DOMCharacterData && trim($node->data) !== '')) {
-                    break;
+        if (isset($this->document) && $this->length > 0) {
+            foreach ($this->nodes as $node) {
+                if ($next = self::getNextElement($node)) {
+                    $result->addDomNode($next);
                 }
             }
-            return $node;
-        };
+
+            if ($selector) {
+                $result = $result->filter($selector);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get all following siblings of each element in the set of matched elements, optionally filtered by a selector.
+     *
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
+     *
+     * @return self
+     */
+    public function nextAll($selector=null)
+    {
+        $result = $this->createChildInstance();
 
         if (isset($this->document) && $this->length > 0) {
             foreach ($this->nodes as $node) {
-                if ($next = $get_next_elm($node)) {
+                $current = $node;
+                while ($next = self::getNextElement($current)) {
                     $result->addDomNode($next);
+                    $current = $next;
                 }
             }
 
@@ -853,19 +872,38 @@ class DomQuery extends DomQueryNodes
     {
         $result = $this->createChildInstance();
 
-        $get_prev_elm = function ($node) {
-            while ($node && ($node = $node->previousSibling)) {
-                if ($node instanceof \DOMElement || ($node instanceof \DOMCharacterData && trim($node->data) !== '')) {
-                    break;
-                }
-            }
-            return $node;
-        };
-
         if (isset($this->document) && $this->length > 0) {
             foreach ($this->nodes as $node) { // get all previous sibling of all nodes
-                if ($prev = $get_prev_elm($node)) {
+                if ($prev = self::getPreviousElement($node)) {
                     $result->addDomNode($prev);
+                }
+            }
+
+            if ($selector) {
+                $result = $result->filter($selector);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector.
+     *
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
+     *
+     * @return self
+     */
+    public function prevAll($selector=null)
+    {
+        $result = $this->createChildInstance();
+
+        if (isset($this->document) && $this->length > 0) {
+            foreach ($this->nodes as $node) {
+                $current = $node;
+                while ($prev = self::getPreviousElement($current)) {
+                    $result->addDomNode($prev, true);
+                    $current = $prev;
                 }
             }
 

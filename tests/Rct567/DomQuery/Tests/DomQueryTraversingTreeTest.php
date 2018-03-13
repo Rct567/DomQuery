@@ -47,6 +47,18 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test next all
+     */
+    public function testNextAll()
+    {
+        $dom = new DomQuery('<ul> <li id="a">1</li> <li id="b">2</li> <li id="c">3</li> </ul>');
+
+        $this->assertEquals('<li id="b">2</li><li id="c">3</li>', (string) $dom->find('#a')->nextAll());
+        $this->assertEquals('<li id="c">3</li>', (string) $dom->find('#b')->nextAll());
+        $this->assertEquals('', (string) $dom->find('#c')->nextAll());
+    }
+
+    /*
      * Test next
      */
     public function testPrev()
@@ -54,6 +66,18 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<ul> <li id="a">1</li> <li id="b">2</li> </ul>');
 
         $this->assertEquals('<li id="a">1</li>', (string) $dom->find('#b')->prev());
+    }
+
+    /*
+     * Test previous all
+     */
+    public function testPrevAll()
+    {
+        $dom = new DomQuery('<ul> <li id="a">1</li> <li id="b">2</li> <li id="c">3</li> </ul>');
+
+        $this->assertEquals('<li id="a">1</li><li id="b">2</li>', (string) $dom->find('#c')->prevAll());
+        $this->assertEquals('<li id="a">1</li>', (string) $dom->find('#b')->prevAll());
+        $this->assertEquals('', (string) $dom->find('#a')->prevAll());
     }
 
     /*

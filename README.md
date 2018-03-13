@@ -65,6 +65,8 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.closest( [selector] )`
 - `.next( [selector] )`
 - `.prev( [selector] )`
+- `.nextAll( [selector] )`
+- `.prevAll( [selector] )`
 - `.siblings( [selector] )`
 
 #### Traversing > Miscellaneous Traversing
@@ -81,7 +83,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.first( [selector] )`
 - `.last( [selector] )`
 - `.slice( [offset] [, length])` like [array_slice in php](http://php.net/manual/en/function.array-slice.php), not js/jquery
-- `.map ( callable(elm,i) )`
+- `.map( callable(elm,i) )`
 
 <sub>\* __[selector]__ can be a css selector or an instance of DomQuery|DOMNodeList|DOMNode </sub>
 

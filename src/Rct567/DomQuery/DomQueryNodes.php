@@ -261,12 +261,18 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      * Add node to result set
      *
      * @param \DOMNode $dom_node
+     * @param bool $prepend
      *
      * @return void
      */
-    public function addDomNode(\DOMNode $dom_node)
+    public function addDomNode(\DOMNode $dom_node, $prepend=false)
     {
-        $this->nodes[] = $dom_node;
+        if ($prepend) {
+            array_unshift($this->nodes, $dom_node);
+        } else {
+            $this->nodes[] = $dom_node;
+        }
+
         $this->length = \count($this->nodes);
         $this->setDomDocument($dom_node->ownerDocument);
     }
@@ -386,6 +392,42 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
         }
 
         return $result;
+    }
+
+    /**
+     * Get next element from node
+     *
+     * @param \DOMNode $node
+     *
+     * @return \DOMNode
+     */
+    protected static function getNextElement(\DOMNode $node)
+    {
+        while ($node && ($node = $node->nextSibling)) {
+            if ($node instanceof \DOMElement || ($node instanceof \DOMCharacterData && trim($node->data) !== '')) {
+                break;
+            }
+        }
+
+        return $node;
+    }
+
+    /**
+     * Get next element from node
+     *
+     * @param \DOMNode $node
+     *
+     * @return \DOMNode
+     */
+    protected static function getPreviousElement(\DOMNode $node)
+    {
+        while ($node && ($node = $node->previousSibling)) {
+            if ($node instanceof \DOMElement || ($node instanceof \DOMCharacterData && trim($node->data) !== '')) {
+                break;
+            }
+        }
+
+        return $node;
     }
 
     /**
