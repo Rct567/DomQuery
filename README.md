@@ -11,8 +11,6 @@ Install the latest version with
 $ composer require rct567/dom-query
 ```
 
-Note: DomQuery can also be used as a standalone class (no external dependencies). The class itself can be found in `src\Rct567\DomQuery\DomQuery.php`.
-
 ## Basic Usage
 
 ### Read attributes and properties:
