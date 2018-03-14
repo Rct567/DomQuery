@@ -304,7 +304,7 @@ class CssToXpath
      */
     private static function transformAttrSelector($expression)
     {
-        if (preg_match('|@?([a-z0-9_-]+)(([\!\*\^\$\~]{0,1})=)[\'"]([^\'"]+)[\'"]|i', $expression, $matches)) {
+        if (preg_match('|@?([a-z0-9_-]+)(([\!\*\^\$\~\|]{0,1})=)[\'"]([^\'"]+)[\'"]|i', $expression, $matches)) {
             if ($matches[3] === '') { // arbitrary attribute strict value equality
                 return '[@' . strtolower($matches[1]) . "='" . $matches[4] . "']";
             } elseif ($matches[3] === '!') { // arbitrary attribute negation strict value
@@ -318,6 +318,9 @@ class CssToXpath
             } elseif ($matches[3] === '$') { // attribute value ends with specified content
                 return "[@".$matches[1]." and substring(@".$matches[1].", string-length(@".$matches[1].")-".
                 (\strlen($matches[4])-1).") = '".$matches[4]."']";
+            } elseif ($matches[3] === '|') { // attribute has prefix selector
+                return '[@' . strtolower($matches[1]) . "='" . $matches[4] . "' or starts-with(@".
+                strtolower($matches[1]) . ", '" . $matches[4].'-' . "')]";
             }
         }
 

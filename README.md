@@ -140,6 +140,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `[name~="foo"]` attribute value contains word foo
 - `[name^="foo"]` attribute value starts with foo
 - `[name$="foo"]` attribute value ends with foo
+- `[name|="foo"]` attribute value equal to foo, or starting foo followed by a hyphen (-)
 
 ### Pseudo selectors
 

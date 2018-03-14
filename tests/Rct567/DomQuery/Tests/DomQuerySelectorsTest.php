@@ -30,6 +30,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             '[href^=\'html\']' => '//*[starts-with(@href, \'html\')]',
             '[href$=\'html\']' => '//*[@href and substring(@href, string-length(@href)-3) = \'html\']',
             '[href~=\'html\']' => '//*[contains(concat(\' \', normalize-space(@href), \' \'), \' html \')]',
+            '[href|=\'html\']' => '//*[@href=\'html\' or starts-with(@href, \'html-\')]',
             '> a' => '/a',
             'p > a' => '//p/a',
             'p > a[href]' => '//p/a[@href]',
@@ -287,6 +288,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             <li>list item 4</li>
             <li class="item-item">list item 5</li>
             <li class="item item6" rel="x">list item 6</li>
+            <li class="item"></li>
         </ul>');
 
         $this->assertEquals(2, $dom->find('li[id]')->length);
@@ -294,13 +296,15 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, $dom->find('li[id*=\'tem\']')->length);
         $this->assertEquals('list item 3', $dom->find('li[id$=\'tem3\']')->text());
         $this->assertEquals(0, $dom->find('li[id$=\'item\']')->length);
+        $this->assertEquals(0, $dom->find('li[id|=\'item\']')->length);
         $this->assertEquals('list item 3', $dom->find('li[id=\'item3\']')->text());
         $this->assertEquals('list item 6', $dom->find('li[class~=\'item6\']')->text());
         $this->assertEquals('list item 6', $dom->find('li[class][rel]')->text());
-        $this->assertEquals(1, $dom->find('li[class~=\'item\']')->length);
+        $this->assertEquals(2, $dom->find('li[class~=\'item\']')->length);
         $this->assertEquals(1, $dom->find('li[class~=\'item\'][class~=\'item6\']')->length);
         $this->assertEquals(0, $dom->find('li[class~=\'item\'][id~=\'item\']')->length);
-        $this->assertEquals(2, $dom->find('li[class*=\'item\']')->length);
+        $this->assertEquals(3, $dom->find('li[class*=\'item\']')->length);
+        $this->assertEquals(2, $dom->find('li[class|=\'item\']')->length);
     }
 
     /*
