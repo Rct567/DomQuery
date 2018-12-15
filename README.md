@@ -47,7 +47,7 @@ echo $links->get(0)->textContent; // output 1
 echo $links->get(-1)->textContent; // output 3
 ```
 
-### Create instance alternative:
+### Factory method (create instance alternative):
 
 ```php
 DomQuery::create('<a title="hello"></a>')->attr('title') // hello
