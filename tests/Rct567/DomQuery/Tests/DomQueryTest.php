@@ -141,9 +141,9 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test set data
+     * Test set string as data, surviving wrap
      */
-    public function testSetData()
+    public function testSetStringData()
     {
         $dom = new DomQuery('<div> <a data-role=""></a> </div>');
         $dom->find('a')->data('role', 'page');
@@ -151,6 +151,18 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $dom->find('a')->wrap('<div>');
         $this->assertEquals('page', $dom->data('role'));
         $this->assertEquals((object) array('role' => 'page'), $dom->find('a')->data());
+    }
+
+    /*
+     * Test set instance as data, surviving wrap
+     */
+    public function testSetInstanceData()
+    {
+        $dom = new DomQuery('<div> <a data-role=""></a> </div>');
+        $dom->find('a')->data('role', $this);
+        $this->assertEquals($this, $dom->find('a')->data('role'));
+        $dom->find('a')->wrap('<div>');
+        $this->assertEquals($this, $dom->data('role'));
     }
 
     /*
