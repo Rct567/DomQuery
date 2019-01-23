@@ -127,6 +127,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     {
         $dom = new DomQuery('<div data-role="page"></div>');
         $this->assertEquals('page', $dom->data('role'));
+        $this->assertNull($dom->data('nope'));
         $this->assertEquals((object) array('role' => 'page'), $dom->data());
     }
 
@@ -149,7 +150,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $dom->find('a')->data('role', 'page');
         $this->assertEquals('page', $dom->find('a')->data('role'));
         $dom->find('a')->wrap('<div>');
-        $this->assertEquals('page', $dom->data('role'));
+        $this->assertEquals('page', $dom->find('a')->data('role'));
         $this->assertEquals((object) array('role' => 'page'), $dom->find('a')->data());
     }
 
@@ -162,7 +163,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $dom->find('a')->data('role', $this);
         $this->assertEquals($this, $dom->find('a')->data('role'));
         $dom->find('a')->wrap('<div>');
-        $this->assertEquals($this, $dom->data('role'));
+        $this->assertEquals($this, $dom->find('a')->data('role'));
     }
 
     /*
