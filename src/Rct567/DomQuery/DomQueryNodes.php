@@ -718,7 +718,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
             return $node->getAttribute('dqn_tmp_id');
         }
 
-        $node_id = uniqid();
+        $node_id = md5(mt_rand());
         $node->setAttribute('dqn_tmp_id', $node_id);
         return $node_id;
     }
