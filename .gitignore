@@ -2,3 +2,4 @@
 /.idea/
 .vscode/launch.json
 /.project
+/coverage
