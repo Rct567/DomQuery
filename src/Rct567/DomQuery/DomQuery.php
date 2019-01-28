@@ -657,19 +657,7 @@ class DomQuery extends DomQueryNodes
      */
     public function clone()
     {
-        $result = $this->createChildInstance();
-
-        foreach ($this->nodes as $node) {
-            $cloned_node = $node->cloneNode(true);
-
-            if ($cloned_node instanceof \DOMElement && $cloned_node->hasAttribute('dqn_tmp_id')) {
-                $cloned_node->removeAttribute('dqn_tmp_id');
-            }
-
-            $result->addDomNode($cloned_node);
-        }
-
-        return $result;
+        return $this->createChildInstance($this->getClonedNodes());
     }
 
     /**

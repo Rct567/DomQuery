@@ -520,6 +520,28 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
+     * Return array with cloned nodes
+     *
+     * @return \DOMNode[]
+     */
+    protected function getClonedNodes()
+    {
+        $cloned_nodes = array();
+
+        foreach ($this->nodes as $node) {
+            $cloned_node = $node->cloneNode(true);
+
+            if ($cloned_node instanceof \DOMElement && $cloned_node->hasAttribute('dqn_tmp_id')) {
+                $cloned_node->removeAttribute('dqn_tmp_id');
+            }
+
+            $cloned_nodes[] = $cloned_node;
+        }
+
+        return $cloned_nodes;
+    }
+
+    /**
      * Return array with nodes
      *
      * @return \DOMNode[]
