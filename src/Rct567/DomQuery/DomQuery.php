@@ -666,7 +666,7 @@ class DomQuery extends DomQueryNodes
                 $cloned_node->removeAttribute('dqn_tmp_id');
             }
 
-            $result->addDomNode($node->cloneNode(true));
+            $result->addDomNode($cloned_node);
         }
 
         return $result;
