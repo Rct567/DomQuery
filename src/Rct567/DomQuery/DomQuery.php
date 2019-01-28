@@ -75,10 +75,8 @@ class DomQuery extends DomQueryNodes
     public function attr(string $name, $val=null)
     {
         if ($val !== null) { // set attribute for all nodes
-            foreach ($this->nodes as $node) {
-                if ($node instanceof \DOMElement) {
-                    $node->setAttribute($name, $val);
-                }
+            foreach ($this->getElements() as $node) {
+                $node->setAttribute($name, $val);
             }
             return $this;
         }
@@ -104,13 +102,11 @@ class DomQuery extends DomQueryNodes
             if (!isset(self::$node_data[$doc_hash])) {
                 self::$node_data[$doc_hash] = array();
             }
-            foreach ($this->nodes as $node) {
-                if ($node instanceof \DOMElement) {
-                    if (!isset(self::$node_data[$doc_hash][self::getElementId($node)])) {
-                        self::$node_data[$doc_hash][self::getElementId($node)] = (object) array();
-                    }
-                    self::$node_data[$doc_hash][self::getElementId($node)]->$key = $val;
+            foreach ($this->getElements() as $node) {
+                if (!isset(self::$node_data[$doc_hash][self::getElementId($node)])) {
+                    self::$node_data[$doc_hash][self::getElementId($node)] = (object) array();
                 }
+                self::$node_data[$doc_hash][self::getElementId($node)]->$key = $val;
             }
             return $this;
         }
@@ -156,22 +152,20 @@ class DomQuery extends DomQueryNodes
             return;
         }
 
-        foreach ($this->nodes as $node) {
-            if ($node instanceof \DOMElement) {
-                if (!$node->hasAttribute('dqn_tmp_id')) {
-                    continue;
-                }
+        foreach ($this->getElements() as $node) {
+            if (!$node->hasAttribute('dqn_tmp_id')) {
+                continue;
+            }
 
-                $node_id = self::getElementId($node);
+            $node_id = self::getElementId($node);
 
-                if (isset(self::$node_data[$doc_hash][$node_id])) {
-                    if ($name === null) {
-                        self::$node_data[$doc_hash][$node_id] = null;
-                    } else {
-                        foreach ($remove_names as $remove_name) {
-                            if (isset(self::$node_data[$doc_hash][$node_id]->$remove_name)) {
-                                self::$node_data[$doc_hash][$node_id]->$remove_name = null;
-                            }
+            if (isset(self::$node_data[$doc_hash][$node_id])) {
+                if ($name === null) {
+                    self::$node_data[$doc_hash][$node_id] = null;
+                } else {
+                    foreach ($remove_names as $remove_name) {
+                        if (isset(self::$node_data[$doc_hash][$node_id]->$remove_name)) {
+                            self::$node_data[$doc_hash][$node_id]->$remove_name = null;
                         }
                     }
                 }
@@ -230,12 +224,10 @@ class DomQuery extends DomQueryNodes
     public function css(string $name, $val=null)
     {
         if ($val !== null) { // set css for all nodes
-            foreach ($this->nodes as $node) {
-                if ($node instanceof \DOMElement) {
-                    $style = self::parseStyle($node->getAttribute('style'));
-                    $style[$name] = $val;
-                    $node->setAttribute('style', self::getStyle($style));
-                }
+            foreach ($this->getElements() as $node) {
+                $style = self::parseStyle($node->getAttribute('style'));
+                $style[$name] = $val;
+                $node->setAttribute('style', self::getStyle($style));
             }
             return $this;
         }
@@ -259,11 +251,9 @@ class DomQuery extends DomQueryNodes
     {
         $remove_names = \is_array($name) ? $name : explode(' ', $name);
 
-        foreach ($this->nodes as $node) {
-            if ($node instanceof \DOMElement) {
-                foreach ($remove_names as $remove_name) {
-                    $node->removeAttribute($remove_name);
-                }
+        foreach ($this->getElements() as $node) {
+            foreach ($remove_names as $remove_name) {
+                $node->removeAttribute($remove_name);
             }
         }
 
@@ -281,20 +271,18 @@ class DomQuery extends DomQueryNodes
     {
         $add_names = \is_array($class_name) ? $class_name : explode(' ', $class_name);
 
-        foreach ($this->nodes as $node) {
-            if ($node instanceof \DOMElement) {
-                $node_classes = array();
-                if ($node_class_attr = $node->getAttribute('class')) {
-                    $node_classes = explode(' ', $node_class_attr);
+        foreach ($this->getElements() as $node) {
+            $node_classes = array();
+            if ($node_class_attr = $node->getAttribute('class')) {
+                $node_classes = explode(' ', $node_class_attr);
+            }
+            foreach ($add_names as $add_name) {
+                if (!\in_array($add_name, $node_classes, true)) {
+                    $node_classes[] = $add_name;
                 }
-                foreach ($add_names as $add_name) {
-                    if (!\in_array($add_name, $node_classes, true)) {
-                        $node_classes[] = $add_name;
-                    }
-                }
-                if (\count($node_classes) > 0) {
-                    $node->setAttribute('class', implode(' ', $node_classes));
-                }
+            }
+            if (\count($node_classes) > 0) {
+                $node->setAttribute('class', implode(' ', $node_classes));
             }
         }
 

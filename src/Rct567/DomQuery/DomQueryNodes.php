@@ -510,6 +510,20 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
+     * Returns dom elements
+     *
+     * @return \Generator
+     */
+    protected function getElements()
+    {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof \DOMElement) {
+                yield $node;
+            }
+        }
+    }
+
+    /**
      * Return array with nodes
      *
      * @return \DOMNode[]
@@ -727,7 +741,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * Get id for node
      *
-     * @param \DOMNode $node
+     * @param \DOMElement $node
      *
      * @return string $node_id
      */
