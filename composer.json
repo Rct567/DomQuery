@@ -22,7 +22,9 @@
     ],
     "require": {
         "php": "^7.0.0",
-        "ext-xml": "*"
+        "ext-xml": "*",
+        "ext-json": "*",
+        "ext-dom": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5",
