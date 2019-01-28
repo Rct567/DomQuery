@@ -307,6 +307,18 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test to array and array as constructor argument
+     */
+    public function testConstructorWithNodesArray()
+    {
+        $nodes_array = DomQuery::create('<div>X</div><p>Nope</p>')->toArray();
+        $this->assertContainsOnlyInstancesOf(\DOMNode::class, $nodes_array);
+        $this->assertCount(2, $nodes_array);
+        $dom = new DomQuery($nodes_array);
+        $this->assertEquals('<div>X</div><p>Nope</p>', (string) $dom);
+    }
+
+    /*
      * Test constructor exception
      */
     public function testConstructorException()
