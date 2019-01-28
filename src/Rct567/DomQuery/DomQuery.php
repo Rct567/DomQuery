@@ -105,20 +105,22 @@ class DomQuery extends DomQueryNodes
                 self::$node_data[$doc_hash] = array();
             }
             foreach ($this->nodes as $node) {
-                if (!isset(self::$node_data[$doc_hash][self::getNodeId($node)])) {
-                    self::$node_data[$doc_hash][self::getNodeId($node)] = (object) array();
+                if ($node instanceof \DOMElement) {
+                    if (!isset(self::$node_data[$doc_hash][self::getElementId($node)])) {
+                        self::$node_data[$doc_hash][self::getElementId($node)] = (object) array();
+                    }
+                    self::$node_data[$doc_hash][self::getElementId($node)]->$key = $val;
                 }
-                self::$node_data[$doc_hash][self::getNodeId($node)]->$key = $val;
             }
             return $this;
         }
 
         if ($node = $this->getFirstElmNode()) { // get data for first element
-            if (isset(self::$node_data[$doc_hash]) && isset(self::$node_data[$doc_hash][self::getNodeId($node)])) {
+            if (isset(self::$node_data[$doc_hash]) && isset(self::$node_data[$doc_hash][self::getElementId($node)])) {
                 if ($key === null) {
-                    return self::$node_data[$doc_hash][self::getNodeId($node)];
-                } elseif (isset(self::$node_data[$doc_hash][self::getNodeId($node)]->$key)) {
-                    return self::$node_data[$doc_hash][self::getNodeId($node)]->$key;
+                    return self::$node_data[$doc_hash][self::getElementId($node)];
+                } elseif (isset(self::$node_data[$doc_hash][self::getElementId($node)]->$key)) {
+                    return self::$node_data[$doc_hash][self::getElementId($node)]->$key;
                 }
             }
             if ($key === null) { // object with all data
@@ -155,19 +157,21 @@ class DomQuery extends DomQueryNodes
         }
 
         foreach ($this->nodes as $node) {
-            if ($node instanceof \DOMElement && !$node->hasAttribute('dqn_tmp_id')) {
-                continue;
-            }
+            if ($node instanceof \DOMElement) {
+                if (!$node->hasAttribute('dqn_tmp_id')) {
+                    continue;
+                }
 
-            $node_id = self::getNodeId($node);
+                $node_id = self::getElementId($node);
 
-            if (isset(self::$node_data[$doc_hash][$node_id])) {
-                if ($name === null) {
-                    self::$node_data[$doc_hash][$node_id] = null;
-                } else {
-                    foreach ($remove_names as $remove_name) {
-                        if (isset(self::$node_data[$doc_hash][$node_id]->$remove_name)) {
-                            self::$node_data[$doc_hash][$node_id]->$remove_name = null;
+                if (isset(self::$node_data[$doc_hash][$node_id])) {
+                    if ($name === null) {
+                        self::$node_data[$doc_hash][$node_id] = null;
+                    } else {
+                        foreach ($remove_names as $remove_name) {
+                            if (isset(self::$node_data[$doc_hash][$node_id]->$remove_name)) {
+                                self::$node_data[$doc_hash][$node_id]->$remove_name = null;
+                            }
                         }
                     }
                 }

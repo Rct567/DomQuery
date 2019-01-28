@@ -731,11 +731,8 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @return string $node_id
      */
-    public static function getNodeId(\DOMNode $node)
+    public static function getElementId(\DOMElement $node)
     {
-        if (!$node instanceof \DOMElement) {
-            return $node->getNodePath();
-        }
         if ($node->hasAttribute('dqn_tmp_id')) {
             return $node->getAttribute('dqn_tmp_id');
         }
