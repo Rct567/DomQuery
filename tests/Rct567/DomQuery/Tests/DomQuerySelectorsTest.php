@@ -19,6 +19,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             '#someid' => '//*[@id=\'someid\']',
             'p#someid' => '//p[@id=\'someid\']',
             '#some\\.id' => '//*[@id=\'some.id\']',
+            '#id[_]' => '//*[@id=\'id\'][@_]',
             'p a' => '//p//a',
             'div, span' => '//div|//span',
             'a[href]' => '//a[@href]',
@@ -277,14 +278,14 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     *
+     * Test attribute selector
      */
     public function testAttributeSelector()
     {
         $dom = new DomQuery('<ul>
             <li>list item 1</li>
             <li id="item2">list item 2</li>
-            <li id="item3">list item 3</li>
+            <li id="item3" _="x" i- i2-="">list item 3</li>
             <li>list item 4</li>
             <li class="item-item">list item 5</li>
             <li class="item item6" rel="x">list item 6</li>
@@ -292,6 +293,10 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         </ul>');
 
         $this->assertEquals(2, $dom->find('li[id]')->length);
+        $this->assertEquals(1, $dom->find('li[_]')->length);
+        $this->assertEquals(1, $dom->find('li[_=x]')->length);
+        $this->assertEquals(1, $dom->find('li[i-]')->length);
+        $this->assertEquals(1, $dom->find('li[i2-]')->length);
         $this->assertEquals(2, $dom->find('li[id^=\'item\']')->length);
         $this->assertEquals(2, $dom->find('li[id*=\'tem\']')->length);
         $this->assertEquals('list item 3', $dom->find('li[id$=\'tem3\']')->text());
@@ -305,6 +310,16 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(0, $dom->find('li[class~=\'item\'][id~=\'item\']')->length);
         $this->assertEquals(3, $dom->find('li[class*=\'item\']')->length);
         $this->assertEquals(2, $dom->find('li[class|=\'item\']')->length);
+    }
+
+    /*
+     * Test malformed attribute selector
+     */
+    public function testMalformedAttributeSelector()
+    {
+        $this->expectException(\Exception::class);
+        $dom = new DomQuery('<div></div>');
+        $dom->find('#id[-]');
     }
 
     /*

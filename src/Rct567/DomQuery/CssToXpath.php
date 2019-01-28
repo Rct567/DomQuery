@@ -304,7 +304,7 @@ class CssToXpath
      */
     private static function transformAttrSelector($expression)
     {
-        if (preg_match('|@?([a-z0-9_-]+)(([\!\*\^\$\~\|]{0,1})=)[\'"]([^\'"]+)[\'"]|i', $expression, $matches)) {
+        if (preg_match('|@?([a-z0-9_]+)(([\!\*\^\$\~\|]{0,1})=)[\'"]([^\'"]+)[\'"]|i', $expression, $matches)) {
             if ($matches[3] === '') { // arbitrary attribute strict value equality
                 return '[@' . strtolower($matches[1]) . "='" . $matches[4] . "']";
             } elseif ($matches[3] === '!') { // arbitrary attribute negation strict value
@@ -325,10 +325,10 @@ class CssToXpath
         }
 
         // attribute without value
-        if (preg_match('|([a-z0-9]+)([a-z0-9_-]*)|i', $expression, $matches)) {
+        if (preg_match('|([a-z0-9_]{1})([a-z0-9_-]*)|i', $expression, $matches)) {
             return "[@" . $matches[1].$matches[2] . "]";
         }
 
-        return $expression;
+        throw new \Exception('Attribute selector is malformed or contains unsupported characters.');
     }
 }
