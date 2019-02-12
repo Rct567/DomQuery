@@ -692,11 +692,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public function count()
     {
-        if (isset($this->nodes) && \is_array($this->nodes)) {
-            return \count($this->nodes);
-        }
-
-        return 0;
+        return \count($this->nodes);
     }
 
     /**
