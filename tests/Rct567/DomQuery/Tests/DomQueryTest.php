@@ -319,12 +319,78 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test constructor exception
+     * Test constructor exception by giving unknown object argument
      */
-    public function testConstructorException()
+    public function testConstructorUnknownObjectArgument()
     {
         $this->expectException(\InvalidArgumentException::class);
         $dom = new DomQuery(new \stdClass);
+    }
+
+    /*
+     * Test constructor exception by giving unknown argument
+     */
+    public function testConstructorUnknownArgument()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $dom = new DomQuery(null);
+    }
+
+    /*
+     * Test constructor exception by giving double document
+     */
+    public function testConstructorDoubleDocument()
+    {
+        $this->expectException(\Exception::class);
+        $dom = new DomQuery(new \DOMDocument(), new \DOMDocument());
+    }
+
+    /*
+     * Test constructor exception caused by giving empty node list
+     */
+    public function testConstructorEmptyNodeList()
+    {
+        $this->expectException(\Exception::class);
+        $empty_node_list = (new \DOMDocument())->getElementsByTagName('nope');
+        $dom = new DomQuery($empty_node_list);
+    }
+
+    /*
+     * Test exception caused by array access with invalid offset key
+     */
+    public function testArrayAccessGetWithInvalidOffsetKey()
+    {
+        $this->expectException(\BadMethodCallException::class);
+        $dom = (new DomQuery())['invalid'];
+    }
+
+    /*
+     * Test exception caused by array access set value
+     */
+    public function testArrayAccessSet()
+    {
+        $this->expectException(\BadMethodCallException::class);
+        $dom = new DomQuery();
+        $dom['invalid'] = null;
+    }
+
+    /*
+     * Test exception caused by array access unset
+     */
+    public function testArrayAccessUnset()
+    {
+        $this->expectException(\BadMethodCallException::class);
+        $dom = new DomQuery();
+        unset($dom['invalid']);
+    }
+
+    /*
+     * Test exception caused by non existing method call
+     */
+    public function testNonExistingMethodCall()
+    {
+        $this->expectException(\Exception::class);
+        $dom = (new DomQuery())->nope();
     }
 
     /*
