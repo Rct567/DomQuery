@@ -271,6 +271,18 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test get html in xml mode
+     */
+    public function testGetHtmlInXmlMode()
+    {
+        $dom = new DomQuery('<p> <a>M<i selected>A</i></a> <span></span> </p>');
+        $dom->xml_mode = true;
+        $this->assertEquals('M<i selected="selected">A</i>', $dom->find('a')->html()); // inner
+        $this->assertEquals('<a>M<i selected="selected">A</i></a>', $dom->find('a')->prop('outerHTML')); // outer
+        $this->assertEquals('A', $dom->find('a i')->html());
+    }
+
+    /*
      * Test set html
      */
     public function testSetHtml()
