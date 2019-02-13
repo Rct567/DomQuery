@@ -264,9 +264,9 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetHtml()
     {
-        $dom = new DomQuery('<p> <a>M<i>A</i></a> <span></span></p>');
-        $this->assertEquals('M<i>A</i>', $dom->find('a')->html()); // inner
-        $this->assertEquals('<a>M<i>A</i></a>', $dom->find('a')->prop('outerHTML')); // outer
+        $dom = new DomQuery('<p> <a>M<i selected>A</i></a> <span></span></p>');
+        $this->assertEquals('M<i selected>A</i>', $dom->find('a')->html()); // inner
+        $this->assertEquals('<a>M<i selected>A</i></a>', $dom->find('a')->prop('outerHTML')); // outer
         $this->assertEquals('A', $dom->find('a i')->html());
     }
 
