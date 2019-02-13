@@ -18,9 +18,18 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test findOrFail
+     */
+    public function testFindOrFailSuccess()
+    {
+        $dom = new DomQuery('<a>1</a><a>2</a><a id="last">3</a>');
+        $this->assertEquals(1, $dom->findOrFail('a#last')->length);
+    }
+
+    /*
      * Test findOrFail exception
      */
-    public function testFindOrFailExceptionException()
+    public function testFindOrFailException()
     {
         $this->expectException(\Exception::class);
         $dom = new DomQuery('<a>1</a><a>2</a><a id="last">3</a>');
@@ -28,12 +37,13 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test findOrFail
+     * Test findOrFail exception using collection
      */
-    public function testFindOrFailException()
+    public function testFindOrFailExceptionUsingCollection()
     {
+        $this->expectException(\Exception::class);
         $dom = new DomQuery('<a>1</a><a>2</a><a id="last">3</a>');
-        $this->assertEquals(1, $dom->findOrFail('a#last')->length);
+        $dom->find('#last')->findOrFail($dom->find('a:first-child'));
     }
 
     /*
