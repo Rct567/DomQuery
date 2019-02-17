@@ -54,6 +54,7 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<ul> <li id="a">1</li> nope <li id="b">2</li> </ul>');
 
         $this->assertEquals('<li id="b">2</li>', (string) $dom->find('#a')->next());
+        $this->assertEquals('', (string) $dom->find('#b')->next());
     }
 
     /*
@@ -76,6 +77,7 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<ul> <li id="a">1</li> nope <li id="b">2</li> </ul>');
 
         $this->assertEquals('<li id="a">1</li>', (string) $dom->find('#b')->prev());
+        $this->assertEquals('', (string) $dom->find('#a')->prev());
     }
 
     /*
