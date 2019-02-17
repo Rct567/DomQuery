@@ -433,13 +433,11 @@ class DomQuery extends DomQueryNodes
             }
 
             if ($selector !== false) { // filter out text nodes
-                $filtered_nodes = array();
-                foreach ($result->nodes as $result_node) {
-                    if ($result_node instanceof \DOMElement) {
-                        $filtered_nodes[] = $result_node;
-                    }
+                $filtered_elements = array();
+                foreach ($result->getElements() as $result_elm) {
+                    $filtered_elements[] = $result_elm;
                 }
-                $result->nodes = $filtered_nodes;
+                $result->nodes = $filtered_elements;
                 $result->length = \count($result->nodes);
             }
 
