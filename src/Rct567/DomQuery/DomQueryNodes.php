@@ -404,7 +404,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     protected static function getNextElement(\DOMNode $node)
     {
         while ($node && ($node = $node->nextSibling)) {
-            if ($node instanceof \DOMElement || ($node instanceof \DOMCharacterData && trim($node->data) !== '')) {
+            if ($node instanceof \DOMElement) {
                 break;
             }
         }
@@ -422,7 +422,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     protected static function getPreviousElement(\DOMNode $node)
     {
         while ($node && ($node = $node->previousSibling)) {
-            if ($node instanceof \DOMElement || ($node instanceof \DOMCharacterData && trim($node->data) !== '')) {
+            if ($node instanceof \DOMElement) {
                 break;
             }
         }

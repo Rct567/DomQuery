@@ -51,7 +51,7 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
      */
     public function testNext()
     {
-        $dom = new DomQuery('<ul> <li id="a">1</li> <li id="b">2</li> </ul>');
+        $dom = new DomQuery('<ul> <li id="a">1</li> nope <li id="b">2</li> </ul>');
 
         $this->assertEquals('<li id="b">2</li>', (string) $dom->find('#a')->next());
     }
@@ -61,7 +61,7 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
      */
     public function testNextAll()
     {
-        $dom = new DomQuery('<ul> <li id="a">1</li> <li id="b">2</li> <li id="c">3</li> </ul>');
+        $dom = new DomQuery('<ul> <li id="a">1</li> nope <li id="b">2</li> <li id="c">3</li> </ul>');
 
         $this->assertEquals('<li id="b">2</li><li id="c">3</li>', (string) $dom->find('#a')->nextAll());
         $this->assertEquals('<li id="c">3</li>', (string) $dom->find('#b')->nextAll());
@@ -73,7 +73,7 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
      */
     public function testPrev()
     {
-        $dom = new DomQuery('<ul> <li id="a">1</li> <li id="b">2</li> </ul>');
+        $dom = new DomQuery('<ul> <li id="a">1</li> nope <li id="b">2</li> </ul>');
 
         $this->assertEquals('<li id="a">1</li>', (string) $dom->find('#b')->prev());
     }
@@ -83,7 +83,7 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
      */
     public function testPrevAll()
     {
-        $dom = new DomQuery('<ul> <li id="a">1</li> <li id="b">2</li> <li id="c">3</li> </ul>');
+        $dom = new DomQuery('<ul> <li id="a">1</li> nope <li id="b">2</li> <li id="c">3</li> </ul>');
 
         $this->assertEquals('<li id="a">1</li><li id="b">2</li>', (string) $dom->find('#c')->prevAll());
         $this->assertEquals('<li id="a">1</li>', (string) $dom->find('#b')->prevAll());
