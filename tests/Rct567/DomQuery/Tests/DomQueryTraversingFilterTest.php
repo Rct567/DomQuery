@@ -104,10 +104,22 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
     public function testSlice()
     {
         $dom = new DomQuery('<a>1</a><a>2</a><a>3</a><a>4</a><a>5</a><a>6</a>');
-        $this->assertEquals('<a>1</a><a>2</a>', $dom->find('a')->slice(0, 2)->outerHTML);
-        $this->assertEquals('<a>3</a><a>4</a><a>5</a><a>6</a>', $dom->find('a')->slice(2)->outerHTML);
-        $this->assertEquals('<a>6</a>', $dom->find('a')->slice(-1)->outerHTML);
-        $this->assertEquals('<a>5</a>', $dom->find('a')->slice(-2, -1)->outerHTML);
+        $this->assertEquals('<a>1</a><a>2</a>', (string) $dom->find('a')->slice(0, 2));
+        $this->assertEquals('<a>3</a><a>4</a><a>5</a><a>6</a>', (string) $dom->find('a')->slice(2));
+        $this->assertEquals('<a>6</a>', (string) $dom->find('a')->slice(-1));
+        $this->assertEquals('<a>5</a>', (string) $dom->find('a')->slice(-2, -1));
+    }
+
+    /*
+     * Test eq
+     */
+    public function testEq()
+    {
+        $dom = new DomQuery('<a>1</a><a>2</a><a>3</a><a>4</a><a>5</a><a>6</a>');
+        $this->assertEquals('<a>1</a>', (string) $dom->find('a')->eq(0));
+        $this->assertEquals('<a>2</a>', (string) $dom->find('a')->eq(1));
+        $this->assertEquals('<a>6</a>', (string) $dom->find('a')->eq(-1));
+        $this->assertEquals('<a>5</a>', (string) $dom->find('a')->eq(-2));
     }
 
     /*

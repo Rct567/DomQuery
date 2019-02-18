@@ -753,6 +753,18 @@ class DomQuery extends DomQueryNodes
         return $result;
     }
 
+     /**
+     * Reduce the set of matched elements to the one at the specified index.
+     *
+     * @param integer $index
+     *
+     * @return self
+     */
+    public function eq($index)
+    {
+        return $this->slice($index, 1);
+    }
+
     /**
      * Returns DomQuery with first node
      *
