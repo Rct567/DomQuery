@@ -53,10 +53,6 @@ class DomQuery extends DomQueryNodes
                 $node->append($html_string);
             }
 
-            if (strpos($html_string, "\n") !== false) {
-                $this->preserve_no_newlines = false;
-            }
-
             return $this;
         }
         // get html for first node
