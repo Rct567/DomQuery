@@ -15,6 +15,14 @@ class DomQueryAttributesTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test get attribute value on non existing element
+     */
+    public function testGetAttributeValueOnNonElements()
+    {
+        $this->assertNull(DomQuery::create('<a title="hello"></a>')->find('nope')->attr('title'));
+    }
+
+    /*
      * Test change attribute
      */
     public function testSetAttributeValue()

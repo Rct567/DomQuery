@@ -66,7 +66,7 @@ class DomQuery extends DomQueryNodes
      * @param string $name
      * @param string $val
      *
-     * @return $this|string
+     * @return $this|string|null
      */
     public function attr(string $name, $val=null)
     {
