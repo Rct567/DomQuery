@@ -293,6 +293,16 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test set html with new line content
+     */
+    public function testSetHtmlWithNewline()
+    {
+        $dom = new DomQuery('<p> <a>M<i>A</i></a> <span></span> </p>');
+        $dom->find('a')->html("<i>x\n</i>");
+        $this->assertEquals("<p> <a><i>x\n</i></a> <span></span> </p>", (string) $dom);
+    }
+
+    /*
      * Test get css
      */
     public function testGetCss()
