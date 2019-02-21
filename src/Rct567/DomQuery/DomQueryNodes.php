@@ -111,7 +111,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
             return;
         }
 
-        foreach (\func_get_args() as $num => $arg) {
+        foreach (\func_get_args() as $arg) {
             if ($arg instanceof \DOMDocument) {
                 $this->setDomDocument($arg);
             } elseif ($arg instanceof \DOMNodeList) {
