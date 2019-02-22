@@ -155,7 +155,7 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
         </a>');
 
         $this->assertEquals('a', $dom->find('span')->closest('.link')->tagName);
-        $this->assertEquals('<b><span></span></b>', $dom->find('span')->closest('b')->getOuterHtml());
+        $this->assertEquals('<b><span></span></b>', (string) $dom->find('span')->closest('b'));
         $this->assertEquals(0, $dom->find('span')->closest('nope')->length);
     }
 

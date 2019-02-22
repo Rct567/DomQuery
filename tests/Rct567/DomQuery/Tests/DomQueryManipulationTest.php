@@ -267,6 +267,7 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<p> <a>M<i selected>A</i></a> <span></span></p>');
         $this->assertEquals('M<i selected>A</i>', $dom->find('a')->html()); // inner
         $this->assertEquals('<a>M<i selected>A</i></a>', $dom->find('a')->prop('outerHTML')); // outer
+        $this->assertEquals('<a>M<i selected>A</i></a>', $dom->find('a')->outerHTML); // outer
         $this->assertEquals('A', $dom->find('a i')->html());
     }
 
@@ -279,6 +280,7 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
         $dom->xml_mode = true;
         $this->assertEquals('M<i selected="selected">A</i>', $dom->find('a')->html()); // inner
         $this->assertEquals('<a>M<i selected="selected">A</i></a>', $dom->find('a')->prop('outerHTML')); // outer
+        $this->assertEquals('<a>M<i selected="selected">A</i></a>', $dom->find('a')->outerHTML); // outer
         $this->assertEquals('A', $dom->find('a i')->html());
     }
 
