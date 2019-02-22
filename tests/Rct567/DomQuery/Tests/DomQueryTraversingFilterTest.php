@@ -123,18 +123,22 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test map
+     * Test map (with returning string and array)
      */
     public function testMap()
     {
-        $dom = new DomQuery('<p> <a>1</a> <a>2,3</a> <span></span> </p>');
+        $dom = new DomQuery('<p> <a>1</a> <a>2,3</a> <a>4</a> <span></span> </p>');
 
         $map = $dom->find('p > *')->map(function ($elm) {
             if ($elm->textContent !== '') {
-                return explode(',', $elm->textContent);
+                if (strpos($elm->textContent, ',') !== false) {
+                    return explode(',', $elm->textContent);
+                } else {
+                    return $elm->textContent;
+                }
             }
         });
 
-        $this->assertEquals(['1', '2', '3'], $map);
+        $this->assertEquals(['1', '2', '3', '4'], $map);
     }
 }
