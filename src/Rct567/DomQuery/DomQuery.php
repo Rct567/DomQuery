@@ -564,6 +564,8 @@ class DomQuery extends DomQueryNodes
                             $result->addDomNode($node);
                         }
                     }
+                } else {
+                    $result->addNodes($this->nodes);
                 }
             }
         }
