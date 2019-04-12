@@ -40,6 +40,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             'div :header' => '//div//*[self::h1 or self::h2 or self::h3 or self::h5 or self::h5 or self::h6]',
             ':odd' => '//*[position() mod 2 = 0]',
             '.h' => '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' h \')]',
+            '.😾-_😾' => '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' 😾-_😾 \')]',
             '.hidden' => '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden \')]',
             '.hidden-something' => '//*[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden-something \')]',
             'a.hidden[href]' => '//a[contains(concat(\' \', normalize-space(@class), \' \'), \' hidden \')][@href]',
@@ -125,6 +126,16 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<div><a>1</a><b>2</b></div><a id="here">3</a>');
         $this->assertEquals('3', $dom->find('#here')->text());
         $this->assertEquals(1, $dom->find('#here')->length);
+    }
+
+    /*
+     * Test emoji as id selector
+     */
+    public function testEmojiIdSelector()
+    {
+        $dom = new DomQuery('<div><a>1</a><b id="🐝">2</b></div><a >3</a>');
+        $this->assertEquals('2', $dom->find('#🐝')->text());
+        $this->assertEquals(1, $dom->find('#🐝')->length);
     }
 
     /*
@@ -226,6 +237,16 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<div><a class="monkey_moon">1</a><b>2</b></div><a class="monkey-moon">3</a>');
         $this->assertEquals('1', $dom->find('.monkey_moon')->text());
         $this->assertEquals('3', $dom->find('.monkey-moon')->text());
+    }
+
+    /*
+     * Test emoji as class selector
+     */
+    public function testEmojiClassSelector()
+    {
+        $dom = new DomQuery('<div><a>1</a><b class="🐝">2</b></div><a>3</a>');
+        $this->assertEquals('2', $dom->find('.🐝')->text());
+        $this->assertEquals(1, $dom->find('b.🐝')->length);
     }
 
     /*
