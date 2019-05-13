@@ -19,7 +19,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             '#someid' => '//*[@id=\'someid\']',
             'p#someid' => '//p[@id=\'someid\']',
             '#some\\.id' => '//*[@id=\'some.id\']',
-            '#someid.some-class' => '//*[@id=\'someid\'][contains(concat(\' \', normalize-space(@class), \' \'), \' some-class \')]',
+            '#someid.s-class' => '//*[@id=\'someid\'][contains(concat(\' \', normalize-space(@class), \' \'), \' s-class \')]',
             '#id[_]' => '//*[@id=\'id\'][@_]',
             'p a' => '//p//a',
             'div, span' => '//div|//span',

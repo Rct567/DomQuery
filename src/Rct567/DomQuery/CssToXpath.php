@@ -304,7 +304,8 @@ class CssToXpath
      */
     private static function transformAttrSelector($expression)
     {
-        if (preg_match('|^([a-z0-9_]{1}[a-z0-9_-]*)(([\!\*\^\$\~\|]{0,1})=)?(?:[\'"]*)?([^\'"]+)?(?:[\'"]*)?$|i', $expression, $matches)) {
+        if (preg_match('|^([a-z0-9_]{1}[a-z0-9_-]*)(([\!\*\^\$\~\|]{0,1})=)?'.
+        '(?:[\'"]*)?([^\'"]+)?(?:[\'"]*)?$|i', $expression, $matches)) {
             if (!isset($matches[3])) { // attribute without value
                 return "[@" . $matches[1] . "]";
             } elseif ($matches[3] === '') { // arbitrary attribute strict value equality
