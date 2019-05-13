@@ -30,6 +30,8 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             'a[href*=\'html\']' => '//a[contains(@href, \'html\')]',
             '[href*=\'html\']' => '//*[contains(@href, \'html\')]',
             '[href^=\'html\']' => '//*[starts-with(@href, \'html\')]',
+            'meta[http-equiv^="Content"]' => '//meta[starts-with(@http-equiv, \'Content\')]',
+            'meta[http-equiv^=Content]' => '//meta[starts-with(@http-equiv, \'Content\')]',
             '[href$=\'html\']' => '//*[@href and substring(@href, string-length(@href)-3) = \'html\']',
             '[href~=\'html\']' => '//*[contains(concat(\' \', normalize-space(@href), \' \'), \' html \')]',
             '[href|=\'html\']' => '//*[@href=\'html\' or starts-with(@href, \'html-\')]',
@@ -312,6 +314,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             <li class="item-item">list item 5</li>
             <li class="item item6" rel="x">list item 6</li>
             <li class="item"></li>
+            <meta http-equiv="Content-Type" content="text/html">
         </ul>');
 
         $this->assertEquals(2, $dom->find('li[id]')->length);
@@ -332,6 +335,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(0, $dom->find('li[class~=\'item\'][id~=\'item\']')->length);
         $this->assertEquals(3, $dom->find('li[class*=\'item\']')->length);
         $this->assertEquals(2, $dom->find('li[class|=\'item\']')->length);
+        $this->assertEquals('text/html', (string) $dom->find('meta[http-equiv^="Content"]')->attr('content'));
     }
 
     /*
