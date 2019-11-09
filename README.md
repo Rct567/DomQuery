@@ -16,7 +16,8 @@ $ composer require rct567/dom-query
 ### Read attributes and properties:
 
 ``` php
-$dom = new DomQuery('<div><h1 class="title">Hello</h1></div>');
+use \Rct567\DomQuery\DomQuery;
+$dom = new DomQuery('<div><h1 class="title">Hello</h1></div>'); 
 
 echo $dom->find('h1')->text(); // output: Hello
 echo $dom->find('div')->prop('outerHTML'); // output: <div><h1 class="title">Hello</h1></div>
@@ -32,6 +33,7 @@ echo count($dom->find('div, h1')); // output: 2
 ### Traversing nodes (result set):
 
 ``` php
+use \Rct567\DomQuery\DomQuery;
 $dom = new DomQuery('<a>1</a> <a>2</a> <a>3</a>');
 $links = $dom->children('a');
 
@@ -50,7 +52,7 @@ echo $links->get(-1)->textContent; // output 3
 ### Factory method (create instance alternative):
 
 ```php
-DomQuery::create('<a title="hello"></a>')->attr('title') // hello
+\Rct567\DomQuery\DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 ```
 
 ## Jquery methods available
