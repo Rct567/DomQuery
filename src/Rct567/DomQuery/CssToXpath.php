@@ -149,7 +149,7 @@ class CssToXpath
 
         $segment->selector = $token;
 
-        while (preg_match('/(.*)\:(not|contains|has)\((.+)\)$/i', $segment->selector, $matches)) { // pseudo selector
+        while (preg_match('/(.*)\:(not|contains|has|nth\-child)\((.+)\)$/i', $segment->selector, $matches)) { // pseudo selector
             $segment->selector = $matches[1];
             $segment->pseudo_filters[] = $matches[2].'('.$matches[3].')';
         }
@@ -257,6 +257,8 @@ class CssToXpath
             }
             $not_selector = implode(' or ', $parts);
             return '[not('.$not_selector.')]';
+        } elseif (preg_match('|nth\-child\((.+)\)|i', $expression, $matches)) {
+            return '[position()='.$matches[1].']';
         } elseif (preg_match('|contains\((.+)\)|i', $expression, $matches)) {
             return '[text()[contains(.,\''.$matches[1].'\')]]'; // contain the specified text
         } elseif (preg_match('|has\((.+)\)|i', $expression, $matches)) {
