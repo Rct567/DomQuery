@@ -151,6 +151,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `:first-child`
 - `:last-child`
 - `:only-child`
+- `:nth-child(n)`
 - `:parent` elements that have at least one child node
 - `:first`
 - `:last`
