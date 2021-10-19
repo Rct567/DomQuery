@@ -71,6 +71,8 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.prev( [selector] )`
 - `.nextAll( [selector] )`
 - `.prevAll( [selector] )`
+- `.nextUntil( [selector] )`
+- `.prevUntil( [selector] )`
 - `.siblings( [selector] )`
 
 #### Traversing > Miscellaneous Traversing
