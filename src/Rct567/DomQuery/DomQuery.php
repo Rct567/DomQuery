@@ -1202,6 +1202,21 @@ class DomQuery extends DomQueryNodes
         return $this;
     }
 
+
+    /**
+     * Prepend the previous chain's element set into the current set..
+     *
+     * @return $this
+     */
+    public function addBack()
+    {
+        if (isset($this->prev_instance)) {
+            // Use true for prepend.
+            $this->addNodes($this->prev_instance->nodes, true);
+        }
+        return $this;
+    }
+
     /**
      * Check if property exist for this instance
      *

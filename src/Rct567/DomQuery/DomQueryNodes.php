@@ -71,6 +71,13 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
 
 
     /**
+     * Previous instance of the chain
+     *
+     * @var static
+     */
+    protected $prev_instance;
+
+    /**
      * Root instance who began the chain
      *
      * @var static
@@ -143,6 +150,11 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
 
         if (isset($this->document)) {
             $instance->setDomDocument($this->document);
+        }
+
+        // This should not be set the first time it is created.
+        if (isset($this->root_instance)) {
+            $instance->prev_instance = $this;
         }
 
         if (isset($this->root_instance)) {
@@ -242,7 +254,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      * @return void
      * @throws \Exception if no document is set and list is empty
      */
-    public function loadDomNodeList(\DOMNodeList $dom_node_list)
+    public function loadDomNodeList(\DOMNodeList $dom_node_list, $prepend=false)
     {
         if (!isset($this->document) && $dom_node_list->length === 0) {
             throw new \Exception('DOMDocument is missing!');
@@ -253,7 +265,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
         }
 
         foreach ($dom_node_list as $node) {
-            $this->addDomNode($node);
+            $this->addDomNode($node, $prepend);
         }
     }
 
@@ -572,10 +584,10 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @return void
      */
-    public function addNodes(array $node_list)
+    public function addNodes(array $node_list, $prepend=false)
     {
         foreach ($node_list as $node) {
-            $this->addDomNode($node);
+            $this->addDomNode($node, $prepend);
         }
     }
 
