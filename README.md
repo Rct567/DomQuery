@@ -134,6 +134,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.index ( [selector] )`
 - `.toArray()`
 - `.clone()`
+- `.addBack()`
 
 ## Supported selectors
 
