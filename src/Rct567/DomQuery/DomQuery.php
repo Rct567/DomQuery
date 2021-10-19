@@ -850,6 +850,39 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
+     * Get all following siblings up to but not including the element which matched by the selector.
+     *
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
+     *
+     * @return self
+     */
+    public function nextUntil($selector = NULL)
+    {
+        $result = $this->createChildInstance();
+
+        if (isset($this->document) && $this->length > 0) {
+            foreach ($this->nodes as $node) {
+                $current = $node;
+                while ($next = self::getNextElement($current)) {
+                    if ($selector) {
+                        $current_result = $this->createChildInstance();
+                        $current_result->addDomNode($next);
+                        $current_result = $current_result->filter($selector);
+                        // If the next element was filtered out, we know we have gone
+                        // far enough.
+                        if ($current_result->length > 0) {
+                            break 2;
+                        }
+                    }
+                    $result->addDomNode($next);
+                    $current = $next;
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Returns DomQuery with immediately preceding sibling of all nodes
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
@@ -900,6 +933,39 @@ class DomQuery extends DomQueryNodes
             }
         }
 
+        return $result;
+    }
+
+
+    /**
+     * Get all previous siblings up to but not including the element is matched by the selector.
+     *
+     * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
+     *
+     * @return self
+     */
+    public function prevUntil($selector = NULL) {
+        $result = $this->createChildInstance();
+
+        if (isset($this->document) && $this->length > 0) {
+            foreach ($this->nodes as $node) {
+                $current = $node;
+                while ($prev = self::getPreviousElement($current)) {
+                    if ($selector) {
+                        $current_result = $this->createChildInstance();
+                        $current_result->addDomNode($prev);
+                        // If the next element was filtered out, we know we have gone
+                        // far enough.
+                        $current_result = $current_result->filter($selector);
+                        if ($current_result->length > 0) {
+                          break 2;
+                        }
+                    }
+                    $result->addDomNode($prev);
+                    $current = $next;
+                }
+            }
+        }
         return $result;
     }
 
