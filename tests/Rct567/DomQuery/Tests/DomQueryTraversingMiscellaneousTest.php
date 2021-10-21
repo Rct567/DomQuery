@@ -37,4 +37,27 @@ class DomQueryTraversingMiscellaneousTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('<a>1</a><p>nope</p>', (string) $dom);
         $this->assertEquals('<a>1</a><span>2</span>', (string) $new_dom);
     }
+
+    /*
+     * Test addBack().
+     */
+    public function testAddBack()
+    {
+        $dom = new DomQuery(
+            '<div>' . PHP_EOL .
+            '  <span id="first">1</span>' . PHP_EOL .
+            '  <span></span>' . PHP_EOL .
+            '  <span></span>' . PHP_EOL .
+            '</div>'
+        );
+        $dom->find('#first')->next()->addBack()->addClass('new-class');
+        $this->assertEquals(
+            '<div>' . PHP_EOL .
+            '  <span id="first" class="new-class">1</span>' . PHP_EOL .
+            '  <span class="new-class"></span>' . PHP_EOL .
+            '  <span></span>' . PHP_EOL .
+            '</div>',
+            (string) $dom
+        );
+    }
 }
