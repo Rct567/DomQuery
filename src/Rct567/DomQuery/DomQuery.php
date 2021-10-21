@@ -962,7 +962,7 @@ class DomQuery extends DomQueryNodes
                         }
                     }
                     $result->addDomNode($prev);
-                    $current = $next;
+                    $current = $prev;
                 }
             }
         }
