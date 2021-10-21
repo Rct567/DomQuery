@@ -390,7 +390,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     public function testNonExistingMethodCall()
     {
         $this->expectException(\Exception::class);
-        $dom = (new DomQuery())->nope();
+        $dom = (new DomQuery('<div>'))->nope();
     }
 
     /*
