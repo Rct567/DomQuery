@@ -70,6 +70,33 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test next until
+     */
+    public function testNextUntil()
+    {
+        $dom = new DomQuery(
+            '<div>' . PHP_EOL .
+            '  <span id="first">1</span>' . PHP_EOL .
+            '  <span></span>' . PHP_EOL .
+            '  <span></span>' . PHP_EOL .
+            '  <span class="stop-but-not-selected"></span>' . PHP_EOL .
+            '  <span></span>' . PHP_EOL .
+            '</div>'
+        );
+        $dom->find('#first')->nextUntil('.stop-but-not-selected')->addClass('new-class');
+        $this->assertEquals(
+            '<div>' . PHP_EOL .
+            '  <span id="first">1</span>' . PHP_EOL .
+            '  <span class="new-class"></span>' . PHP_EOL .
+            '  <span class="new-class"></span>' . PHP_EOL .
+            '  <span class="stop-but-not-selected"></span>' . PHP_EOL .
+            '  <span></span>' . PHP_EOL .
+            '</div>',
+            (string) $dom
+        );
+    }
+
+    /*
      * Test next
      */
     public function testPrev()
@@ -91,6 +118,34 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('<li id="a">1</li>', (string) $dom->find('#b')->prevAll());
         $this->assertEquals('', (string) $dom->find('#a')->prevAll());
     }
+
+    /*
+     * Test prev until
+     */
+    public function testPrevUntil()
+    {
+        $dom = new DomQuery(
+            '<div>' . PHP_EOL .
+            '  <span>1</span>' . PHP_EOL .
+            '  <span class="stop-but-not-selected"></span>' . PHP_EOL .
+            '  <span></span>' . PHP_EOL .
+            '  <span></span>' . PHP_EOL .
+            '  <span id="last"></span>' . PHP_EOL .
+            '</div>'
+        );
+        $dom->find('#last')->prevUntil('.stop-but-not-selected')->addClass('new-class');
+        $this->assertEquals(
+            '<div>' . PHP_EOL .
+            '  <span>1</span>' . PHP_EOL .
+            '  <span class="stop-but-not-selected"></span>' . PHP_EOL .
+            '  <span class="new-class"></span>' . PHP_EOL .
+            '  <span class="new-class"></span>' . PHP_EOL .
+            '  <span id="last"></span>' . PHP_EOL .
+            '</div>',
+            (string) $dom
+        );
+    }
+
 
     /*
      * Test first last, with and without filter selector
