@@ -1203,6 +1203,26 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
+     * Unwrap all the the matched elements.
+     *
+     * @return $this
+     */
+    public function unwrap()
+    {
+        foreach ($this as $node) {
+            $parent = $node->parent();
+            // Replace parent node (the one we're unwrapping) with it's children.
+            foreach ($parent->contents() as $childNode) {
+                $oldChildNode = $childNode->clone();
+                $childNode->remove();
+                $parent->before($oldChildNode);
+            }
+            $parent->remove();
+        }
+        return $this;
+    }
+
+    /**
      * Check if property exist for this instance
      *
      * @param string $name

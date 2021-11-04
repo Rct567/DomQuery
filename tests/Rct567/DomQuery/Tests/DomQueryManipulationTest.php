@@ -106,6 +106,36 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test unwrap.
+     */
+    public function testUnwrap()
+    {
+        $expected = '<html><body><a href="http://example.org/">this is a test</a></body></html>';
+        $doc = DomQuery::create('<html><body><article><a href="http://example.org/">this is a test</a></article></body></html>');
+        $doc->find('article > a')->first()->unwrap();
+        $this->assertEquals($expected, (string) $dom);
+    }
+
+    /*
+     * Test wraping and unwrapping.
+     */
+    public function testWrapAllandUnwrap()
+    {
+        $input = '<div>' . PHP_EOL .
+            '  <div id="target" class="my-class">' . PHP_EOL .
+            '    <div class="nested-class">' . PHP_EOL .
+            '      <span class="my-span"></span>' . PHP_EOL .
+            '    </div>' . PHP_EOL .
+            '    <div class="nested-class">' . PHP_EOL .
+            '      <span class="my-span"></span>' . PHP_EOL .
+            '    </div>' . PHP_EOL .
+            '  </div>' . PHP_EOL .
+            '</div>';
+        $dom->find('#target')->wrapAll('<div id="extra-wrap"></div>')->parent()->children()->unwrap();
+        $this->assertEquals($input, (string) $dom);
+    }
+
+    /*
      * Test remove
      */
     public function testRemove()
