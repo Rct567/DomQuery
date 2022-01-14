@@ -1201,26 +1201,14 @@ class DomQuery extends DomQueryNodes
     /**
      * Unwrap all the the matched elements.
      *
-     * @return $this
+     * @param string|self|callable|\DOMNodeList|\DOMNode|false|null $selector expression that filters the set of matched elements
+     *
+     * @return self
      */
-    public function unwrap()
+    public function unwrap($selector=null)
     {
-        foreach ($this->parent() as $parent) {
-            // Replace parent node (the one we're unwrapping) with it's children.
-            foreach ($parent->contents() as $childNode) {
-
-                // Replicate before().
-                // Can't use $parent->before($childNode) as it creates clones
-                // of the dom elements intead of moving then so subsequent calls
-                // e.g. not() don't work.
-                $childNode->each(function($child_dom) {
-                    if (!isset($child_dom->parentNode) || ($child_dom->parentNode instanceof \DOMDocument)) {
-                        throw new \Exception('Can not unwrap inside root element');
-                    }
-                    $child_dom->parentNode->parentNode->insertBefore($child_dom, $child_dom->parentNode);
-                });
-            }
-            $parent->remove();
+        foreach ($this->parent($selector) as $parent) {
+            $parent->replaceWith($this->nodes);
         }
         return $this;
     }
