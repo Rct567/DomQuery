@@ -958,7 +958,9 @@ class DomQuery extends DomQueryNodes
             foreach ($this->nodes as $node) {
                 foreach ($content->getNodes() as $content_node) {
                     if ($content_node->ownerDocument === $node->ownerDocument) {
-                        $imported_node = $content_node->cloneNode(true);
+                        // No clone so that the element used with replaceWith()
+                        // gives a connected dom element.
+                        $imported_node = $content_node;
                     } else {
                         $imported_node = $this->document->importNode($content_node, true);
                     }
