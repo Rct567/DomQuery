@@ -958,7 +958,9 @@ class DomQuery extends DomQueryNodes
             foreach ($this->nodes as $node) {
                 foreach ($content->getNodes() as $content_node) {
                     if ($content_node->ownerDocument === $node->ownerDocument) {
-                        $imported_node = $content_node->cloneNode(true);
+                        // No clone so that the element used with replaceWith()
+                        // gives a connected dom element.
+                        $imported_node = $content_node;
                     } else {
                         $imported_node = $this->document->importNode($content_node, true);
                     }
@@ -1113,12 +1115,6 @@ class DomQuery extends DomQueryNodes
             $node->parentNode->removeChild($node);
         });
 
-        foreach (\func_get_args() as $new_content) {
-            if (!\is_string($new_content)) {
-                self::create($new_content)->remove();
-            }
-        }
-
         return $removed_nodes;
     }
 
@@ -1199,6 +1195,21 @@ class DomQuery extends DomQueryNodes
             self::create($node->childNodes)->wrapAll(\func_get_args());
         }
 
+        return $this;
+    }
+
+    /**
+     * Unwrap all the the matched elements.
+     *
+     * @param string|self|callable|\DOMNodeList|\DOMNode|false|null $selector expression that filters the set of matched elements
+     *
+     * @return self
+     */
+    public function unwrap($selector=null)
+    {
+        foreach ($this->parent($selector) as $parent) {
+            $parent->replaceWith($this->nodes);
+        }
         return $this;
     }
 
