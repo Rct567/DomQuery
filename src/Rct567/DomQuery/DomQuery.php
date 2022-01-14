@@ -1202,7 +1202,6 @@ class DomQuery extends DomQueryNodes
         return $this;
     }
 
-
     /**
      * Prepend the previous chain's element set into the current set..
      *
