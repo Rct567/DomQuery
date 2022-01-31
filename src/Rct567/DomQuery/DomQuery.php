@@ -28,11 +28,23 @@ class DomQuery extends DomQueryNodes
     {
         if ($val !== null) { // set node value for all nodes
             foreach ($this->nodes as $node) {
-                $node->nodeValue = $val;
+                // Handle text nodes.
+                if ($node->nodeType === XML_TEXT_NODE) {
+                    $node->textContent = $val;
+                }
+                else {
+                    $node->nodeValue = $val;
+                }
+
             }
 
             return $this;
         }
+        // Return text for text nodes only.
+        if (($node = $this->getFirstElmNodeAny()) && ($node->nodeType === XML_TEXT_NODE)) {
+            return $node->textContent;
+        }
+
         if ($node = $this->getFirstElmNode()) { // get value for first node
             return $node->nodeValue;
         }

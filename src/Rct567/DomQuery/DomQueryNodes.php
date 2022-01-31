@@ -594,6 +594,20 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
+     * Return first DOMNode, dom nodes are any node, not just <elem> nodes.
+     *
+     * @return \DOMElement|null
+     */
+    protected function getFirstElmNodeAny()
+    {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof \DOMNode) {
+                return $node;
+            }
+        }
+    }
+
+    /**
      * Access xpath or ... DOMNode properties (nodeName, parentNode etc) or get attribute value of first node
      *
      * @param string $name
@@ -615,6 +629,13 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
             }
             if ($node instanceof \DOMElement && $node->hasAttribute($name)) {
                 return $node->getAttribute($name);
+            }
+        }
+
+        // Fallback for any dom nodes.
+        if ($node = $this->getFirstElmNodeAny()) {
+            if (isset($node->$name)) {
+                return $node->{$name};
             }
         }
 
