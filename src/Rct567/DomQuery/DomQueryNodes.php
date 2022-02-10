@@ -651,6 +651,34 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     public function xpathQuery(string $expression, \DOMNode $context_node=null)
     {
         if ($this->dom_xpath) {
+            // Fix issue where in the xpath '//span|//p', which is changed into
+            // './/span|//p', should be '(.//span|.//p)'.
+            // @see https://github.com/minkphp/Mink/issues/340
+            $expression = call_user_func(function($xpath) {
+                // Only run if dot is the first letter.
+                if (strpos($xpath, '.') !== 0) {
+                    return $xpath;
+                }
+                // Remove first letter, we all add it back later.
+                $xpath = substr($xpath, 1);
+                // Regex to find union operators not inside brackets.
+                $pattern = '/\|(?![^\[]*\])/';
+                // Split any unions into individual expressions.
+                foreach (preg_split($pattern, $xpath) as $expression) {
+                    $expression = trim($expression);
+                    // Add dot back now.
+                    $expressions[] = '.' . $expression;
+
+                }
+                $xpath = implode(' | ', $expressions);
+                // If the parent current xpath contains a union we need to
+                // wrap it in parentheses.
+                if (preg_match($pattern, $xpath)) {
+                    $xpath = '(' . $xpath . ')';
+                }
+                return $xpath;
+            }, $expression);
+
             $node_list = $this->dom_xpath->query($expression, $context_node);
 
             if ($node_list instanceof \DOMNodeList) {
