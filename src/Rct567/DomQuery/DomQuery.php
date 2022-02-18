@@ -1103,21 +1103,27 @@ class DomQuery extends DomQueryNodes
     {
         $removed_nodes = new self();
 
-        $this->importNodes(\func_get_args(), function ($node, $imported_node) use (&$removed_nodes) {
+        // Since are inserting each element before the replacement, the elements
+        // will end up in the reverse order in the dom. So reverse it first.
+        $args = \func_get_args();
+        $imported_nodes = new self();
+        $this->importNodes($args, function ($node, $imported_node) use (&$imported_nodes) {
+            $imported_nodes->addDomNode($imported_node);
+        });
+        $imported_nodes->nodes = \array_reverse($imported_nodes->nodes);
+
+        $this->importNodes($imported_nodes, function ($node, $imported_node) use (&$removed_nodes) {
             if ($node->nextSibling) {
                 $node->parentNode->insertBefore($imported_node, $node->nextSibling);
             } else { // node is last, so there is no next sibling to insert before
                 $node->parentNode->appendChild($imported_node);
             }
             $removed_nodes->addDomNode($node);
-            $node->parentNode->removeChild($node);
         });
-
-        foreach (\func_get_args() as $new_content) {
-            if (!\is_string($new_content)) {
-                self::create($new_content)->remove();
-            }
-        }
+        // Remove after all nodes have been moved.
+        // If removed too early, multiple children with the same parent will
+        // cause a crash.
+        $this->remove();
 
         return $removed_nodes;
     }
