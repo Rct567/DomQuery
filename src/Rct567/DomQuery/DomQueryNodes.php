@@ -267,6 +267,25 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public function addDomNode(\DOMNode $dom_node, $prepend=false)
     {
+        // If the node already exists, remove it so it be added again.
+        // Ideally the element order is document order after the duplicates are
+        // added, like real jQuery.
+        $this->nodes = call_user_func(
+            function (array $existing_nodes, \DOMNode $dom_node) {
+                foreach ($existing_nodes as $array_id => $existing_node) {
+                    if ($existing_node->isSameNode($dom_node)) {
+                        unset($existing_nodes[$array_id]);
+                        // Reset array keys, optional.
+                        $existing_nodes = array_values($existing_nodes);
+                        // Break for performance.
+                        break;
+                    }
+                }
+                return $existing_nodes;
+            },
+            $this->nodes,
+            $dom_node
+        );
         if ($prepend) {
             array_unshift($this->nodes, $dom_node);
         } else {
