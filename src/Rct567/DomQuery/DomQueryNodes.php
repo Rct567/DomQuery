@@ -665,6 +665,24 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
         return false;
     }
 
+    /**
+     * Shows if the context node can be used in xpath queries.
+     *
+     * If it's not set, it can be set then used in the following:
+     * @code
+     * if (!$dom->isContextNodeSet()) {
+     *   $dom = $dom->find(':root');
+     * }
+     * $dom->xpath("/child::div[contains(concat(' ', normalize-space(@class), ' '), ' myclass ')]");
+     *
+     * @endcode
+     *
+     * @return bool
+     */
+    public function isContextNodeSet() {
+        return (isset($this->root_instance) || isset($this->xpath_query));
+    }
+
      /**
      * Create dom xpath instance
      *
