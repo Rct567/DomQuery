@@ -88,7 +88,7 @@ class DomQuery extends DomQueryNodes
      * @param string $key
      * @param $val
      *
-     * @return $this|string|object
+     * @return $this|string|object|null
      */
     public function data(string $key=null, $val=null)
     {
@@ -215,7 +215,7 @@ class DomQuery extends DomQueryNodes
      * @param string $name
      * @param string $val
      *
-     * @return $this|string
+     * @return $this|string|null
      */
     public function css(string $name, $val=null)
     {

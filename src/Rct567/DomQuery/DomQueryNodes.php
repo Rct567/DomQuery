@@ -103,7 +103,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct()
+    final public function __construct()
     {
         if (\func_num_args() === 2 && \is_string(\func_get_arg(0)) && strpos(func_get_arg(0), '<') === false) {
             $result = self::create(func_get_arg(1))->find(func_get_arg(0));
@@ -304,7 +304,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
         if (\PHP_VERSION_ID < 80000) {
             libxml_disable_entity_loader(true);
         }
-        
+
         libxml_use_internal_errors(true);
 
         $dom_document = new \DOMDocument('1.0', $encoding);
@@ -693,9 +693,9 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @return int
      */
-    public function count()
+    public function count(): int
     {
-        return \count($this->nodes);
+        return count($this->nodes);
     }
 
     /**
@@ -814,7 +814,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @return \ArrayIterator containing nodes as instances of DomQuery
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         $iteration_result = array();
         if (\is_array($this->nodes)) {
@@ -833,7 +833,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @return bool
      */
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return isset($this->nodes[$key]);
     }
@@ -845,7 +845,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @return static
      */
-    public function offsetGet($key)
+    public function offsetGet($key): self
     {
         if (!\is_int($key)) {
             throw new \BadMethodCallException('Attempting to access node list with non-integer');
@@ -866,7 +866,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @throws \BadMethodCallException when attempting to write to a read-only item
      */
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         throw new \BadMethodCallException('Attempting to write to a read-only node list');
     }
@@ -878,7 +878,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @throws \BadMethodCallException when attempting to unset a read-only item
      */
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         throw new \BadMethodCallException('Attempting to unset on a read-only node list');
     }
