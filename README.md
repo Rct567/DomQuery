@@ -191,7 +191,7 @@ $dom->find('namespace\\:h1')->text();
 
 ### Requirements
 
-- Works with PHP 7.0 or above
+- Works with PHP 7.2 or above (try v0.8 for older PHP versions)
 - Requires libxml PHP extension (enabled by default)
 
 ### Inspiration/acknowledgements
