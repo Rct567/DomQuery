@@ -52,7 +52,6 @@
 
  <rule ref="Squiz.Operators.ValidLogicalOperators"/>
 
- <rule ref="Generic.PHP.DeprecatedFunctions"/>
  <rule ref="Squiz.PHP.CommentedOutCode"/>
 
  <rule ref="Generic.PHP.DisallowShortOpenTag"/>
