@@ -18,6 +18,22 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test find on context
+     */
+    public function testFindOnContext()
+    {
+        $dom = new DomQuery('
+          <div class="test"><p class="bob">111</p></div>
+          <div class="test"><p class="bob">222</p></div>
+        ');
+
+        // second .bob should not be affected
+        $dom->find('.test')->first()->find('.someotherclass,.bob')->addClass('affected');
+
+        $this->assertEquals('<div class="test"><p class="bob affected">111</p></div><div class="test"><p class="bob">222</p></div>', (string) $dom);
+    }
+
+    /*
      * Test findOrFail
      */
     public function testFindOrFailSuccess()

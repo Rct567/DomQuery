@@ -173,12 +173,32 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         $result = $this->createChildInstance();
 
+        // Make xpath query relative by adding a dot,
+        // while keeping in mind there might be a union, so:
+        // '//div|//p', should become '(.//div|.//p)'.
+        $xpath_make_query_relative = function ($xpath) {
+            if (strpos($xpath, '|') !== false) {
+                // Find union operators not inside brackets.
+                $pattern = '/\|(?![^\[]*\])/';
+                if (preg_match($pattern, $xpath)) {
+                    foreach (preg_split($pattern, $xpath) as $expression) {
+                        $expression = trim($expression);
+                        $expressions[] = '.' . $expression;
+                    }
+                    $xpath = implode('|', $expressions);
+                    return '(' . $xpath . ')';
+                }
+            }
+            return '.'.$xpath; // no union
+        };
+
         if (isset($this->document)) {
             $result->xpath_query = $xpath_query;
 
             if (isset($this->root_instance) || isset($this->xpath_query)) {  // all nodes as context
+                $xpath_query_relative = $xpath_make_query_relative($xpath_query);
                 foreach ($this->nodes as $node) {
-                    if ($result_node_list = $this->xpathQuery('.'.$xpath_query, $node)) {
+                    if ($result_node_list = $this->xpathQuery($xpath_query_relative, $node)) {
                         $result->loadDomNodeList($result_node_list);
                     }
                 }
