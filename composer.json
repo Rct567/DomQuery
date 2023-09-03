@@ -11,7 +11,7 @@
         "psr-4": {"Rct567\\": "tests/Rct567"}
     },
     "scripts": {
-        "test": "phpunit && phpstan analyze src -l 0 && phpcs",
+        "test": "phpunit && phpstan analyze src -l 1 && phpcs",
         "coverage": "phpunit --coverage-html coverage/"
     },
     "authors": [

@@ -14,4 +14,4 @@ before_script:
 script:
  - vendor/bin/phpunit
  - vendor/bin/phpcs -np src/ tests/
- - vendor/bin/phpstan analyse src/ -l 0
+ - vendor/bin/phpstan analyse src/ -l 1
