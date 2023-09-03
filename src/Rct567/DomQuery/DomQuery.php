@@ -141,7 +141,7 @@ class DomQuery extends DomQueryNodes
      */
     public function removeData($name=null)
     {
-        $remove_names = \is_array($name) ? $name : explode(' ', $name);
+        $remove_names = \is_array($name) || \is_null($name) ? $name : explode(' ', $name);
         $doc_hash = spl_object_hash($this->document);
 
         if (!isset(self::$node_data[$doc_hash])) {

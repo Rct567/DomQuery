@@ -180,6 +180,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
             if (strpos($xpath, '|') !== false) {
                 // Find union operators not inside brackets.
                 $pattern = '/\|(?![^\[]*\])/';
+                $expressions = [];
                 if (preg_match($pattern, $xpath)) {
                     foreach (preg_split($pattern, $xpath) as $expression) {
                         $expression = trim($expression);

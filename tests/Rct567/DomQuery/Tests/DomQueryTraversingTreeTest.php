@@ -86,7 +86,7 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test next
+     * Test previous
      */
     public function testPrev()
     {
