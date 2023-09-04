@@ -418,12 +418,16 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
             '/a' => './a',
             '//a' => './/a',
             '//a|/a' => '(.//a|./a)',
+            '//*|./a[attr]' => '(.//*|./a[attr])',
             '//a/b' => './/a/b',
+            '//a/b|//a/b' => '(.//a/b|.//a/b)',
             '//a[descendant::b]' => './/a[descendant::b]',
             '/a[descendant::b]' => './a[descendant::b]',
             '//p/a[child::a]|//p/a[child::a]' => '(.//p/a[child::a]|.//p/a[child::a])',
             '(//*)[1]' => '(.//*)[1]',
             '/html/body//div|//p' => '(./html/body//div|.//p)',
+            '(/a|//b)[@class="test"]/c' => '((./a|.//b)[@class="test"]/c)',
+            '//*[@class="my\.class"]|/b[@class="my\.cla-ss"]' => '(.//*[@class="my\.class"]|./b[@class="my\.cla-ss"])'
         );
 
         foreach ($xpath_to_relative as $xpath => $expected_xpath) {
