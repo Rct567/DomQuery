@@ -531,6 +531,9 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('yep', $dom->find('div > *:first')->text());
         $this->assertEquals('yep2', $dom->find('div > *:last')->text());
+        $result = $dom->find('div > *:first, div > *:last');
+        $this->assertEquals('yep', $result->first()->text());
+        $this->assertEquals('yep2', $result->last()->text());
     }
 
     /*

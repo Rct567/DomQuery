@@ -3,6 +3,7 @@
 namespace Rct567\DomQuery\Tests;
 
 use Rct567\DomQuery\DomQuery;
+use Rct567\DomQuery\DomQueryNodes;
 
 class DomQueryTest extends \PHPUnit\Framework\TestCase
 {
@@ -401,5 +402,50 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\Exception::class);
         $dom = new DomQuery('<div>');
         $dom->xpathQuery("\n[]");
+    }
+
+    /*
+     * Test making xpath relative method
+     */
+    public function testXpathMakeQueryRelative()
+    {
+
+        $reflectedClass = new \ReflectionClass(DomQueryNodes::class);
+        $method  = $reflectedClass->getMethod('xpathMakeQueryRelative');
+        $method->setAccessible(true);
+
+        $xpath_to_relative = array(
+            '/a' => './a',
+            '//a' => './/a',
+            '//a|/a' => '(.//a|./a)',
+            '//a/b' => './/a/b',
+            '//a[descendant::b]' => './/a[descendant::b]',
+            '/a[descendant::b]' => './a[descendant::b]',
+            '//p/a[child::a]|//p/a[child::a]' => '(.//p/a[child::a]|.//p/a[child::a])',
+            '(//*)[1]' => '(.//*)[1]',
+            '/html/body//div|//p' => '(./html/body//div|.//p)',
+        );
+
+        foreach ($xpath_to_relative as $xpath => $expected_xpath) {
+            $result = $method->invokeArgs(null, [$xpath]);
+            $this->assertEquals($expected_xpath, $result);
+        }
+
+        $xpath_unchanged = array(
+            '[/a]',
+            'bbb[/a]bbb',
+            './a',
+            './/a',
+            './/a[|]/a',
+            './/p/a',
+            'aaaa[bbb//bbb]aaaaaa',
+            'aaaa[bbb/bbb]aaaaaa',
+            'aaaa[/bbb|/bbb]aaaaaa'
+        );
+
+        foreach ($xpath_unchanged as $xpath) {
+            $result = $method->invokeArgs(null, [$xpath]);
+            $this->assertEquals($xpath, $result);
+        }
     }
 }

@@ -163,6 +163,33 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
+     * Make xpath query relative by adding a dot,
+     * while keeping in mind there might be a union, so:
+     * '//div|//p', should become '(.//div|.//p)'.
+     *
+     * @param string $xpath
+     *
+     * @return string
+     */
+    private static function xpathMakeQueryRelative(string $xpath)
+    {
+        $matching_slash_to_add_dot = '/(?<=[(]|^)(?![^\[]*])\//';
+
+        if (strpos($xpath, '|') === false) { // no union
+            return preg_replace($matching_slash_to_add_dot, './', $xpath, 1); // add dot before the forward slash
+        }
+
+        $expressions = preg_split('/\|(?![^\[]*\])/', $xpath); // split on union operators not inside brackets
+
+        $expressions = array_map(function ($expr) use ($matching_slash_to_add_dot) {
+            return  preg_replace($matching_slash_to_add_dot, './', trim($expr), 1); // add dot before the forward slash
+        }, $expressions);
+        $new_xpath = implode('|', $expressions);
+
+        return count($expressions) > 1 ? '(' . $new_xpath . ')' : $new_xpath;
+    }
+
+    /**
      * Use xpath and return new DomQuery with resulting nodes
      *
      * @param string $xpath_query
@@ -173,31 +200,11 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         $result = $this->createChildInstance();
 
-        // Make xpath query relative by adding a dot,
-        // while keeping in mind there might be a union, so:
-        // '//div|//p', should become '(.//div|.//p)'.
-        $xpath_make_query_relative = function ($xpath) {
-            if (strpos($xpath, '|') !== false) {
-                // Find union operators not inside brackets.
-                $pattern = '/\|(?![^\[]*\])/';
-                $expressions = [];
-                if (preg_match($pattern, $xpath)) {
-                    foreach (preg_split($pattern, $xpath) as $expression) {
-                        $expression = trim($expression);
-                        $expressions[] = '.' . $expression;
-                    }
-                    $xpath = implode('|', $expressions);
-                    return '(' . $xpath . ')';
-                }
-            }
-            return '.'.$xpath; // no union
-        };
-
         if (isset($this->document)) {
             $result->xpath_query = $xpath_query;
 
             if (isset($this->root_instance) || isset($this->xpath_query)) {  // all nodes as context
-                $xpath_query_relative = $xpath_make_query_relative($xpath_query);
+                $xpath_query_relative = self::xpathMakeQueryRelative($xpath_query);
                 foreach ($this->nodes as $node) {
                     if ($result_node_list = $this->xpathQuery($xpath_query_relative, $node)) {
                         $result->loadDomNodeList($result_node_list);
