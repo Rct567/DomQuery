@@ -856,7 +856,7 @@ class DomQuery extends DomQueryNodes
      *
      * @return self
      */
-    public function nextUntil($selector = NULL)
+    public function nextUntil($selector=null)
     {
         $result = $this->createChildInstance();
 
@@ -944,7 +944,8 @@ class DomQuery extends DomQueryNodes
      *
      * @return self
      */
-    public function prevUntil($selector = NULL) {
+    public function prevUntil($selector=null)
+    {
         $result = $this->createChildInstance();
 
         if (isset($this->document) && $this->length > 0) {
@@ -958,7 +959,7 @@ class DomQuery extends DomQueryNodes
                         // far enough.
                         $current_result = $current_result->filter($selector);
                         if ($current_result->length > 0) {
-                          break 2;
+                            break 2;
                         }
                     }
                     $result->addDomNode($prev);
