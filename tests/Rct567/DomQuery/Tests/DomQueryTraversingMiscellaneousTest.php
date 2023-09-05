@@ -43,21 +43,16 @@ class DomQueryTraversingMiscellaneousTest extends \PHPUnit\Framework\TestCase
      */
     public function testAddBack()
     {
-        $dom = new DomQuery(
-            '<div>' . PHP_EOL .
-            '  <span id="first">1</span>' . PHP_EOL .
-            '  <span></span>' . PHP_EOL .
-            '  <span></span>' . PHP_EOL .
-            '</div>'
-        );
-        $dom->find('#first')->next()->addBack()->addClass('new-class');
-        $this->assertEquals(
-            '<div>' . PHP_EOL .
-            '  <span id="first" class="new-class">1</span>' . PHP_EOL .
-            '  <span class="new-class"></span>' . PHP_EOL .
-            '  <span></span>' . PHP_EOL .
-            '</div>',
-            (string) $dom
-        );
+        $dom = new DomQuery('
+            <div>
+                <span id="first">1</span>
+                <span>2</span>
+                <span>3</span>
+            </div>');
+
+        $result =  $dom->find('#first')->next();
+
+        $this->assertEquals('<span>2</span>', (string) $result); // only next to the first
+        $this->assertEquals('<span id="first">1</span><span>2</span>', (string) $result->addBack()); // prepend the first with addBack()
     }
 }
