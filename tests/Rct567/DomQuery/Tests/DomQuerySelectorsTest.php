@@ -35,6 +35,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
             '[href$=\'html\']' => '//*[@href and substring(@href, string-length(@href)-3) = \'html\']',
             '[href~=\'html\']' => '//*[contains(concat(\' \', normalize-space(@href), \' \'), \' html \')]',
             '[href|=\'html\']' => '//*[@href=\'html\' or starts-with(@href, \'html-\')]',
+            '[data-id="e1eaziw "]' => '//*[@data-id=\'e1eaziw \']',
             '> a' => '/a',
             'p > a' => '//p/a',
             'p > a[href]' => '//p/a[@href]',
@@ -320,6 +321,7 @@ class DomQuerySelectorsTest extends \PHPUnit\Framework\TestCase
         </ul>');
 
         $this->assertEquals(2, $dom->find('li[id]')->length);
+        $this->assertEquals(0, $dom->find('li[id ]')->length);
         $this->assertEquals(1, $dom->find('li[_]')->length);
         $this->assertEquals(1, $dom->find('li[_=x]')->length);
         $this->assertEquals(1, $dom->find('li[i-]')->length);

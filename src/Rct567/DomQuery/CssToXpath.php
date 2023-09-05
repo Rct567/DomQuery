@@ -28,13 +28,12 @@ class CssToXpath
             return self::$xpath_cache[$path];
         }
 
-        $tmp_path = self::replaceCharInsideEnclosure($path, ',');
-        if (strpos($tmp_path, ',') !== false) {
-            $paths = explode(',', $tmp_path);
-            $expressions = array();
+        // handle css grouping query (multiple queries combined with a comma)
 
+        $paths = preg_split('/\,(?![^\[]*]|[^()]*\))/', $path);
+        if (count($paths) > 1) {
+            $expressions = array();
             foreach ($paths as $single_path) {
-                $single_path = str_replace("\0", ',', $single_path); // restore commas
                 $xpath = self::transform(trim($single_path));
                 $expressions[] = $xpath;
             }
@@ -42,19 +41,13 @@ class CssToXpath
             return implode('|', $expressions);
         }
 
-        // replace spaces inside (), to correctly create tokens (restore later)
-
-        $path_escaped = self::replaceCharInsideEnclosure($path, ' ');
-
         // create tokens and analyze to create segments
 
-        $tokens = preg_split('/\s+/', $path_escaped);
+        $tokens = preg_split('/\s+(?![^\[]*]|[^()]*\))/', $path);
 
         $segments = array();
 
         foreach ($tokens as $key => $token) {
-            $token = str_replace("\0", ' ', $token); // restore spaces
-
             if ($segment = self::getSegmentFromToken($token, $key, $tokens)) {
                 $segments[] = $segment;
             }
@@ -71,35 +64,6 @@ class CssToXpath
         self::$xpath_cache[$path] = $xpath_result;
 
         return $xpath_result;
-    }
-
-    /**
-     * Replace char with null bytes inside (optionally specified) enclosure
-     *
-     * @param string $str
-     * @param string $search_char
-     * @param string $enclosure_open
-     * @param string $enclosure_close
-     *
-     * @return string $str
-     */
-    private static function replaceCharInsideEnclosure($str, $search_char, $enclosure_open='(', $enclosure_close=')')
-    {
-        if ($str === '' || strpos($str, $search_char) === false || strpos($str, $enclosure_open) === false) {
-            return $str;
-        }
-
-        for ($i = 0, $str_length = \strlen($str); $i < $str_length; $i++) {
-            if ($i > 0 && $str[$i] === $search_char) {
-                // check if enclosure is open by counting char before position
-                $enclosure_is_open = substr_count($str, $enclosure_open, 0, $i) !== substr_count($str, $enclosure_close, 0, $i);
-                if ($enclosure_is_open) {
-                    $str[$i] = "\0";
-                }
-            }
-        }
-
-        return $str;
     }
 
     /**

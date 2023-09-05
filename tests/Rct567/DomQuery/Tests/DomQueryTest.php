@@ -417,6 +417,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $xpath_to_relative = array(
             '/a' => './a',
             '//a' => './/a',
+            '//a[attr ]' => './/a[attr ]',
             '//a|/a' => '(.//a|./a)',
             '//*|./a[attr]' => '(.//*|./a[attr])',
             '//a/b' => './/a/b',
