@@ -574,7 +574,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Reduce the set of matched elements to those that match the selector
+     * Added elements that match the selector.
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode $selector
      * @param string|self|\DOMNodeList|\DOMNode|\DOMDocument $context
