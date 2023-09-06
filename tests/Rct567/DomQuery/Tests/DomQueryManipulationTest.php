@@ -177,7 +177,7 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test append to (other domquery)
+     * Test append to (other DomQuery)
      */
     public function testAppendToOther()
     {
@@ -217,7 +217,7 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test prepend to (other domquery)
+     * Test prepend to (other DomQuery)
      */
     public function testPrependToOther()
     {
