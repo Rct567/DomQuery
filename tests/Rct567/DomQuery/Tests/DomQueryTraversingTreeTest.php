@@ -97,7 +97,13 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
             <span class="stop-but-not-selected">4</span>
             <span>5</span>
         </div>');
+
         $result = $dom->find('#first')->nextUntil('.stop-but-not-selected');
+        $this->assertEquals('<span>2</span><span>3</span>', (string) $result);
+
+        $result = $dom->find('#first')->nextUntil(function ($elm) {
+            return DomQuery::create($elm)->is('.stop-but-not-selected');
+        });
         $this->assertEquals('<span>2</span><span>3</span>', (string) $result);
     }
 
@@ -138,6 +144,11 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
         </div>');
 
         $result = $dom->find('#last')->prevUntil('.stop-but-not-selected');
+        $this->assertEquals('<span>4</span><span>3</span>', (string) $result);
+
+        $result = $dom->find('#last')->prevUntil(function ($elm) {
+            return DomQuery::create($elm)->is('.stop-but-not-selected');
+        });
         $this->assertEquals('<span>4</span><span>3</span>', (string) $result);
     }
 

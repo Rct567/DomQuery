@@ -867,10 +867,7 @@ class DomQuery extends DomQueryNodes
                     if ($selector) {
                         $current_result = $this->createChildInstance();
                         $current_result->addDomNode($next);
-                        $current_result = $current_result->filter($selector);
-                        // If the next element was filtered out, we know we have gone
-                        // far enough.
-                        if ($current_result->length > 0) {
+                        if ($current_result->is($selector)) {
                             break 2;
                         }
                     }
@@ -955,10 +952,7 @@ class DomQuery extends DomQueryNodes
                     if ($selector) {
                         $current_result = $this->createChildInstance();
                         $current_result->addDomNode($prev);
-                        // If the next element was filtered out, we know we have gone
-                        // far enough.
-                        $current_result = $current_result->filter($selector);
-                        if ($current_result->length > 0) {
+                        if ($current_result->is($selector)) {
                             break 2;
                         }
                     }
