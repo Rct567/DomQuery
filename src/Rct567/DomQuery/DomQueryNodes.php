@@ -21,7 +21,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * Instance of DOMDocument
      *
-     * @var \DOMDocument
+     * @var \DOMDocument|null
      */
     protected $document;
 
@@ -73,35 +73,35 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * Previous instance of the chain
      *
-     * @var static
+     * @var static|null
      */
     protected $prev_instance;
 
     /**
      * Root instance who began the chain
      *
-     * @var static
+     * @var static|null
      */
     protected $root_instance;
 
     /**
      * Xpath expression used to create the result of this instance
      *
-     * @var string
+     * @var string|null
      */
     private $xpath_query;
 
     /**
      * Css selector given to create result of this instance
      *
-     * @var string
+     * @var string|null
      */
     private $css_query;
 
     /**
      * Jquery style property; css selector given to create result of this instance
      *
-     * @var string
+     * @var string|null
      */
     public $selector;
 
@@ -625,7 +625,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * Return first DOMElement
      *
-     * @return \DOMElement|null
+     * @return \DOMElement|void
      */
     protected function getFirstElmNode()
     {

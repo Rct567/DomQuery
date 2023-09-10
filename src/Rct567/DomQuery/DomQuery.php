@@ -22,7 +22,7 @@ class DomQuery extends DomQueryNodes
      *
      * @param string|null $val
      *
-     * @return $this|string|null
+     * @return $this|string|void
      */
     public function text($val=null)
     {
@@ -66,7 +66,7 @@ class DomQuery extends DomQueryNodes
      * @param string $name
      * @param string $val
      *
-     * @return $this|string|null
+     * @return $this|string|void
      */
     public function attr(string $name, $val=null)
     {
@@ -88,7 +88,7 @@ class DomQuery extends DomQueryNodes
      * @param string $key
      * @param $val
      *
-     * @return $this|string|object|null
+     * @return $this|string|object|void
      */
     public function data(string $key=null, $val=null)
     {
@@ -170,15 +170,15 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Convert css string to array
+     * Convert css string to array.
      *
-     * @param string containing style properties
+     * @param string $css_str containing style properties
      *
-     * @return array with name-value as style properties
+     * @return array with key-value as style properties
      */
-    private static function parseStyle(string $css)
+    private static function parseStyle(string $css_str)
     {
-        $statements = explode(';', preg_replace('/\s+/s', ' ', $css));
+        $statements = explode(';', preg_replace('/\s+/s', ' ', $css_str));
         $styles = array();
 
         foreach ($statements as $statement) {
@@ -193,16 +193,16 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Convert css name-value array to string
+     * Convert css name-value array to string.
      *
-     * @param array with style properties
+     * @param array $css_array with style properties
      *
      * @return string containing style properties
      */
-    private static function getStyle(array $array)
+    private static function getStyle(array $css_array)
     {
         $styles = '';
-        foreach ($array as $key => $value) {
+        foreach ($css_array as $key => $value) {
             $styles .= $key.': '.$value.';';
         }
         return $styles;
@@ -215,7 +215,7 @@ class DomQuery extends DomQueryNodes
      * @param string $name
      * @param string $val
      *
-     * @return $this|string|null
+     * @return $this|string|void
      */
     public function css(string $name, $val=null)
     {
