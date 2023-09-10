@@ -5,7 +5,7 @@ namespace Rct567\DomQuery;
 /**
  * Class DomQueryNodes
  *
- * @property \DOMXPath $dom_xpath
+ * @property \DOMXPath|null $dom_xpath
  * @property string $tagName
  * @property string $nodeName
  * @property string $nodeValue
@@ -711,10 +711,14 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      /**
      * Create dom xpath instance
      *
-     * @return \DOMXPath
+     * @return \DOMXPath|null
      */
     private function createDomXpath()
     {
+        if (!$this->document) {
+            return null;
+        }
+
         $xpath = new \DOMXPath($this->document);
 
         if ($this->xml_mode) { // register all name spaces
