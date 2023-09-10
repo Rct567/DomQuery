@@ -376,7 +376,7 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test
+     * Test replace with
      */
     public function testReplaceWith()
     {
@@ -387,13 +387,13 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
-     * Test
+     * Test replace with, using DomQuery as new content
      */
     public function testReplaceWithSelection()
     {
         $dom = new DomQuery('<div> <a class="a"></a> <a class="b"></a> <a class="c"></a> </div>');
         $removed = $dom->find('.c')->replaceWith($dom->find('.a'));
         $this->assertEquals('<a class="c"></a>', (string) $removed);
-        $this->assertEquals('<div>  <a class="b"></a> <a class="a"></a> </div>', (string) $dom);
+        $this->assertEquals('<div>  <a class="b"></a> <a class="a"></a> </div>', (string) $dom); // moved, not cloned
     }
 }

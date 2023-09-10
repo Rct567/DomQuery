@@ -476,7 +476,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Get the parent of each element in the current set of matched elements, optionally filtered by a selector
+     * Get the parent of each element in the current set of matched elements, optionally filtered by a selector.
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
@@ -604,7 +604,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Reduce the set of matched elements to those that match the selector
+     * Reduce the set of matched elements to those that match the selector.
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode $selector
      *
@@ -682,7 +682,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Check if any node matches the selector
+     * Check if any node matches the selector.
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode $selector
      *
@@ -714,7 +714,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Reduce the set of matched elements to those that have a descendant that matches the selector
+     * Reduce the set of matched elements to those that have a descendant that matches the selector.
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode $selector
      *
@@ -736,7 +736,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Reduce the set of matched elements to a subset specified by the offset and length (php like)
+     * Reduce the set of matched elements to a subset specified by the offset and length (php like).
      *
      * @param integer $offset
      * @param integer $length
@@ -764,7 +764,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Returns DomQuery with first node
+     * Returns DomQuery with first node.
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
@@ -780,7 +780,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Returns DomQuery with last node
+     * Returns DomQuery with last node.
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
@@ -796,7 +796,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Returns DomQuery with immediately following sibling of all nodes
+     * Returns DomQuery with immediately following sibling of all nodes.
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
@@ -880,7 +880,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Returns DomQuery with immediately preceding sibling of all nodes
+     * Returns DomQuery with immediately preceding sibling of all nodes.
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that filters the set of matched elements
      *
@@ -965,7 +965,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Remove the set of matched elements
+     * Remove the set of matched elements.
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode|null $selector expression that
      * filters the set of matched elements to be removed
@@ -1030,7 +1030,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Get target result using selector or instance of self
+     * Get target result using selector or instance of self.
      *
      * @param string|self $target
      * @param string|self|\DOMNodeList|\DOMNode|\DOMDocument $context
@@ -1080,7 +1080,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Insert content to the beginning of each element in the set of matched elements
+     * Insert content to the beginning of each element in the set of matched elements.
      *
      * @param string|self $content,...
      *
@@ -1182,7 +1182,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Wrap an HTML structure around each element in the set of matched elements
+     * Wrap an HTML structure around each element in the set of matched elements.
      *
      * @param string|self $wrapping_element
      *
@@ -1209,7 +1209,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Wrap an HTML structure around all elements in the set of matched elements
+     * Wrap an HTML structure around all elements in the set of matched elements.
      *
      * @param string|self $wrapping_element
      *
@@ -1246,7 +1246,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Wrap an HTML structure around the content of each element in the set of matched elements
+     * Wrap an HTML structure around the content of each element in the set of matched elements.
      *
      * @param string|self $wrapping_element
      *
@@ -1262,7 +1262,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Prepend the previous chain's element set into the current set..
+     * Prepend the previous chain's element set into the current set.
      *
      * @return $this
      */
@@ -1276,7 +1276,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Check if property exist for this instance
+     * Check if property exist for this instance.
      *
      * @param string $name
      *
