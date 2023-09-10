@@ -991,7 +991,7 @@ class DomQuery extends DomQueryNodes
     }
 
     /**
-     * Import nodes and insert or append them via callback function
+     * Import nodes from content and call import function to insert or append them.
      *
      * @param string|self|array $content
      * @param callable $import_function
@@ -1053,9 +1053,9 @@ class DomQuery extends DomQueryNodes
      *
      * @return $this
      */
-    public function append()
+    public function append(...$content)
     {
-        $this->importNodes(\func_get_args(), function ($node, $imported_node) {
+        $this->importNodes($content, function ($node, $imported_node) {
             $node->appendChild($imported_node);
         });
 
@@ -1086,9 +1086,9 @@ class DomQuery extends DomQueryNodes
      *
      * @return $this
      */
-    public function prepend()
+    public function prepend(...$content)
     {
-        $this->importNodes(\func_get_args(), function ($node, $imported_node) {
+        $this->importNodes($content, function ($node, $imported_node) {
             $node->insertBefore($imported_node, $node->childNodes->item(0));
         });
 
@@ -1119,9 +1119,9 @@ class DomQuery extends DomQueryNodes
      *
      * @return $this
      */
-    public function before()
+    public function before(...$content)
     {
-        $this->importNodes(\func_get_args(), function ($node, $imported_node) {
+        $this->importNodes($content, function ($node, $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not set before root element '.$node->tagName.' of document');
             }
@@ -1139,9 +1139,9 @@ class DomQuery extends DomQueryNodes
      *
      * @return $this
      */
-    public function after()
+    public function after(...$content)
     {
-        $this->importNodes(\func_get_args(), function ($node, $imported_node) {
+        $this->importNodes($content, function ($node, $imported_node) {
             if ($node->nextSibling) {
                 $node->parentNode->insertBefore($imported_node, $node->nextSibling);
             } else { // node is last, so there is no next sibling to insert before
@@ -1156,15 +1156,15 @@ class DomQuery extends DomQueryNodes
      * Replace each element in the set of matched elements with the provided
      * new content and return the set of elements that was removed.
      *
-     * @param string|self $new_content,...
+     * @param string|self $new_content
      *
      * @return self
      */
-    public function replaceWith()
+    public function replaceWith($new_content)
     {
         $removed_nodes = new self();
 
-        $this->importNodes(\func_get_args(), function ($node, $imported_node) use (&$removed_nodes) {
+        $this->importNodes($new_content, function ($node, $imported_node) use (&$removed_nodes) {
             if ($node->nextSibling) {
                 $node->parentNode->insertBefore($imported_node, $node->nextSibling);
             } else { // node is last, so there is no next sibling to insert before
@@ -1174,10 +1174,8 @@ class DomQuery extends DomQueryNodes
             $node->parentNode->removeChild($node);
         });
 
-        foreach (\func_get_args() as $new_content) {
-            if (!\is_string($new_content)) {
-                self::create($new_content)->remove();
-            }
+        if (!\is_string($new_content)) {
+            self::create($new_content)->remove();
         }
 
         return $removed_nodes;
@@ -1186,13 +1184,13 @@ class DomQuery extends DomQueryNodes
     /**
      * Wrap an HTML structure around each element in the set of matched elements
      *
-     * @param string|self $content,...
+     * @param string|self $wrapping_element
      *
      * @return $this
      */
-    public function wrap()
+    public function wrap($wrapping_element)
     {
-        $this->importNodes(\func_get_args(), function ($node, $imported_node) {
+        $this->importNodes($wrapping_element, function ($node, $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
             }
@@ -1213,16 +1211,16 @@ class DomQuery extends DomQueryNodes
     /**
      * Wrap an HTML structure around all elements in the set of matched elements
      *
-     * @param string|self $content,...
+     * @param string|self $wrapping_element
      *
      * @return $this
      */
-    public function wrapAll()
+    public function wrapAll($wrapping_element)
     {
         $wrapper_node = null; // node given as wrapper
         $wrap_target_node = null; // node that wil be parent of content to be wrapped
 
-        $this->importNodes(\func_get_args(), function ($node, $imported_node) use (&$wrapper_node, &$wrap_target_node) {
+        $this->importNodes($wrapping_element, function ($node, $imported_node) use (&$wrapper_node, &$wrap_target_node) {
             if ($node->parentNode instanceof \DOMDocument) {
                 throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
             }
@@ -1250,14 +1248,14 @@ class DomQuery extends DomQueryNodes
     /**
      * Wrap an HTML structure around the content of each element in the set of matched elements
      *
-     * @param string|self $content,...
+     * @param string|self $wrapping_element
      *
      * @return $this
      */
-    public function wrapInner()
+    public function wrapInner($wrapping_element)
     {
         foreach ($this->nodes as $node) {
-            self::create($node->childNodes)->wrapAll(\func_get_args());
+            self::create($node->childNodes)->wrapAll($wrapping_element);
         }
 
         return $this;
