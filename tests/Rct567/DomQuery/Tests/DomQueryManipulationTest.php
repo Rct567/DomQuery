@@ -140,9 +140,19 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
      */
     public function testAppend()
     {
-        $dom = new DomQuery('<a></a><p></p><b></b><a></a>');
+        $dom = new DomQuery('<a>1</a><p></p><b></b><a></a>');
         $dom->find('a')->append('<span></span>');
-        $this->assertEquals('<a><span></span></a><p></p><b></b><a><span></span></a>', (string) $dom);
+        $this->assertEquals('<a>1<span></span></a><p></p><b></b><a><span></span></a>', (string) $dom);
+    }
+
+    /*
+     * Test append multiple content
+     */
+    public function testAppendMulti()
+    {
+        $dom = new DomQuery('<p><a></a></p>');
+        $dom->find('p:last')->append('<b></b>', '<c></c>');
+        $this->assertEquals('<p><a></a><b></b><c></c></p>', (string) $dom);
     }
 
     /*
@@ -204,6 +214,16 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
         $dom->find('a')->prepend('<span></span>', '<i></i>');
         $this->assertEquals('<a><i></i><span></span>X</a>', (string) $dom);
         $this->assertEquals(1, $dom->find('span')->length);
+    }
+
+    /*
+     * Test prepend multiple content
+     */
+    public function testPrependMulti()
+    {
+        $dom = new DomQuery('<p><c></c></p>');
+        $dom->find('p:last')->prepend('<b></b>', '<a></a>');
+        $this->assertEquals('<p><a></a><b></b><c></c></p>', (string) $dom);
     }
 
     /*
