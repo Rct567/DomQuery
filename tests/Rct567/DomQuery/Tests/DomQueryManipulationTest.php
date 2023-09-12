@@ -140,9 +140,9 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
      */
     public function testAppend()
     {
-        $dom = new DomQuery('<a>1</a><p></p><b></b><a></a>');
-        $dom->find('a')->append('<span></span>');
-        $this->assertEquals('<a>1<span></span></a><p></p><b></b><a><span></span></a>', (string) $dom);
+        $dom = new DomQuery('<p id="target">1</p> <p></p> <b></b> <a>2</a>');
+        $dom->find('p#target')->append('<span></span>');
+        $this->assertEquals('<p id="target">1<span></span></p><p></p><b></b><a>2</a>', (string) $dom);
     }
 
     /*
@@ -150,30 +150,40 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
      */
     public function testAppendMulti()
     {
-        $dom = new DomQuery('<p><a></a></p>');
-        $dom->find('p:last')->append('<b></b>', '<c></c>');
-        $this->assertEquals('<p><a></a><b></b><c></c></p>', (string) $dom);
+        $dom = new DomQuery('<p id="target"><a></a></p>');
+        $dom->find('p#target')->append('<b></b> ', '<c></c>');
+        $this->assertEquals('<p id="target"><a></a><b></b><c></c></p>', (string) $dom);
     }
 
     /*
-     * Test append DomQuery instance
+     * Test append DomQuery instance with multiple targets
      */
     public function testAppendDomQueryInstance()
     {
-        $dom = new DomQuery('<a></a><p></p><b></b><a></a>');
-        $dom->find('a')->append(DomQuery::create('<i>X</i>'));
-        $this->assertEquals('<a><i>X</i></a><p></p><b></b><a><i>X</i></a>', (string) $dom);
+        $dom = new DomQuery('<p class="target"></p><p></p><p class="target"></p>');
+        $dom->find('p.target')->append(DomQuery::create('<i>X</i>'));
+        $this->assertEquals('<p class="target"><i>X</i></p><p></p><p class="target"><i>X</i></p>', (string) $dom);
         $this->assertEquals('X', $dom->find('i')->text());
     }
 
     /*
-     * Test append clone
+     * Test append, content getting moved
      */
     public function testAppendClone()
     {
-        $dom = new DomQuery('<a></a><p></p><b id="clone"></b><a></a>');
-        $dom->find('a')->append($dom->find('#clone'));
-        $this->assertEquals('<a><b id="clone"></b></a><p></p><b id="clone"></b><a><b id="clone"></b></a>', (string) $dom);
+        $dom = new DomQuery('<div> <p id="target"></p><p><b id="content">XX</b></p> </div>');
+        $dom->find('p#target')->append($dom->find('b#content'));
+        $this->assertEquals('<div> <p id="target"><b id="content">XX</b></p><p></p> </div>', (string) $dom);
+    }
+
+    /*
+     * Test append with multiple targets, first content should be cloned, second/last should move it
+     */
+    public function testAppendCloneMultipleTargets()
+    {
+        $dom = new DomQuery('<div> <p class="target"></p><p class="target"></p><p><b id="content">XX</b></p> </div>');
+        $dom->find('p.target')->append($dom->find('b#content'));
+        $this->assertEquals('<div> <p class="target"><b id="content">XX</b></p><p class="target"><b id="content">XX</b></p><p></p> </div>', (string) $dom);
     }
 
     /*
@@ -181,9 +191,9 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
      */
     public function testAppendTo()
     {
-        $dom = new DomQuery('<div> <span>X</span> <div id="target"></div> </div>');
-        $dom->find('span')->appendTo('#target');
-        $this->assertEquals('<div>  <div id="target"><span>X</span></div> </div>', (string) $dom);
+        $dom = new DomQuery('<div> <span>A</span><span>B</span> <p id="target"></p> </div>');
+        $dom->find('span')->appendTo('p#target');
+        $this->assertEquals('<div>  <p id="target"><span>A</span><span>B</span></p> </div>', (string) $dom);
     }
 
     /*
@@ -196,13 +206,23 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test append to moves content,
+     */
+    public function testAppendToMoved()
+    {
+        $dom = new DomQuery('<div> <span>X</span> <p id="target"></p> </div>');
+        $dom->find('span')->appendTo('p#target');
+        $this->assertEquals('<div>  <p id="target"><span>X</span></p> </div>', (string) $dom);
+    }
+
+    /*
      * Test append to with clones
      */
-    public function testCloneAppendTo()
+    public function testAppendToCloned()
     {
-        $dom = new DomQuery('<div> <span>X</span> <div id="target"></div> </div>');
-        $dom->find('span')->clone()->appendTo('#target');
-        $this->assertEquals('<div> <span>X</span> <div id="target"><span>X</span></div> </div>', (string) $dom);
+        $dom = new DomQuery('<div> <span>X</span> <p id="target"></p> </div>');
+        $dom->find('span')->clone()->appendTo('p#target');
+        $this->assertEquals('<div> <span>X</span> <p id="target"><span>X</span></p> </div>', (string) $dom);
     }
 
     /*

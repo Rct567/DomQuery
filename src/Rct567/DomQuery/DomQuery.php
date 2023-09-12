@@ -995,14 +995,15 @@ class DomQuery extends DomQueryNodes
      *
      * @param string|self|array $content
      * @param callable $import_function
+     * @param bool $use_last_node if true then not clone, but directly use last content node if from same doc
      *
      * @return void
      */
-    private function importNodes($content, callable $import_function)
+    private function importNodes($content, callable $import_function, bool $use_last_content_node=true)
     {
         if (\is_array($content)) {
             foreach ($content as $item) {
-                $this->importNodes($item, $import_function);
+                $this->importNodes($item, $import_function, $use_last_content_node);
             }
         } else {
             if (\is_string($content) && strpos($content, "\n") !== false) {
@@ -1016,10 +1017,14 @@ class DomQuery extends DomQueryNodes
                 $content = new self($content);
             }
 
-            foreach ($this->nodes as $node) {
+            foreach ($this->nodes as $node_key => $node) {
                 foreach ($content->getNodes() as $content_node) {
                     if ($content_node->ownerDocument === $node->ownerDocument) {
-                        $imported_node = $content_node->cloneNode(true);
+                        if ($use_last_content_node && ($node_key+1) === count($this->nodes)) {
+                            $imported_node = $content_node;
+                        } else {
+                            $imported_node = $content_node->cloneNode(true);
+                        }
                     } else {
                         $imported_node = $this->document->importNode($content_node, true);
                     }
@@ -1055,7 +1060,7 @@ class DomQuery extends DomQueryNodes
      */
     public function append(...$content)
     {
-        $this->importNodes($content, function ($node, $imported_node) {
+        $this->importNodes($content, function (\DOMNode $node, \DOMNode $imported_node) {
             $node->appendChild($imported_node);
         });
 
@@ -1074,7 +1079,6 @@ class DomQuery extends DomQueryNodes
         $target_result = $this->getTargetResult($target);
 
         $target_result->append($this);
-        $this->remove();
 
         return $target_result;
     }
@@ -1107,7 +1111,6 @@ class DomQuery extends DomQueryNodes
         $target_result = $this->getTargetResult($target);
 
         $target_result->prepend($this);
-        $this->remove();
 
         return $target_result;
     }
@@ -1173,10 +1176,6 @@ class DomQuery extends DomQueryNodes
             $removed_nodes->addDomNode($node);
             $node->parentNode->removeChild($node);
         });
-
-        if (!\is_string($new_content)) {
-            self::create($new_content)->remove();
-        }
 
         return $removed_nodes;
     }
