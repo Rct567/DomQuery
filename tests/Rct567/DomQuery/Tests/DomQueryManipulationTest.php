@@ -201,7 +201,8 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
      */
     public function testAppendToOther()
     {
-        $dom = DomQuery::create('<span>Hello</span>')->appendTo(DomQuery::create('<div>P</div>'));
+        $dom = DomQuery::create('<div>P</div>');
+        DomQuery::create('<span>Hello</span>')->appendTo($dom);
         $this->assertEquals('<div>P<span>Hello</span></div>', (string) $dom);
     }
 
@@ -223,6 +224,32 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<div> <span>X</span> <p id="target"></p> </div>');
         $dom->find('span')->clone()->appendTo('p#target');
         $this->assertEquals('<div> <span>X</span> <p id="target"><span>X</span></p> </div>', (string) $dom);
+    }
+
+    /*
+     * Test return value of appendTo by using it again
+     */
+    public function testAppendToReturnValue()
+    {
+        $dom = new DomQuery('<div class="container"></div>');
+        $span = DomQuery::create('<span id="el1">')->appendTo($dom);
+        $this->assertEquals('<span id="el1"></span>', (string) $span);
+        DomQuery::create('<a></a>')->appendTo($span);
+
+        $this->assertEquals('<div class="container"><span id="el1"><a></a></span></div>', (string) $dom);
+    }
+
+    /*
+     *  Test return value of prependTo by using it again
+     */
+    public function testPrependToReturnValue()
+    {
+        $dom = new DomQuery('<div class="container"></div>');
+        $span = DomQuery::create('<span id="el1">')->prependTo($dom);
+        $this->assertEquals('<span id="el1"></span>', (string) $span);
+        DomQuery::create('<a></a>')->prependTo($span);
+
+        $this->assertEquals('<div class="container"><span id="el1"><a></a></span></div>', (string) $dom);
     }
 
     /*
@@ -261,7 +288,8 @@ class DomQueryManipulationTest extends \PHPUnit\Framework\TestCase
      */
     public function testPrependToOther()
     {
-        $dom = DomQuery::create('<span>Hello</span>')->prependTo(DomQuery::create('<div>P</div>'));
+        $dom = DomQuery::create('<div>P</div>');
+        DomQuery::create('<span>Hello</span>')->prependTo($dom);
         $this->assertEquals('<div><span>Hello</span>P</div>', (string) $dom);
     }
 

@@ -995,43 +995,52 @@ class DomQuery extends DomQueryNodes
      *
      * @param string|self|array $content
      * @param callable $import_function
-     * @param bool $use_last_node if true then not clone, but directly use last content node if from same doc
+     * @param bool $use_last_content_node if true then not clone, but directly use last content node if from same doc
      *
-     * @return void
+     * @return \DOMNode[] $imported_nodes
      */
     private function importNodes($content, callable $import_function, bool $use_last_content_node=true)
     {
+        $imported_nodes = [];
         if (\is_array($content)) {
             foreach ($content as $item) {
-                $this->importNodes($item, $import_function, $use_last_content_node);
+                $imported_nodes = array_merge($imported_nodes, $this->importNodes($item, $import_function, $use_last_content_node));
             }
-        } else {
-            if (\is_string($content) && strpos($content, "\n") !== false) {
-                $this->preserve_no_newlines = false;
-                if (isset($this->root_instance)) {
-                    $this->root_instance->preserve_no_newlines = false;
-                }
-            }
+            return $imported_nodes;
+        }
 
-            if (!($content instanceof self)) {
-                $content = new self($content);
+        if (\is_string($content) && strpos($content, "\n") !== false) {
+            $this->preserve_no_newlines = false;
+            if (isset($this->root_instance)) {
+                $this->root_instance->preserve_no_newlines = false;
             }
+        }
 
-            foreach ($this->nodes as $node_key => $node) {
-                foreach ($content->getNodes() as $content_node) {
-                    if ($content_node->ownerDocument === $node->ownerDocument) {
-                        if ($use_last_content_node && ($node_key+1) === count($this->nodes)) {
-                            $imported_node = $content_node;
-                        } else {
-                            $imported_node = $content_node->cloneNode(true);
-                        }
+        if (!($content instanceof self)) {
+            $content = new self($content);
+        }
+
+        foreach ($this->nodes as $node_key => $node) {
+            foreach ($content->getNodes() as $content_node) {
+                $imported_node = null;
+                if ($content_node->ownerDocument === $node->ownerDocument) {
+                    if ($use_last_content_node && ($node_key+1) === count($this->nodes)) {
+                        $imported_node = $content_node;
                     } else {
-                        $imported_node = $this->document->importNode($content_node, true);
+                        $imported_node = $content_node->cloneNode(true);
                     }
+                } else {
+                    $imported_node = $this->document->importNode($content_node, true);
+                }
+
+                if ($imported_node instanceof \DOMNode) {
                     $import_function($node, $imported_node);
+                    $imported_nodes[] = $imported_node;
                 }
             }
         }
+
+        return $imported_nodes;
     }
 
     /**
@@ -1072,15 +1081,17 @@ class DomQuery extends DomQueryNodes
      *
      * @param string|self $target
      *
-     * @return self
+     * @return self a new set consisting of the inserted elements
      */
     public function appendTo($target)
     {
         $target_result = $this->getTargetResult($target);
 
-        $target_result->append($this);
+        $imported_nodes = $target_result->importNodes($this, function (\DOMNode $node, \DOMNode $imported_node) {
+            $node->appendChild($imported_node);
+        });
 
-        return $target_result;
+        return self::create($imported_nodes);
     }
 
     /**
@@ -1092,7 +1103,7 @@ class DomQuery extends DomQueryNodes
      */
     public function prepend(...$content)
     {
-        $this->importNodes($content, function ($node, $imported_node) {
+        $this->importNodes($content, function (\DOMNode $node, \DOMNode $imported_node) {
             $node->insertBefore($imported_node, $node->childNodes->item(0));
         });
 
@@ -1104,15 +1115,17 @@ class DomQuery extends DomQueryNodes
      *
      * @param string|self $target
      *
-     * @return self
+     * @return self a new set consisting of the inserted elements
      */
     public function prependTo($target)
     {
         $target_result = $this->getTargetResult($target);
 
-        $target_result->prepend($this);
+        $imported_nodes = $target_result->importNodes($this, function (\DOMNode $node, \DOMNode $imported_node) {
+            $node->insertBefore($imported_node, $node->childNodes->item(0));
+        });
 
-        return $target_result;
+        return self::create($imported_nodes);
     }
 
     /**
@@ -1124,9 +1137,9 @@ class DomQuery extends DomQueryNodes
      */
     public function before(...$content)
     {
-        $this->importNodes($content, function ($node, $imported_node) {
+        $this->importNodes($content, function (\DOMNode $node, \DOMNode $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
-                throw new \Exception('Can not set before root element '.$node->tagName.' of document');
+                throw new \Exception('Can not set before root element of document');
             }
 
             $node->parentNode->insertBefore($imported_node, $node);
@@ -1144,7 +1157,10 @@ class DomQuery extends DomQueryNodes
      */
     public function after(...$content)
     {
-        $this->importNodes($content, function ($node, $imported_node) {
+        $this->importNodes($content, function (\DOMNode $node, \DOMNode $imported_node) {
+            if ($node->parentNode instanceof \DOMDocument) {
+                throw new \Exception('Can not set after root element of document');
+            }
             if ($node->nextSibling) {
                 $node->parentNode->insertBefore($imported_node, $node->nextSibling);
             } else { // node is last, so there is no next sibling to insert before
@@ -1167,7 +1183,7 @@ class DomQuery extends DomQueryNodes
     {
         $removed_nodes = new self();
 
-        $this->importNodes($new_content, function ($node, $imported_node) use (&$removed_nodes) {
+        $this->importNodes($new_content, function (\DOMNode $node, \DOMNode $imported_node) use (&$removed_nodes) {
             if ($node->nextSibling) {
                 $node->parentNode->insertBefore($imported_node, $node->nextSibling);
             } else { // node is last, so there is no next sibling to insert before
@@ -1189,9 +1205,9 @@ class DomQuery extends DomQueryNodes
      */
     public function wrap($wrapping_element)
     {
-        $this->importNodes($wrapping_element, function ($node, $imported_node) {
+        $this->importNodes($wrapping_element, function (\DOMNode $node, \DOMNode $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
-                throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
+                throw new \Exception('Can not wrap inside root element of document');
             }
 
             // replace node with imported wrapper
@@ -1219,9 +1235,9 @@ class DomQuery extends DomQueryNodes
         $wrapper_node = null; // node given as wrapper
         $wrap_target_node = null; // node that wil be parent of content to be wrapped
 
-        $this->importNodes($wrapping_element, function ($node, $imported_node) use (&$wrapper_node, &$wrap_target_node) {
+        $this->importNodes($wrapping_element, function (\DOMNode $node, \DOMNode $imported_node) use (&$wrapper_node, &$wrap_target_node) {
             if ($node->parentNode instanceof \DOMDocument) {
-                throw new \Exception('Can not wrap inside root element '.$node->tagName.' of document');
+                throw new \Exception('Can not wrap inside root element of document');
             }
             if ($wrapper_node && $wrap_target_node) { // already wrapped before
                 $old = $node->parentNode->removeChild($node);
