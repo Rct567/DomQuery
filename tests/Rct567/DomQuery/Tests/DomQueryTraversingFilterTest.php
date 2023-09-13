@@ -14,7 +14,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
         $this->assertTrue($dom[2]->is('#mmm'));
         $this->assertTrue($dom[2]->next()->is('.x'));
-        $this->assertTrue($dom[0]->is($dom->xpathQuery('//a')));
+        $this->assertTrue($dom[0]->is($dom->xpathQuery('//a[position()=1]')));
         $this->assertTrue($dom[0]->is($dom[0]));
         $this->assertTrue($dom[0]->is(function ($node) {
             return $node->tagName == 'a';
@@ -28,10 +28,11 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
      */
     public function testHas()
     {
-        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"><span id="here"></span></a> <a class="xpp"></a>');
+        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"><span id="here"><u></u></span></a> <a class="xpp"><u></u></a>');
 
-        $this->assertEquals('<a class="x"><span id="here"></span></a>', (string) $dom->find('a')->has('#here'));
-        $this->assertEquals('<a class="x"><span id="here"></span></a>', (string) $dom->find('a')->has($dom->find('#here')));
+        $this->assertEquals('<a class="x"><span id="here"><u></u></span></a>', (string) $dom->find('a')->has('#here'));
+        $this->assertEquals('<a class="x"><span id="here"><u></u></span></a>', (string) $dom->find('a')->has('span > u'));
+        $this->assertEquals('<a class="x"><span id="here"><u></u></span></a>', (string) $dom->find('a')->has($dom->find('#here')));
     }
 
     /*
@@ -49,9 +50,9 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $selection->filter('#mmm')->length);
         $this->assertEquals(1, $selection->filter($dom->getDocument()->getElementById('mmm'))->length);
         $this->assertEquals(1, $selection->filter('a')->filter('.xpp')->length);
-        $this->assertEquals(3, $selection->filter('a[class], #mmm')->length);
-        $this->assertEquals(3, $selection->filter(':even')->length);
+        $this->assertEquals('<a id="mmm"></a><a class="x"></a><a class="xpp"></a>', (string) $selection->filter('a[class], #mmm'));
         $this->assertEquals('<a class="xpp"></a>', (string) $selection->filter($dom->find('a.xpp')));
+        $this->assertEquals('<a class="x"></a>', (string) $selection->filter($dom->find('a')->get(-2))); // filter by DOMNode
     }
 
     /*
