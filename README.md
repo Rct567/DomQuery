@@ -79,6 +79,7 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 
 - `.contents()` get children including text nodes
 - `.add( selector, [context] )` new result with added elements that match selector
+- `.addBack()`
 
  #### Traversing > Filtering
 
@@ -134,7 +135,6 @@ DomQuery::create('<a title="hello"></a>')->attr('title') // hello
 - `.index ( [selector] )`
 - `.toArray()`
 - `.clone()`
-- `.addBack()`
 
 ## Supported selectors
 
