@@ -123,4 +123,22 @@ class DomQueryMiscellaneousElementMethodTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $result);
         $this->assertInstanceOf(\DOMNode::class, $result[0]);
     }
+
+    /*
+     * Test clone
+     */
+    public function testClone()
+    {
+        $dom = new DomQuery('<div><p>My words</p></div>');
+        $elm = $dom->find('p');
+        $cloned_elm = $elm->clone();
+        $this->assertEquals('<p>My words</p>', (string) $elm);
+        $this->assertEquals('<p>My words</p>', (string) $cloned_elm);
+        $this->assertFalse( $elm->get(0)->isSameNode( $cloned_elm->get(0)) );
+
+        $dom_clone = $dom->clone();
+        $this->assertEquals('<div><p>My words</p></div>', $dom_clone);
+        $this->assertEquals('<p>My words</p>', $dom_clone->find('p')->first());
+        $this->assertTrue($dom_clone->find('p')->first()->is('p'));
+    }
 }

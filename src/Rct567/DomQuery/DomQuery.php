@@ -645,7 +645,17 @@ class DomQuery extends DomQueryNodes
      */
     public function clone()
     {
-        return $this->createChildInstance($this->getClonedNodes());
+        $new_instance = self::create($this->getClonedNodes());
+
+        if (\is_bool($this->xml_mode)) {
+            $new_instance->xml_mode = $this->xml_mode;
+        }
+
+        if (isset($this->document) && $this->dom_xpath instanceof \DOMXPath) {
+            $new_instance->dom_xpath = $this->dom_xpath;
+        }
+
+        return $new_instance;
     }
 
     /**
