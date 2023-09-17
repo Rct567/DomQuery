@@ -1149,7 +1149,7 @@ class DomQuery extends DomQueryNodes
     {
         $this->importNodes($content, function (\DOMNode $node, \DOMNode $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
-                throw new \Exception('Can not set before root element of document');
+                throw new \Exception('Can not use before() on this target, because the parent is the root of the document.');
             }
 
             $node->parentNode->insertBefore($imported_node, $node);
@@ -1169,7 +1169,7 @@ class DomQuery extends DomQueryNodes
     {
         $this->importNodes($content, function (\DOMNode $node, \DOMNode $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
-                throw new \Exception('Can not set after root element of document');
+                throw new \Exception('Can not use after() on this target, because the parent is the root of the document.');
             }
             if ($node->nextSibling) {
                 $node->parentNode->insertBefore($imported_node, $node->nextSibling);
@@ -1194,6 +1194,9 @@ class DomQuery extends DomQueryNodes
         $removed_nodes = new self();
 
         $this->importNodes($new_content, function (\DOMNode $node, \DOMNode $imported_node) use (&$removed_nodes) {
+            if ($node->parentNode instanceof \DOMDocument) {
+                throw new \Exception('Can not use replaceWith() on this target, because the parent is the root of the document.');
+            }
             if ($node->nextSibling) {
                 $node->parentNode->insertBefore($imported_node, $node->nextSibling);
             } else { // node is last, so there is no next sibling to insert before
@@ -1217,7 +1220,7 @@ class DomQuery extends DomQueryNodes
     {
         $this->importNodes($wrapping_element, function (\DOMNode $node, \DOMNode $imported_node) {
             if ($node->parentNode instanceof \DOMDocument) {
-                throw new \Exception('Can not wrap inside root element of document');
+                throw new \Exception('Can not use wrap() on this target, because the parent is the root of the document.');
             }
 
             // replace node with imported wrapper
@@ -1247,7 +1250,7 @@ class DomQuery extends DomQueryNodes
 
         $this->importNodes($wrapping_element, function (\DOMNode $node, \DOMNode $imported_node) use (&$wrapper_node, &$wrap_target_node) {
             if ($node->parentNode instanceof \DOMDocument) {
-                throw new \Exception('Can not wrap inside root element of document');
+                throw new \Exception('Can not use wrapAll() or wrapInner() on this target, because the parent is the root of the document.');
             }
             if ($wrapper_node && $wrap_target_node) { // already wrapped before
                 $old = $node->parentNode->removeChild($node);
