@@ -11,7 +11,7 @@ class CssToXpath
     /**
      * Css selector to xpath cache
      *
-     * @var array
+     * @var array<string, string>
      */
     private static $xpath_cache = array();
 
@@ -143,7 +143,7 @@ class CssToXpath
                 return preg_replace_callback(
                     '#(ESCAPED)([0-9]{1,3})#',
                     function ($matches) {
-                        return \chr($matches[2]);
+                        return \chr(intval($matches[2]));
                     },
                     $str
                 );
@@ -162,7 +162,7 @@ class CssToXpath
     /**
      * Transform css segments to xpath
      *
-     * @param object[] $segments
+     * @param array<int, object> $segments
      *
      * @return string[] $new_path_tokens
      */

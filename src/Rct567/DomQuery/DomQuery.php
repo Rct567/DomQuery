@@ -12,7 +12,7 @@ class DomQuery extends DomQueryNodes
     /**
      * Node data
      *
-     * @var array
+     * @var array[]
      */
     private static $node_data = array();
 

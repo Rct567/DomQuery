@@ -476,7 +476,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * Retrieve last used CSS Query
      *
-     * @return string
+     * @return string|null
      */
     public function getCssQuery()
     {
@@ -745,7 +745,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * Retrieve DOMDocument
      *
-     * @return \DOMDocument
+     * @return \DOMDocument|null
      */
     public function getDocument()
     {
