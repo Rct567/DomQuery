@@ -5,7 +5,6 @@ namespace Rct567\DomQuery;
 /**
  * Class DomQueryNodes
  *
- * @property \DOMXPath|null $dom_xpath
  * @property string $tagName
  * @property string $nodeName
  * @property string $nodeValue
@@ -31,6 +30,13 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      * @var \DOMNode[]
      */
     protected $nodes = array();
+
+    /**
+     * Instance of DOMXPath class
+     *
+     * @var \DOMXPath|null
+     */
+    protected $dom_xpath;
 
     /**
      * Number of nodes
@@ -235,7 +241,20 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * Retrieve last created XPath query
      *
-     * @return string
+     * @return \DOMXPath|null
+     */
+    public function getDomXpath()
+    {
+        if (!$this->dom_xpath) {
+            $this->dom_xpath = $this->createDomXpath();
+        }
+        return $this->dom_xpath;
+    }
+
+    /**
+     * Retrieve last created XPath query
+     *
+     * @return string|null
      */
     public function getXpathQuery()
     {
@@ -645,9 +664,6 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public function __get($name)
     {
-        if ($name === 'dom_xpath') {
-            return $this->createDomXpath();
-        }
         if ($name === 'outerHTML') {
             return $this->getOuterHtml();
         }
@@ -693,8 +709,8 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public function xpathQuery(string $expression, \DOMNode $context_node=null)
     {
-        if ($this->dom_xpath) {
-            $node_list = $this->dom_xpath->query($expression, $context_node);
+        if ($dom_xpath = $this->getDomXpath()) {
+            $node_list = $dom_xpath->query($expression, $context_node);
 
             if ($node_list instanceof \DOMNodeList) {
                 return $node_list;

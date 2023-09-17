@@ -163,8 +163,7 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($dom->getDocument());
         $this->assertNull($dom->getXpathQuery());
         $this->assertNull($dom->getCssQuery());
-        $this->assertNull($dom->getCssQuery());
-        $this->assertNull($dom->dom_xpath);
+        $this->assertNull($dom->getDomXpath());
 
         $num = 0;
         foreach ($dom as $node) {
