@@ -461,35 +461,31 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      *
      * @param \DOMNode $node
      *
-     * @return \DOMNode
+     * @return \DOMElement|void
      */
     protected static function getNextElement(\DOMNode $node)
     {
-        while ($node && ($node = $node->nextSibling)) {
+        while ($node = $node->nextSibling) {
             if ($node instanceof \DOMElement) {
-                break;
+                return $node;
             }
         }
-
-        return $node;
     }
 
     /**
-     * Get next element from node
+     * Get previous element from node
      *
      * @param \DOMNode $node
      *
-     * @return \DOMNode
+     * @return \DOMElement|void
      */
     protected static function getPreviousElement(\DOMNode $node)
     {
-        while ($node && ($node = $node->previousSibling)) {
+        while ($node = $node->previousSibling) {
             if ($node instanceof \DOMElement) {
-                break;
+                return $node;
             }
         }
-
-        return $node;
     }
 
     /**
