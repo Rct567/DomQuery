@@ -150,10 +150,7 @@ class CssToXpath
             };
 
             $segment->selector = $set_escape_back($segment->selector);
-
-            foreach ($segment->attribute_filters as &$attr_filter) {
-                $attr_filter = $set_escape_back($attr_filter);
-            }
+            $segment->attribute_filters = array_map($set_escape_back, $segment->attribute_filters);
         }
 
         return $segment;
