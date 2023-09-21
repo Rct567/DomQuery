@@ -48,21 +48,21 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * Load and return as xml
      *
-     * @var boolean
+     * @var bool
      */
     public $xml_mode;
 
     /**
      * Return xml with pi node (xml declaration) if in xml mode
      *
-     * @var boolean
+     * @var bool
      */
     public $xml_print_pi = false;
 
     /**
      * Preserve no newlines (prevent creating newlines in html result)
      *
-     * @var boolean
+     * @var bool
      */
     public $preserve_no_newlines;
 
@@ -146,7 +146,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
      /**
-     * Create new instance of self with some properties of its parents
+     * Create new instance of self with some properties of its parents.
      *
      * @return static
      */
@@ -181,8 +181,8 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Make xpath query relative by adding a dot,
-     * while keeping in mind there might be a union, so:
+     * Make xpath query relative by adding a dot, while keeping
+     * in mind there might be a union, so:
      * '//div|//p', should become '(.//div|.//p)'.
      *
      * @param string $xpath
@@ -208,7 +208,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Use xpath and return new DomQuery with resulting nodes
+     * Use xpath and return new DomQuery with resulting nodes.
      *
      * @param string $xpath_query
      *
@@ -239,7 +239,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Retrieve last created XPath query
+     * Retrieve last created XPath query.
      *
      * @return \DOMXPath|null
      */
@@ -252,7 +252,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Retrieve last created XPath query
+     * Retrieve last created XPath query.
      *
      * @return string|null
      */
@@ -262,7 +262,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Create new instance
+     * Create new instance.
      *
      * @return static
      * @throws \InvalidArgumentException
@@ -277,7 +277,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Set dom document
+     * Set dom document.
      *
      * @param \DOMDocument $document
      *
@@ -294,7 +294,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Add nodes from dom node list to result set
+     * Add nodes from dom node list to result set.
      *
      * @param \DOMNodeList $dom_node_list
      *
@@ -317,7 +317,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Add node to result set
+     * Add node to result set.
      *
      * @param \DOMNode $dom_node
      * @param bool $prepend
@@ -337,7 +337,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Load html or xml content
+     * Load html or xml content.
      *
      * @param string $content
      * @param string $encoding
@@ -396,7 +396,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Grants access to the DOM nodes of this instance
+     * Grants access to the DOM nodes of this instance.
      *
      * @param int $index
      *
@@ -413,10 +413,10 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get the descendants of each element in the current set of matched elements, filtered by a selector
+     * Get the descendants of each element in the current set of matched elements, filtered by a selector.
      *
      * @param string|static|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
-     *  or DomQuery|DOMNodeList|DOMNode instance to match against
+     *  or DomQuery|DOMNodeList|DOMNode instance to match against.
      *
      * @return static
      */
@@ -457,7 +457,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get next element from node
+     * Get next element from node.
      *
      * @param \DOMNode $node
      *
@@ -473,7 +473,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get previous element from node
+     * Get previous element from node.
      *
      * @param \DOMNode $node
      *
@@ -489,7 +489,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Retrieve last used CSS Query
+     * Retrieve last used CSS Query.
      *
      * @return string|null
      */
@@ -500,10 +500,10 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
 
     /**
      * Get the descendants of each element in the current set of matched elements, filtered by a selector.
-     * If no results are found a exception is thrown.
+     * If no results are found an exception is thrown.
      *
      * @param string|static|\DOMNodeList|\DOMNode $selector A string containing a selector expression,
-     * or DomQuery|DOMNodeList|DOMNode instance to match against
+     * or DomQuery|DOMNodeList|DOMNode instance to match against.
      *
      * @return static
      * @throws \Exception if no results are found
@@ -521,7 +521,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Iterate over result set and executing a callback for each node
+     * Iterate over result set and executing a callback for each node.
      *
      * @param callable $callback
      *
@@ -542,7 +542,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
 
     /**
      * Pass each element in the current matched set through a function,
-     * producing an array containing the return values
+     * producing an array containing the return values.
      *
      * @param callable $callback
      *
@@ -568,7 +568,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Returns dom elements
+     * Returns dom elements.
      *
      * @return \Generator
      */
@@ -582,7 +582,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Return array with nodes
+     * Return array with nodes.
      *
      * @return \DOMNode[]
      */
@@ -592,7 +592,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Return array with cloned nodes
+     * Return array with cloned nodes.
      *
      * @return \DOMNode[]
      */
@@ -614,7 +614,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Return array with nodes
+     * Return array with nodes.
      *
      * @return \DOMNode[]
      */
@@ -624,9 +624,10 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Add nodes to result set
+     * Add nodes to result set.
      *
      * @param \DOMNode[] $node_list
+     * @param bool $prepend
      *
      * @return void
      */
@@ -638,7 +639,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Return first DOMElement
+     * Return first DOMElement.
      *
      * @return \DOMElement|void
      */
@@ -652,7 +653,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Access xpath or ... DOMNode properties (nodeName, parentNode etc) or get attribute value of first node
+     * Access xpath or ... DOMNode properties (nodeName, parentNode etc) or get attribute value of first node.
      *
      * @param string $name
      *
@@ -677,15 +678,15 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
      /**
-     * Call method on first DOMElement
+     * Call method on first DOMElement.
      *
      * @param string $name
-     * @param $arguments
+     * @param mixed[] $arguments
      *
      * @return mixed
      * @throws \Exception
      */
-    public function __call($name, $arguments)
+    public function __call($name, array $arguments)
     {
         if (method_exists($this->getFirstElmNode(), $name)) {
             return \call_user_func_array(array($this->getFirstElmNode(), $name), $arguments);
@@ -695,7 +696,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Perform query via xpath expression (using DOMXPath::query)
+     * Perform query via xpath expression (using DOMXPath::query).
      *
      * @param string $expression
      * @param \DOMNode|null $context_node
@@ -721,7 +722,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
      /**
-     * Create dom xpath instance
+     * Create dom xpath instance.
      *
      * @return \DOMXPath|null
      */
@@ -765,7 +766,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Return html of all nodes (HTML fragment describing all the elements, including their descendants)
+     * Return html of all nodes (HTML fragment describing all the elements, including their descendants).
      *
      * @return string
      */
@@ -794,7 +795,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get id for node
+     * Get id for node.
      *
      * @param \DOMElement $node
      *
@@ -812,7 +813,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Handle html when resulting html is requested
+     * Handle html when resulting html is requested.
      *
      * @param string $html
      *
@@ -856,7 +857,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Return html of all nodes
+     * Return html of all nodes.
      *
      * @return string
      */
@@ -866,7 +867,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * IteratorAggregate (note: using Iterator conflicts with next method in jquery)
+     * IteratorAggregate (note: using Iterator conflicts with next method in jquery).
      *
      * @return \ArrayIterator containing nodes as instances of DomQuery
      */

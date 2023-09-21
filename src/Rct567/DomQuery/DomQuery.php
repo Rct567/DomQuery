@@ -86,7 +86,7 @@ class DomQuery extends DomQueryNodes
      * the named data store for the first element in the set of matched elements.
      *
      * @param string $key
-     * @param $val
+     * @param mixed $val
      *
      * @return $this|string|object|void
      */
@@ -174,7 +174,7 @@ class DomQuery extends DomQueryNodes
      *
      * @param string $css_str containing style properties
      *
-     * @return array with key-value as style properties
+     * @return array<string, string> with key-value as style properties
      */
     private static function parseStyle(string $css_str)
     {
@@ -195,7 +195,7 @@ class DomQuery extends DomQueryNodes
     /**
      * Convert css name-value array to string.
      *
-     * @param array $css_array with style properties
+     * @param array<string, string> $css_array with style properties
      *
      * @return string containing style properties
      */
@@ -290,7 +290,7 @@ class DomQuery extends DomQueryNodes
      *
      * @param string $class_name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasClass($class_name)
     {
@@ -696,7 +696,7 @@ class DomQuery extends DomQueryNodes
      *
      * @param string|self|callable|\DOMNodeList|\DOMNode $selector
      *
-     * @return boolean
+     * @return bool
      */
     public function is($selector)
     {
