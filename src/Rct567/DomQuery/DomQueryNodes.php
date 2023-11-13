@@ -2,6 +2,8 @@
 
 namespace Rct567\DomQuery;
 
+use stdClass;
+
 /**
  * Class DomQueryNodes
  *
@@ -15,7 +17,7 @@ namespace Rct567\DomQuery;
  *
  * @package Rct567\DomQuery
  */
-class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
+class DomQueryNodes extends stdClass implements \Countable, \IteratorAggregate, \ArrayAccess
 {
 
     /**
