@@ -12,6 +12,7 @@
     },
     "scripts": {
         "test": "phpunit && phpstan analyze src -l 3 && phpcs",
+        "test_with_docker": "docker-compose run phpunit-7.2 && docker-compose run phpunit-8.2",
         "coverage": "phpunit --coverage-html coverage/"
     },
     "authors": [

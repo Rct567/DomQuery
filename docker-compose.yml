@@ -1,0 +1,21 @@
+version: '3'
+services:
+  phpunit-8.2:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - PHP_VERSION=8.2
+    command: ["sh", "-c", "php -v && vendor/bin/phpunit"]
+    volumes:
+      - .:/app
+
+  phpunit-7.2:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - PHP_VERSION=7.2
+    command: ["sh", "-c", "php -v && vendor/bin/phpunit"]
+    volumes:
+      - .:/app
