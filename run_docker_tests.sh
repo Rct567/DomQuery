@@ -1,21 +1,33 @@
 #!/bin/bash
 
-# Run tests for PHP 7.2
-echo -e "\n=============================================================\n"
-docker-compose run phpunit-7.2
-EXIT_CODE_7_2=$?
+PHP_VERSIONS=("7.2" "8.2")
+TESTS_PASSED=true
 
-# Run tests for PHP 8.2
-echo -e "\n=============================================================\n"
-docker-compose run phpunit-8.2
-EXIT_CODE_8_2=$?
+function run_phpunit_tests() {
+    local php_version="$1"
+    echo -e "\n================[ Testing PHP $php_version: ]=============================================\n"
+    docker-compose run "phpunit-$php_version"
+    return $?
+}
 
-# Check exit codes and display messages
-if [ $EXIT_CODE_7_2 -eq 0 ] && [ $EXIT_CODE_8_2 -eq 0 ]; then
-    echo -e "\n\n\e[32mTests passed successfully for both PHP 7.2 and PHP 8.2.\e[0m"
+# Loop through PHP versions
+for php_version in "${PHP_VERSIONS[@]}"; do
+    run_phpunit_tests "$php_version"
+    exit_code=$?
+
+    # Check if tests failed
+    if [ $exit_code -ne 0 ]; then
+        TESTS_PASSED=false
+        break
+    fi
+done
+
+# Display messages based on test results
+if $TESTS_PASSED; then
+    echo -e "\n\n\e[32mTests passed successfully for all PHP versions.\e[0m"
 else
     echo -e "\n\n\e[31mTests failed for at least one PHP version.\e[0m"
 fi
 
 # Exit with the overall exit code
-exit $((EXIT_CODE_7_2 + EXIT_CODE_8_2))
+exit $exit_code
