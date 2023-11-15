@@ -88,6 +88,10 @@
   </properties>
  </rule>
 
+<rule ref="Generic.Files.LineEndings">
+ <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
+</rule>
+
  <rule ref="Generic.Files.LineLength">
   <properties>
    <property name="lineLimit" value="166"/>
