@@ -1,6 +1,12 @@
 #!/bin/bash
 
-PHP_VERSIONS=("7.2" "8.2")
+# Check prerequisites
+if ! command -v docker &> /dev/null || ! command -v docker-compose &> /dev/null; then
+    echo -e "\e[31mError: Docker and Docker Compose are required. Please install them before running this script.\e[0m"
+    exit 1
+fi
+
+PHP_VERSIONS=("7.2" "7.4" "8.0" "8.2")
 TESTS_PASSED=true
 
 function run_phpunit_tests() {
