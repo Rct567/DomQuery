@@ -11,7 +11,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
      */
     public function testIs()
     {
-        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
+        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a> <header></header>');
         $this->assertTrue($dom[2]->is('#mmm'));
         $this->assertTrue($dom[2]->next()->is('.x'));
         $this->assertTrue($dom[0]->is($dom->xpathQuery('//a[position()=1]')));
@@ -21,6 +21,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
         }));
         $this->assertFalse($dom[0]->is($dom[1]));
         $this->assertFalse($dom[0]->is($dom->find('a:last-child')));
+        $this->assertTrue($dom->find(':last-child')->is('header'));
     }
 
     /*
@@ -40,7 +41,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
      */
     public function testFilter()
     {
-        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
+        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a> <header>2</header>');
         $selection = $dom->find('a');
         $this->assertEquals(5, $selection->length);
         $this->assertEquals(5, $selection->filter('a')->length);
@@ -53,6 +54,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('<a id="mmm"></a><a class="x"></a><a class="xpp"></a>', (string) $selection->filter('a[class], #mmm'));
         $this->assertEquals('<a class="xpp"></a>', (string) $selection->filter($dom->find('a.xpp')));
         $this->assertEquals('<a class="x"></a>', (string) $selection->filter($dom->find('a')->get(-2))); // filter by DOMNode
+        $this->assertEquals('<header>2</header>', (string) $dom->find('*')->filter('header'));
     }
 
     /*
@@ -60,7 +62,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
      */
     public function testNot()
     {
-        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a>');
+        $dom = new DomQuery('<a>hai</a> <a></a> <a id="mmm"></a> <a class="x"></a> <a class="xpp"></a> <header>2</header>');
         $selection = $dom->find('a');
         $this->assertEquals(5, $selection->length);
         $this->assertEquals(5, $selection->not('p')->length);
@@ -73,8 +75,9 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
             return $node->hasAttributes();
         })->length);
         $this->assertEquals(4, $selection->not($dom->getDocument()->getElementById('mmm'))->length);
-        $inner = (string) $selection->not($dom->find('a:first-child, a:last-child'));
+        $inner = (string) $selection->not($dom->find('a:first-child, a:last'));
         $this->assertEquals('<a></a><a id="mmm"></a><a class="x"></a>', $inner);
+        $this->assertEquals('<a>hai</a><a></a><a id="mmm"></a>', (string) $dom->find('*')->not('header')->not('[class]'));
     }
 
     /*

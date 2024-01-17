@@ -542,7 +542,7 @@ class DomQuery extends DomQueryNodes
         $result = $this->createChildInstance();
 
         if ($this->length > 0) {
-            if (\is_callable($selector)) {
+            if (!\is_string($selector) && \is_callable($selector)) {
                 foreach ($this->nodes as $index => $node) {
                     if (!$selector($node, $index)) {
                         $result->addDomNode($node);
@@ -615,7 +615,7 @@ class DomQuery extends DomQueryNodes
         $result = $this->createChildInstance();
 
         if ($this->length > 0) {
-            if (\is_callable($selector)) {
+            if (!\is_string($selector) && \is_callable($selector)) {
                 foreach ($this->nodes as $index => $node) {
                     if ($selector($node, $index)) {
                         $result->addDomNode($node);
@@ -701,7 +701,7 @@ class DomQuery extends DomQueryNodes
     public function is($selector)
     {
         if ($this->length > 0) {
-            if (\is_callable($selector)) {
+            if (!\is_string($selector) && \is_callable($selector)) {
                 foreach ($this->nodes as $index => $node) {
                     if ($selector($node, $index)) {
                         return true;
