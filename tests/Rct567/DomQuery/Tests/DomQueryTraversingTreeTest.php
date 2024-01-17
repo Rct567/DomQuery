@@ -206,6 +206,17 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     *  Test parent method to get root
+     */
+    public function testParentToGetRoot()
+    {
+        $dom = new DomQuery('<a><b><span></span></b></a>');
+
+        $this->assertInstanceOf('DOMDocument', $dom->find('b')->parent()->parent()->get(0));
+        $this->assertEquals('<a><b><span></span></b></a>', (string) $dom->parent()->children());
+    }
+
+    /*
      *  Test get closest
      */
     public function testClosest()
