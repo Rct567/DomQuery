@@ -418,14 +418,21 @@ class DomQuery extends DomQueryNodes
         $result = $this->createChildInstance();
 
         if (isset($this->document) && $this->length > 0) {
-            if (isset($this->root_instance) || $this->getXpathQuery()) {
+            $all_nodes_children_of_root = true;
+            foreach ($this->nodes as $node) {
+                if (!($node->parentNode instanceof \DOMDocument)) {
+                    $all_nodes_children_of_root = false;
+                }
+            }
+
+            if (!isset($this->root_instance) && $all_nodes_children_of_root) { // first instance direct access to children
+                $result->loadDomNodeList($this->document->childNodes);
+            } else {
                 foreach ($this->nodes as $node) {
                     if ($node->hasChildNodes()) {
                         $result->loadDomNodeList($node->childNodes);
                     }
                 }
-            } else {
-                $result->loadDomNodeList($this->document->childNodes);
             }
 
             if ($selector !== false) { // filter out text nodes

@@ -179,6 +179,23 @@ class DomQueryTraversingTreeTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test children from new instance
+     */
+    public function testChildrenFromNewInstance()
+    {
+        $dom = new DomQuery('<div><p><span>x</span></p></div>');
+
+        $result = array();
+
+        $dom->find('p')->each(function ($node) use (&$result) {
+            $result[] = (string) (new DomQuery($node))->children();
+            $result[] = (string) DomQuery::create($node)->children();
+        });
+
+        $this->assertEquals('<span>x</span>|<span>x</span>', implode('|', $result));
+    }
+
+    /*
      * Test contents (children including text nodes)
      */
     public function testContents()
