@@ -733,7 +733,7 @@ class DomQuery extends DomQueryNodes
     /**
      * Reduce the set of matched elements to those that have a descendant that matches the selector.
      *
-     * @param string|self|callable|\DOMNodeList|\DOMNode $selector
+     * @param string|self|\DOMNodeList|\DOMNode $selector
      *
      * @return self
      */
