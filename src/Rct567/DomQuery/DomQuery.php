@@ -583,7 +583,7 @@ class DomQuery extends DomQueryNodes
     /**
      * Added elements that match the selector.
      *
-     * @param string|self|callable|\DOMNodeList|\DOMNode $selector
+     * @param string|self|\DOMNodeList|\DOMNode $selector
      * @param string|self|\DOMNodeList|\DOMNode|\DOMDocument $context
      *
      * @return self
