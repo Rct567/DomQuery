@@ -104,6 +104,33 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
     }
 
     /*
+     * Test loading utf8 html with irrelevant pi in content
+     */
+    public function testLoadingUf8AndGettingSameContentWithPiInContent()
+    {
+        $html = '<div><h1>Iñtërnâtiônàlizætiøn</h1></div><a>k</a><?xml version="1.0" encoding="iso-8859-1"?>';
+        $dom = new DomQuery($html);
+
+        $this->assertEquals($html, (string) $dom); // same result
+        $this->assertEquals('<h1>Iñtërnâtiônàlizætiøn</h1>', (string) $dom->find('h1')); // same header
+    }
+
+    /*
+     * Test loading utf8 content with leading pi
+     */
+    public function testLoadingUf8AndGettingSameContentWithLeadingPi()
+    {
+        $html = '<?xml version="1.0" encoding="UTF-8"?><div><h1>Iñtërnâtiônàlizætiøn</h1></div>';
+        $dom = new DomQuery($html);
+
+        $this->assertTrue($dom->xml_mode);
+        $this->assertEquals($html, (string) $dom); // same result
+        $this->assertEquals('<h1>Iñtërnâtiônàlizætiøn</h1>', (string) $dom->find('h1')); // same header
+        $dom->xml_mode = false;
+        $this->assertEquals('<div><h1>Iñtërnâtiônàlizætiøn</h1></div>', (string) $dom); // without pi
+    }
+
+    /*
      * Test loading html with new lines
      */
     public function testLoadingWithNewLines()
@@ -120,8 +147,6 @@ class DomQueryTest extends \PHPUnit\Framework\TestCase
         $dom = new DomQuery('<div selected>a</div>');
         $this->assertEquals('<div selected>a</div>', (string) $dom);
     }
-
-
 
     /*
      * Test change attribute without value in xml write mode

@@ -353,16 +353,19 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      */
     public function loadContent(string $content, $encoding='UTF-8')
     {
+
         $this->preserve_no_newlines = (strpos($content, '<') !== false && strpos($content, "\n") === false);
 
+        $content_has_leading_pi = stripos($content, '<?xml') === 0;
+
         if (!\is_bool($this->xml_mode)) {
-            $this->xml_mode = (stripos($content, '<?xml') === 0);
+            $this->xml_mode = $content_has_leading_pi;
         }
 
-        $this->xml_print_pi = (stripos($content, '<?xml') === 0);
+        $this->xml_print_pi = $content_has_leading_pi;
 
         $xml_pi_node_added = false;
-        if (!$this->xml_mode && $encoding && stripos($content, '<?xml') === false) {
+        if (!$this->xml_mode && $encoding && !$content_has_leading_pi) {
             $content = '<?xml encoding="'.$encoding.'">'.$content; // add pi node to make libxml use the correct encoding
             $xml_pi_node_added = true;
         }
