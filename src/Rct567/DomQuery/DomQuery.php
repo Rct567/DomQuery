@@ -555,6 +555,8 @@ class DomQuery extends DomQueryNodes
                         $result->addDomNode($node);
                     }
                 }
+            } elseif ($selector === null) {
+                $result->addDomNodes($this->nodes);
             } else {
                 $selection = self::create($this->document)->find($selector);
 
@@ -591,7 +593,7 @@ class DomQuery extends DomQueryNodes
     public function add($selector, $context=null)
     {
         $result = $this->createChildInstance();
-        $result->nodes = $this->nodes;
+        $result->addDomNodes($this->nodes);
 
         $selection = $this->getTargetResult($selector, $context);
 
@@ -628,6 +630,8 @@ class DomQuery extends DomQueryNodes
                         $result->addDomNode($node);
                     }
                 }
+            } elseif ($selector === null) {
+                $result->addDomNodes($this->nodes);
             } else {
                 $selection = self::create($this->document)->find($selector);
 
@@ -741,7 +745,7 @@ class DomQuery extends DomQueryNodes
     {
         $result = $this->createChildInstance();
 
-        if ($this->length > 0) {
+        if ($this->length > 0 && $selector !== null) {
             foreach ($this as $node) {
                 if ($node->find($selector)->length > 0) {
                     $result->addDomNode($node->get(0));

@@ -317,7 +317,33 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Add node to result set.
+     * Add an array of nodes to the result set.
+     *
+     * @param \DOMNode[] $dom_nodes
+     *
+     * @return void
+     */
+    public function addDomNodes(array $dom_nodes)
+    {
+        if (!isset($dom_nodes[0])) {
+            return;
+        }
+
+        foreach ($dom_nodes as $dom_node) {
+            $this->nodes[] = $dom_node;
+        }
+
+        $this->length = \count($this->nodes);
+
+        if ($dom_nodes[0] instanceof \DOMDocument) {
+            $this->setDomDocument($dom_nodes[0]);
+        } else {
+            $this->setDomDocument($dom_nodes[0]->ownerDocument);
+        }
+    }
+
+    /**
+     * Add a single node to the result set.
      *
      * @param \DOMNode $dom_node
      * @param bool $prepend
@@ -327,7 +353,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
     public function addDomNode(\DOMNode $dom_node, $prepend=false)
     {
         if ($prepend) {
-            array_unshift($this->nodes, $dom_node);
+            \array_unshift($this->nodes, $dom_node);
         } else {
             $this->nodes[] = $dom_node;
         }

@@ -36,6 +36,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('<a class="x"><span id="here"><u></u></span></a>', (string) $dom->find('a')->has('span > u'));
         $this->assertEquals('<a class="x"><span id="here"><u></u></span></a>', (string) $dom->find('a')->has($dom->find('#here')));
         $this->assertEquals('<a class="x"><span id="here"><u></u></span></a>', (string) $dom->find('a')->has($dom->find('#here')->get(0))); # by DOMNode
+        $this->assertEquals(0, (string) $dom->find('a')->has(null)->length);
     }
 
     /*
@@ -57,6 +58,8 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('<a class="xpp"></a>', (string) $selection->filter($dom->find('a.xpp')));
         $this->assertEquals('<a class="x"></a>', (string) $selection->filter($dom->find('a')->get(-2))); // filter by DOMNode
         $this->assertEquals('<header>2</header>', (string) $dom->find('*')->filter('header'));
+        $this->assertEquals(2, $dom->find('a[class]')->filter(null)->length);
+        $this->assertEquals('<a class="x"></a><a class="xpp"></a>', (string) $dom->find('a[class]')->filter(null));
     }
 
     /*
@@ -68,6 +71,7 @@ class DomQueryTraversingFilterTest extends \PHPUnit\Framework\TestCase
         $selection = $dom->find('a');
         $this->assertEquals(5, $selection->length);
         $this->assertEquals(5, $selection->not('p')->length);
+        $this->assertEquals((string) $selection, (string) $selection->not(null));
         $this->assertEquals(0, $selection->not('a')->length);
         $this->assertEquals(4, $selection->not('#mmm')->length);
         $this->assertEquals(3, $selection->not('#mmm')->not('.xpp')->length);
