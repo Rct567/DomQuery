@@ -2,8 +2,6 @@
 
 namespace Rct567\DomQuery;
 
-use Psr\Log\NullLogger;
-
 /**
  * Class DomQueryNodes
  *
