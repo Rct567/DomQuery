@@ -24,19 +24,14 @@ RUN set -eux; \
 # Install Composer globally
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy only composer files first for caching
-COPY composer.json composer.lock* ./
+# Composer but without lock file
+COPY composer.json ./
+RUN composer update --no-interaction --with-all-dependencies --prefer-dist --no-progress
 
-# Install/update PHP dependencies per PHP version with BuildKit cache
-# Uses --mount to cache downloads across builds (speeds up repeated builds)
-RUN --mount=type=cache,target=/root/.cache/composer \
-    composer update --no-interaction --with-all-dependencies --prefer-dist --no-progress
-
-# Copy the rest of the application
-COPY . .
-
-# Optimize autoload (optional)
-RUN composer dump-autoload --optimize
+# Copy only what is needed
+COPY src/ src/
+COPY tests/ tests/
+COPY phpunit.xml.dist phpunit.xml.dist
 
 # Default command (can be overridden by docker-compose)
 CMD ["php", "-v"]
