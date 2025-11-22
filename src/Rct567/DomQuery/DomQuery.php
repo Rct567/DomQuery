@@ -90,7 +90,7 @@ class DomQuery extends DomQueryNodes
      *
      * @return $this|string|object|void
      */
-    public function data(string $key=null, $val=null)
+    public function data(?string $key=null, $val=null)
     {
         $doc_hash = spl_object_hash($this->document);
 

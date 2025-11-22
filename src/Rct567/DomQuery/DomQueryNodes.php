@@ -738,7 +738,7 @@ class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAccess
      * @return \DOMNodeList|false
      * @throws \Exception
      */
-    public function xpathQuery(string $expression, \DOMNode $context_node=null)
+    public function xpathQuery(string $expression, ?\DOMNode $context_node=null)
     {
         if ($dom_xpath = $this->getDomXpath()) {
             $node_list = $dom_xpath->query($expression, $context_node);
