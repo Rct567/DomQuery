@@ -19,7 +19,7 @@ run_phpunit_tests() {
     printf "\n================[ Testing PHP ${php_version}: ]=============================================\n\n"
     
     # Build the image
-    if ! docker compose build --no-cache "phpunit-${php_version}"; then
+    if ! docker compose build "phpunit-${php_version}"; then
         printf "\e[31mBuild failed for PHP ${php_version}.\e[0m\n"
         return 1
     fi
