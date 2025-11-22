@@ -16,7 +16,7 @@ RUN apt-get install git unzip -yqq
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer > /dev/null 2>&1
 
 # Install project dependencies
-RUN composer install > /dev/null 2>&1
+RUN composer install --no-interaction --prefer-dist --no-progress
 
 # Copy the rest of the application code to the container
 COPY . .

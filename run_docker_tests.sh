@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Check prerequisites
 if ! command -v docker &> /dev/null || ! command -v docker-compose &> /dev/null; then
@@ -6,34 +7,33 @@ if ! command -v docker &> /dev/null || ! command -v docker-compose &> /dev/null;
     exit 1
 fi
 
+# Optional: clean stale containers from previous runs
+docker compose down --remove-orphans || true
+
 PHP_VERSIONS=("7.2" "7.4" "8.0" "8.2" "8.3" "8.4" "8.5")
 TESTS_PASSED=true
+EXIT_CODE=0
 
-function run_phpunit_tests() {
+run_phpunit_tests() {
     local php_version="$1"
-    echo -e "\n================[ Testing PHP $php_version: ]=============================================\n"
-    docker-compose run "phpunit-$php_version"
+    echo -e "\n================[ Testing PHP ${php_version}: ]=============================================\n"
+    # Use --rm to remove the ephemeral container after run
+    docker compose run --rm "phpunit-${php_version}"
     return $?
 }
 
-# Loop through PHP versions
 for php_version in "${PHP_VERSIONS[@]}"; do
-    run_phpunit_tests "$php_version"
-    exit_code=$?
-
-    # Check if tests failed
-    if [ $exit_code -ne 0 ]; then
+    if ! run_phpunit_tests "$php_version"; then
         TESTS_PASSED=false
+        EXIT_CODE=1
         break
     fi
 done
 
-# Display messages based on test results
 if $TESTS_PASSED; then
     echo -e "\n\n\e[32mTests passed successfully for all PHP versions.\e[0m"
 else
     echo -e "\n\n\e[31mTests failed for at least one PHP version.\e[0m"
 fi
 
-# Exit with the overall exit code
-exit $exit_code
+exit $EXIT_CODE
