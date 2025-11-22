@@ -6,8 +6,6 @@ services:
       args:
         PHP_VERSION: "8.5"
     command: sh -c 'php -v && vendor/bin/phpunit'
-    volumes:
-      - .:/app
     tty: true
 
   phpunit-8.4:
@@ -17,8 +15,6 @@ services:
       args:
         PHP_VERSION: "8.4"
     command: sh -c 'php -v && vendor/bin/phpunit'
-    volumes:
-      - .:/app
     tty: true
 
   phpunit-8.3:
@@ -28,8 +24,6 @@ services:
       args:
         PHP_VERSION: "8.3"
     command: sh -c 'php -v && vendor/bin/phpunit'
-    volumes:
-      - .:/app
     tty: true
 
   phpunit-8.2:
@@ -39,8 +33,6 @@ services:
       args:
         PHP_VERSION: "8.2"
     command: sh -c 'php -v && vendor/bin/phpunit'
-    volumes:
-      - .:/app
     tty: true
 
   phpunit-8.0:
@@ -50,8 +42,6 @@ services:
       args:
         PHP_VERSION: "8.0"
     command: sh -c 'php -v && vendor/bin/phpunit'
-    volumes:
-      - .:/app
     tty: true
 
   phpunit-7.4:
@@ -61,8 +51,6 @@ services:
       args:
         PHP_VERSION: "7.4"
     command: sh -c 'php -v && vendor/bin/phpunit'
-    volumes:
-      - .:/app
     tty: true
 
   phpunit-7.2:
@@ -72,6 +60,4 @@ services:
       args:
         PHP_VERSION: "7.2"
     command: sh -c 'php -v && vendor/bin/phpunit'
-    volumes:
-      - .:/app
     tty: true
