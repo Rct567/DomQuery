@@ -6,7 +6,7 @@ if ! command -v docker &> /dev/null || ! command -v docker-compose &> /dev/null;
     exit 1
 fi
 
-PHP_VERSIONS=("7.2" "7.4" "8.0" "8.2")
+PHP_VERSIONS=("7.2" "7.4" "8.0" "8.2" "8.3" "8.4" "8.5")
 TESTS_PASSED=true
 
 function run_phpunit_tests() {

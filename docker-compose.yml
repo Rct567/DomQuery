@@ -1,5 +1,35 @@
 version: '3'
 services:
+  phpunit-8.5:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - PHP_VERSION=8.5
+    command: ["sh", "-c", "php -v && vendor/bin/phpunit"]
+    volumes:
+      - .:/app
+
+  phpunit-8.4:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - PHP_VERSION=8.4
+    command: ["sh", "-c", "php -v && vendor/bin/phpunit"]
+    volumes:
+      - .:/app
+
+  phpunit-8.3:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - PHP_VERSION=8.3
+    command: ["sh", "-c", "php -v && vendor/bin/phpunit"]
+    volumes:
+      - .:/app
+
   phpunit-8.2:
     build:
       context: .
@@ -15,7 +45,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       args:
-        - PHP_VERSION=8.2
+        - PHP_VERSION=8.0
     command: ["sh", "-c", "php -v && vendor/bin/phpunit"]
     volumes:
       - .:/app
@@ -25,7 +55,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       args:
-        - PHP_VERSION=8.2
+        - PHP_VERSION=7.4
     command: ["sh", "-c", "php -v && vendor/bin/phpunit"]
     volumes:
       - .:/app
