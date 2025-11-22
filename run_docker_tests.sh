@@ -11,6 +11,18 @@ fi
 docker compose down --remove-orphans || true
 
 PHP_VERSIONS=("7.2" "7.4" "8.0" "8.2" "8.3" "8.4" "8.5")
+PHP_SERVICES=()
+for v in "${PHP_VERSIONS[@]}"; do
+    PHP_SERVICES+=("phpunit-${v}")
+done
+
+# Build all images in parallel first
+printf "Building images in parallel: %s\n" "${PHP_SERVICES[*]}"
+if ! docker compose build --parallel "${PHP_SERVICES[@]}"; then
+    printf "\e[31mOne or more builds failed.\e[0m\n"
+    exit 1
+fi
+
 TESTS_PASSED=true
 EXIT_CODE=0
 
@@ -18,13 +30,7 @@ run_phpunit_tests() {
     local php_version="$1"
     printf "\n================[ Testing PHP ${php_version}: ]=============================================\n\n"
     
-    # Build the image
-    if ! docker compose build "phpunit-${php_version}"; then
-        printf "\e[31mBuild failed for PHP ${php_version}.\e[0m\n"
-        return 1
-    fi
-    
-    # Use --rm to remove the ephemeral container after run
+    # Run the test container (image already built above)
     if ! docker compose run --rm "phpunit-${php_version}"; then
         printf "\e[31mRun failed for PHP ${php_version}.\e[0m\n"
         return 1
